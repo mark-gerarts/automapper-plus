@@ -4,7 +4,7 @@ Transfers data from one object to another, allowing custom mapping operations.
 
 ## Table of Contents
 * [Installation](#installation)
-* [Why?](#why?)
+* [Why?](#why)
 * [Usage](#usage)
     * [Basic example](#basic-example)
     * [Custom callbacks](#custom-callbacks)
