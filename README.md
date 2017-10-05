@@ -4,7 +4,8 @@ Transfers data from one object to another, allowing custom mapping operations.
 
 ## Installation
 This is an alpha release, missing a lot of functionality and bound to be 
-refactored. The package will be made available on Packagist once it's stable.
+refactored. The package will be made available on Packagist once the initial
+roadmap is completed ([see below](#roadmap)).
 
 ## Why?
 When you need to transfer data from one object to another, you'll have to write 
@@ -78,7 +79,7 @@ $config->registerMapping(ToDo::class, UpdateToDoViewModel::class)
     });
 ```
 
-## Roadmap
+## <a name="roadmap"></a> Roadmap
 - [ ] Add tests
 - [ ] Add PHP7.1 dependency to composer
 - [ ] Add comments (more than just PHPDoc blocks)
