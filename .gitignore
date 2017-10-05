@@ -1,0 +1,6 @@
+# Composer
+vendor/
+
+# Editor files & folders
+.idea/
+.#*

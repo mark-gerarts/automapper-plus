@@ -1,0 +1,282 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "74aec90af4857032a7ef9d17a01fafc8",
+    "packages": [
+        {
+            "name": "lstrojny/functional-php",
+            "version": "1.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lstrojny/functional-php.git",
+                "reference": "c0c15f048355d0a7ab17914022ec1f901fe5144a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lstrojny/functional-php/zipball/c0c15f048355d0a7ab17914022ec1f901fe5144a",
+                "reference": "c0c15f048355d0a7ab17914022ec1f901fe5144a",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~7"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~6"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Functional\\": "src/Functional"
+                },
+                "files": [
+                    "src/Functional/Average.php",
+                    "src/Functional/Capture.php",
+                    "src/Functional/ConstFunction.php",
+                    "src/Functional/CompareOn.php",
+                    "src/Functional/CompareObjectHashOn.php",
+                    "src/Functional/Compose.php",
+                    "src/Functional/Concat.php",
+                    "src/Functional/Contains.php",
+                    "src/Functional/Curry.php",
+                    "src/Functional/CurryN.php",
+                    "src/Functional/Difference.php",
+                    "src/Functional/DropFirst.php",
+                    "src/Functional/DropLast.php",
+                    "src/Functional/Each.php",
+                    "src/Functional/Equal.php",
+                    "src/Functional/ErrorToException.php",
+                    "src/Functional/Every.php",
+                    "src/Functional/False.php",
+                    "src/Functional/Falsy.php",
+                    "src/Functional/Filter.php",
+                    "src/Functional/First.php",
+                    "src/Functional/FirstIndexOf.php",
+                    "src/Functional/FlatMap.php",
+                    "src/Functional/Flatten.php",
+                    "src/Functional/Flip.php",
+                    "src/Functional/GreaterThan.php",
+                    "src/Functional/GreaterThanOrEqual.php",
+                    "src/Functional/Group.php",
+                    "src/Functional/Head.php",
+                    "src/Functional/Id.php",
+                    "src/Functional/IfElse.php",
+                    "src/Functional/Identical.php",
+                    "src/Functional/IndexesOf.php",
+                    "src/Functional/Intersperse.php",
+                    "src/Functional/Invoke.php",
+                    "src/Functional/InvokeFirst.php",
+                    "src/Functional/InvokeIf.php",
+                    "src/Functional/InvokeLast.php",
+                    "src/Functional/Invoker.php",
+                    "src/Functional/Last.php",
+                    "src/Functional/LastIndexOf.php",
+                    "src/Functional/LessThan.php",
+                    "src/Functional/LessThanOrEqual.php",
+                    "src/Functional/LexicographicCompare.php",
+                    "src/Functional/Map.php",
+                    "src/Functional/Match.php",
+                    "src/Functional/Maximum.php",
+                    "src/Functional/Memoize.php",
+                    "src/Functional/Minimum.php",
+                    "src/Functional/None.php",
+                    "src/Functional/Not.php",
+                    "src/Functional/PartialAny.php",
+                    "src/Functional/PartialLeft.php",
+                    "src/Functional/PartialMethod.php",
+                    "src/Functional/PartialRight.php",
+                    "src/Functional/Partition.php",
+                    "src/Functional/Pick.php",
+                    "src/Functional/Pluck.php",
+                    "src/Functional/Poll.php",
+                    "src/Functional/Product.php",
+                    "src/Functional/Ratio.php",
+                    "src/Functional/ReduceLeft.php",
+                    "src/Functional/ReduceRight.php",
+                    "src/Functional/Reindex.php",
+                    "src/Functional/Reject.php",
+                    "src/Functional/Retry.php",
+                    "src/Functional/Select.php",
+                    "src/Functional/SequenceConstant.php",
+                    "src/Functional/SequenceExponential.php",
+                    "src/Functional/SequenceLinear.php",
+                    "src/Functional/Some.php",
+                    "src/Functional/Sort.php",
+                    "src/Functional/Sum.php",
+                    "src/Functional/SuppressError.php",
+                    "src/Functional/Tail.php",
+                    "src/Functional/TailRecursion.php",
+                    "src/Functional/True.php",
+                    "src/Functional/Truthy.php",
+                    "src/Functional/Unique.php",
+                    "src/Functional/With.php",
+                    "src/Functional/Zip.php",
+                    "src/Functional/ZipAll.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lars Strojny",
+                    "email": "lstrojny@php.net",
+                    "homepage": "http://usrportage.de"
+                },
+                {
+                    "name": "Max Beutel",
+                    "email": "nash12@gmail.com"
+                }
+            ],
+            "description": "Functional primitives for PHP",
+            "keywords": [
+                "functional"
+            ],
+            "time": "2017-05-08T10:17:44+00:00"
+        }
+    ],
+    "packages-dev": [
+        {
+            "name": "symfony/polyfill-mbstring",
+            "version": "v1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-mbstring.git",
+                "reference": "7c8fae0ac1d216eb54349e6a8baa57d515fe8803"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/7c8fae0ac1d216eb54349e6a8baa57d515fe8803",
+                "reference": "7c8fae0ac1d216eb54349e6a8baa57d515fe8803",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "suggest": {
+                "ext-mbstring": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Mbstring\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for the Mbstring extension",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "mbstring",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "time": "2017-06-14T15:44:48+00:00"
+        },
+        {
+            "name": "symfony/var-dumper",
+            "version": "v3.3.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/var-dumper.git",
+                "reference": "89fcb5a73e0ede2be2512234c4e40457bb22b35f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/89fcb5a73e0ede2be2512234c4e40457bb22b35f",
+                "reference": "89fcb5a73e0ede2be2512234c4e40457bb22b35f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.5.9|>=7.0.8",
+                "symfony/polyfill-mbstring": "~1.0"
+            },
+            "conflict": {
+                "phpunit/phpunit": "<4.8.35|<5.4.3,>=5.0"
+            },
+            "require-dev": {
+                "ext-iconv": "*",
+                "twig/twig": "~1.34|~2.4"
+            },
+            "suggest": {
+                "ext-iconv": "To convert non-UTF-8 strings to UTF-8 (or symfony/polyfill-iconv in case ext-iconv cannot be used).",
+                "ext-symfony_debug": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.3-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "Resources/functions/dump.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Component\\VarDumper\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony mechanism for exploring and dumping PHP variables",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "debug",
+                "dump"
+            ],
+            "time": "2017-08-27T14:52:21+00:00"
+        }
+    ],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
