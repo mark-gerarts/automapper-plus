@@ -21,7 +21,7 @@ a lot of boilerplate code. For example when using view models, CommandBus
 commands, response classes, etc.
 
 Automapper+ helps you by automatically transferring properties from one object 
-to another, including private ones. By default, properties with the same name
+to another, **including private ones**. By default, properties with the same name
 will be converted. This can be overriden as you like.
 
 ## Usage
