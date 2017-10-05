@@ -2,6 +2,14 @@
 An automapper for PHP inspired by [.NET's automapper](https://github.com/AutoMapper/AutoMapper).
 Transfers data from one object to another, allowing custom mapping operations.
 
+## Table of Contents
+* [Installation](#installation)
+* [Why?](#why?)
+* [Usage](#usage)
+    * [Basic example](#basic-example)
+    * [Custom callbacks](#custom-callbacks)
+* [Roadmap](#roadmap)
+
 ## Installation
 This is an alpha release, missing a lot of functionality and bound to be 
 refactored. The package will be made available on Packagist once the initial
@@ -18,6 +26,7 @@ will be converted. This can be overriden as you like.
 
 ## Usage
 
+### Basic example
 Suppose you have a class Todo for which you want to create a view model for 
 updating it. 
 
@@ -65,6 +74,7 @@ $todo = new ToDo(10, "I'm a title!", new \DateTime());
 $updateTodo = $mapper->map($todo, UpdateToDoViewModel::class);
 ```
 
+### Custom callbacks
 If you need something more complex than transferring properties with the same 
 name, you can provide a custom callback:
 
@@ -79,7 +89,7 @@ $config->registerMapping(ToDo::class, UpdateToDoViewModel::class)
     });
 ```
 
-## <a name="roadmap"></a> Roadmap
+## Roadmap
 - [ ] Add tests
 - [ ] Add PHP7.1 dependency to composer
 - [ ] Add comments (more than just PHPDoc blocks)
