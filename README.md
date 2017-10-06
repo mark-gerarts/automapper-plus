@@ -8,6 +8,7 @@ Transfers data from one object to another, allowing custom mapping operations.
 * [Usage](#usage)
     * [Basic example](#basic-example)
     * [Custom callbacks](#custom-callbacks)
+    * [Instantiating using the static constructor](#instantiating-using-the-static-constructor)
 * [Roadmap](#roadmap)
 
 ## Installation
@@ -77,6 +78,22 @@ $todo = new ToDo(10, "I'm a title!", new \DateTime());
 $updateTodo = $mapper->map($todo, UpdateToDoViewModel::class);
 ```
 
+### Custom callbacks
+If you need something more complex than transferring properties with the same
+name, you can provide a custom callback:
+
+```php
+<?php
+
+$config = new \AutoMapperPlus\Configuration\AutoMapperConfig();
+$config->registerMapping(ToDo::class, UpdateToDoViewModel::class)
+    ->forMember('title', function (ToDo $source) {
+        // You can put some custom conversions here.
+        return ucfirst($source->getTitle());
+    });
+```
+
+### Instantiating using the static constructor
 An alternative way to initialize the mapper is using the `::initialize` static
 method. This allows you to configure the mapper using a callback.
 
@@ -90,19 +107,17 @@ $mapper = AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
 });
 ```
 
-### Custom callbacks
-If you need something more complex than transferring properties with the same 
-name, you can provide a custom callback:
+### Mapping to an existing object
+
+By default, the method `map` creates a new instance of the target class. It is
+possible to map to an existing object using the `mapToObject` method.
 
 ```php
 <?php
 
-$config = new \AutoMapperPlus\Configuration\AutoMapperConfig();
-$config->registerMapping(ToDo::class, UpdateToDoViewModel::class)
-    ->forMember('title', function (ToDo $source) {
-        // You can put some custom conversions here. 
-        return ucfirst($source->getTitle());
-    });
+$todo = new ToDo();
+$viewModel = new UpdateTodoViewModel();
+$mapper->mapToObject($todo, $viewModel);
 ```
 
 ## Roadmap
@@ -111,7 +126,7 @@ $config->registerMapping(ToDo::class, UpdateToDoViewModel::class)
 - [ ] Add comments (more than just PHPDoc blocks)
 - [ ] Add the ability to change the default conversion (e.g. first do camelcase converting instead of using the exact same name)
 - [ ] Add the 'Operation' type, @see Mapping.php
-- [ ] Allow transferring data to an existing object
+- [x] Allow transferring data to an existing object
 - [ ] Copy as many usages from .net's automapper as possible
 - [ ] Provide a more detailed tutorial
 - [ ] Create a Symfony bundle

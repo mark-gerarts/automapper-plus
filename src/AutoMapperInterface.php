@@ -2,6 +2,8 @@
 
 namespace AutoMapperPlus;
 
+use AutoMapperPlus\Exception\UnregisteredMappingException;
+
 /**
  * Interface AutoMapperInterface
  *
@@ -14,10 +16,27 @@ interface AutoMapperInterface
      * configured.
      *
      * @param $from
+     *   The source object.
      * @param string $to
+     *   The target classname.
      * @return mixed
+     *   An instance on class $to.
+     * @throws UnregisteredMappingException
      */
     public function map($from, string $to);
+
+    /**
+     * Maps properties of object $from to an existing object $to.
+     *
+     * @param $from
+     *   The source object.
+     * @param $to
+     *   The target object.
+     * @return mixed
+     *   $to, with properties copied from $from.
+     * @throws UnregisteredMappingException
+     */
+    public function mapToObject($from, $to);
 
     /**
      * Instantiate the mapper with a given configuration callback. The callback

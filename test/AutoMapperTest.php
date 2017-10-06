@@ -27,6 +27,16 @@ class AutoMapperTest extends \PHPUnit\Framework\TestCase
         $this->config = new AutoMapperConfig();
     }
 
+    public function testItCanBeInstantiatedStatically()
+    {
+        $mapper = AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
+            $config->registerMapping(Source::class, Destination::class);
+        });
+
+        $destination = $mapper->map(new Source(), Destination::class);
+        $this->assertInstanceOf(Destination::class, $destination);
+    }
+
     public function testItMapsAPublicProperty()
     {
         $this->config->registerMapping(Source::class, Destination::class);
@@ -40,13 +50,15 @@ class AutoMapperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($source->name, $destination->name);
     }
 
-    public function testItCanBeInstantiatedStatically()
+    public function testItCanMapToAnExistingObject()
     {
-        $mapper = AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
-            $config->registerMapping(Source::class, Destination::class);
-        });
+        $this->config->registerMapping(Source::class, Destination::class);
+        $mapper = new AutoMapper($this->config);
+        $source = new Source();
+        $source->name = 'Hello';
+        $destination = new Destination();
+        $destination = $mapper->mapToObject($source, $destination);
 
-        $destination = $mapper->map(new Source(), Destination::class);
-        $this->assertInstanceOf(Destination::class, $destination);
+        $this->assertEquals($source->name, $destination->name);
     }
 }
