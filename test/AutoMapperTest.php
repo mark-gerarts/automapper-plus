@@ -3,6 +3,7 @@
 namespace AutoMapperPlus;
 
 use AutoMapperPlus\Configuration\AutoMapperConfig;
+use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use Test\Models\SimpleProperties\Destination;
 use Test\Models\SimpleProperties\Source;
 
@@ -37,5 +38,15 @@ class AutoMapperTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(Destination::class, $destination);
         $this->assertEquals($source->name, $destination->name);
+    }
+
+    public function testItCanBeInstantiatedStatically()
+    {
+        $mapper = AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
+            $config->registerMapping(Source::class, Destination::class);
+        });
+
+        $destination = $mapper->map(new Source(), Destination::class);
+        $this->assertInstanceOf(Destination::class, $destination);
     }
 }

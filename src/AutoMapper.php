@@ -71,4 +71,15 @@ class AutoMapper implements AutoMapperInterface
 
         return $mappedObject;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public static function initialize(callable $configurator): AutoMapperInterface
+    {
+        $mapper = new static;
+        $configurator($mapper->autoMapperConfig);
+
+        return $mapper;
+    }
 }

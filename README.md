@@ -59,11 +59,14 @@ Basic example:
 ```php
 <?php
 
-$config = new \AutoMapperPlus\Configuration\AutoMapperConfig();
+use AutoMapperPlus\Configuration\AutoMapperConfig;
+use AutoMapperPlus\AutoMapper;
+
+$config = new AutoMapperConfig();
 // If we only need to convert properties with the same name, simply registering
 // the mapping is enough.
 $config->registerMapping(ToDo::class, UpdateToDoViewModel::class);
-$mapper = new \AutoMapperPlus\AutoMapper($config);
+$mapper = new AutoMapper($config);
 
 // With this configuration we can start converting our objects.
 $todo = new ToDo(10, "I'm a title!", new \DateTime());
@@ -72,6 +75,19 @@ $todo = new ToDo(10, "I'm a title!", new \DateTime());
 // - $id: 10
 // - $title: "I'm a title!"
 $updateTodo = $mapper->map($todo, UpdateToDoViewModel::class);
+```
+
+An alternative way to initialize the mapper is using the `::initialize` static
+method. This allows you to configure the mapper using a callback.
+
+```php
+<?php
+
+use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
+
+$mapper = AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
+    $config->registerMapping(ToDo::class, UpdateToDoViewModel::class);
+});
 ```
 
 ### Custom callbacks
