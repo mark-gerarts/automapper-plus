@@ -9,6 +9,7 @@ Transfers data from one object to another, allowing custom mapping operations.
     * [Basic example](#basic-example)
     * [Custom callbacks](#custom-callbacks)
     * [Instantiating using the static constructor](#instantiating-using-the-static-constructor)
+    * [Mapping to an existing object](#mapping-to-an-existing-object)
 * [Roadmap](#roadmap)
 
 ## Installation
