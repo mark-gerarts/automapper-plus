@@ -28,8 +28,12 @@ class PrivateAccessor implements PrivateAccessorInterface
     /**
      * @inheritdoc
      */
-    public function setPrivate($object, string $attribute, $value)
+    public function setPrivate($object, string $attribute, $value): void
     {
-        // TODO: Implement setPrivate() method.
+        $setter = function($value) use ($attribute) {
+            $this->$attribute = $value;
+        };
+        $boundSetter = \Closure::bind($setter, $object, get_class($object));
+        $boundSetter($value);
     }
 }

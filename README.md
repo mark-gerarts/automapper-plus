@@ -116,5 +116,5 @@ $config->registerMapping(ToDo::class, UpdateToDoViewModel::class)
 - [ ] Provide a more detailed tutorial
 - [ ] Create a Symfony bundle
 - [ ] Create a sample app demonstrating the automapper
-- [ ] Check if Reflectionclass PrivateAccessore implementation is faster (https://gist.github.com/samsamm777/7230159)
+- [ ] Check if Reflectionclass PrivateAccessor implementation is faster (https://gist.github.com/samsamm777/7230159)
 - [ ] Improve tests
