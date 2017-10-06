@@ -95,6 +95,7 @@ $config->registerMapping(ToDo::class, UpdateToDoViewModel::class)
 - [ ] Add comments (more than just PHPDoc blocks)
 - [ ] Add the ability to change the default conversion (e.g. first do camelcase converting instead of using the exact same name)
 - [ ] Add the 'Operation' type, @see Mapping.php
+- [ ] Allow transferring data to an existing object
 - [ ] Copy as many usages from .net's automapper as possible
 - [ ] Provide a more detailed tutorial
 - [ ] Create a Symfony bundle
