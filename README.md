@@ -29,34 +29,42 @@ will be converted. This can be overriden as you like.
 ## Usage
 
 ### Basic example
-Suppose you have a class Todo for which you want to create a view model for 
-updating it. 
+Suppose you have a class Employee for which you want to create a DTO.
 
 ```php
 <?php
 
-class ToDo
+class Employee
 {
     private $id;
-    private $title;
-    private $created;
+    private $firstName;
+    private $lastName;
     
+    public function __construct($id, $firstName, $lastName)
+    {
+        $this->id = $id;
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
+    }
+
     public function getId()
     {
         return $this->id;
     }
-    
-    // ...
+
+    // And so on...
 }
 
-class UpdateToDoViewModel
+class EmployeeDto
 {
-    public $id;
-    public $title;
+    public $firstName;
+    public $lastName;
 }
 ```
 
-Basic example:
+The most basic thing AutoMapper+ can do, is transferring properties with the
+same name. After registering the mapping, there's no additional configuration
+needed to do this.
 
 ```php
 <?php
@@ -67,16 +75,15 @@ use AutoMapperPlus\AutoMapper;
 $config = new AutoMapperConfig();
 // If we only need to convert properties with the same name, simply registering
 // the mapping is enough.
-$config->registerMapping(ToDo::class, UpdateToDoViewModel::class);
+$config->registerMapping(Employee::class, EmployeeDto::class);
 $mapper = new AutoMapper($config);
 
 // With this configuration we can start converting our objects.
-$todo = new ToDo(10, "I'm a title!", new \DateTime());
+$john = new Employee(10, "John", "Doe");
+$dto = $mapper->map($john, EmployeeDto::class);
 
-// $updateTodo:
-// - $id: 10
-// - $title: "I'm a title!"
-$updateTodo = $mapper->map($todo, UpdateToDoViewModel::class);
+echo $dto->firstName; // => "John"
+echo $dto->lastName; // => "Doe"
 ```
 
 ### Custom callbacks
@@ -86,12 +93,19 @@ name, you can provide a custom callback:
 ```php
 <?php
 
+class EmployeeDto
+{
+    public $fullName;
+}
+
 $config = new \AutoMapperPlus\Configuration\AutoMapperConfig();
-$config->registerMapping(ToDo::class, UpdateToDoViewModel::class)
-    ->forMember('title', function (ToDo $source) {
+$config->registerMapping(Employee::class, EmployeeDto::class)
+    ->forMember('fullName', function (Employee $source) {
         // You can put some custom conversions here.
-        return ucfirst($source->getTitle());
+        return $source->getFirstName() . ' ' . $source->getLastName();
     });
+
+echo $mapper->map($john, EmployeeDto::class)->fullName; // => "John Doe"
 ```
 
 ### Instantiating using the static constructor
@@ -104,7 +118,7 @@ method. This allows you to configure the mapper using a callback.
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 
 $mapper = AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
-    $config->registerMapping(ToDo::class, UpdateToDoViewModel::class);
+    $config->registerMapping(Employee::class, EmployeeDto::class);
 });
 ```
 
@@ -116,9 +130,9 @@ possible to map to an existing object using the `mapToObject` method.
 ```php
 <?php
 
-$todo = new ToDo();
-$viewModel = new UpdateTodoViewModel();
-$mapper->mapToObject($todo, $viewModel);
+$employee = new Employee();
+$viewModel = new EmployeeDto();
+$mapper->mapToObject($employee, $viewModel);
 ```
 
 ## Roadmap
