@@ -106,8 +106,8 @@ $config->registerMapping(ToDo::class, UpdateToDoViewModel::class)
 ```
 
 ## Roadmap
-- [ ] Add tests
-- [ ] Add PHP7.1 dependency to composer
+- [x] Add tests
+- [x] Add PHP7.1 dependency to composer
 - [ ] Add comments (more than just PHPDoc blocks)
 - [ ] Add the ability to change the default conversion (e.g. first do camelcase converting instead of using the exact same name)
 - [ ] Add the 'Operation' type, @see Mapping.php
@@ -117,3 +117,4 @@ $config->registerMapping(ToDo::class, UpdateToDoViewModel::class)
 - [ ] Create a Symfony bundle
 - [ ] Create a sample app demonstrating the automapper
 - [ ] Check if Reflectionclass PrivateAccessore implementation is faster (https://gist.github.com/samsamm777/7230159)
+- [ ] Improve tests
