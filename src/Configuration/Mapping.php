@@ -91,7 +91,7 @@ class Mapping implements MappingInterface
     /**
      * @inheritdoc
      */
-    public function getMappingCallbackFor(string $propertyName): ?callable
+    public function getMappingCallbackFor(string $propertyName): callable
     {
         return $this->mappingOperations[$propertyName] ?? $this->defaultOperation;
     }

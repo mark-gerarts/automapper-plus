@@ -37,9 +37,9 @@ interface MappingInterface
 
     /**
      * @param string $propertyName
-     * @return callable|null
+     * @return callable
      */
-    public function getMappingCallbackFor(string $propertyName): ?callable;
+    public function getMappingCallbackFor(string $propertyName): callable;
 
     /**
      * Overrides the default configuration for this specific mapping.
