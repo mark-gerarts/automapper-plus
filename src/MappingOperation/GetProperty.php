@@ -8,6 +8,9 @@ use AutoMapperPlus\PrivateAccessor\PrivateAccessor;
 /**
  * Class GetProperty
  *
+ * An operation that simply extracts the value of a property of the source
+ * object. A custom name resolver can be provided (@todo).
+ *
  * @package AutoMapperPlus\MappingOperation
  */
 class GetProperty implements MappingOperationInterface

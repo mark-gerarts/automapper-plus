@@ -13,7 +13,7 @@ use function Functional\first;
 class AutoMapperConfig implements AutoMapperConfigInterface
 {
     /**
-     * @var Mapping[]
+     * @var MappingInterface[]
      */
     private $mappings = [];
 

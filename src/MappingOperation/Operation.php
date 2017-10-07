@@ -5,6 +5,9 @@ namespace AutoMapperPlus\MappingOperation;
 /**
  * Class Operation
  *
+ * This is merely a helper class to make life easier, grouping all available
+ * operations.
+ *
  * @package AutoMapperPlus\MappingOperation
  */
 class Operation

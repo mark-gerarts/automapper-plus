@@ -15,16 +15,18 @@ class Mapping implements MappingInterface
 {
     /**
      * @var string
+     *   The source class.
      */
     private $from;
 
     /**
      * @var string
+     *   The destination class.
      */
     private $to;
 
     /**
-     * @var array
+     * @var MappingOperationInterface[]
      */
     private $mappingOperations = [];
 

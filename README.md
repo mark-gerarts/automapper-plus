@@ -138,7 +138,7 @@ $mapper->mapToObject($employee, $viewModel);
 ## Roadmap
 - [x] Add tests
 - [x] Add PHP7.1 dependency to composer
-- [ ] Add comments (more than just PHPDoc blocks)
+- [x] Add comments (more than just PHPDoc blocks)
 - [ ] Add the ability to change the name resolver
 - [x] Add the 'Operation' type, @see Mapping.php
 - [x] Allow transferring data to an existing object

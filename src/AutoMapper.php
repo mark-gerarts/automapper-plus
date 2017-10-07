@@ -57,6 +57,8 @@ class AutoMapper implements AutoMapperInterface
     {
         $fromReflectionClass = new \ReflectionClass($from);
         $toReflectionClass = new \ReflectionClass($to);
+
+        // First, check if a mapping exists for the given objects.
         $configExists = $this->autoMapperConfig->hasMappingFor(
             $fromReflectionClass->getName(),
             $toReflectionClass->getName()

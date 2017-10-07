@@ -7,6 +7,8 @@ use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 /**
  * Class MapFrom
  *
+ * Retrieves the value for the destination property from a custom callback.
+ *
  * @package AutoMapperPlus\MappingOperation
  */
 class MapFrom implements MappingOperationInterface
