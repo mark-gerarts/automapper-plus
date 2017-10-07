@@ -2,6 +2,8 @@
 
 namespace AutoMapperPlus\MappingOperation;
 
+use AutoMapperPlus\NameResolver\NameResolverInterface;
+
 /**
  * Class Operation
  *
@@ -30,10 +32,11 @@ class Operation
     }
 
     /**
+     * @param NameResolverInterface $nameResolver
      * @return callable
      */
-    public static function getProperty(): callable
+    public static function getProperty(NameResolverInterface $nameResolver): callable
     {
-        return new GetProperty();
+        return new GetProperty($nameResolver);
     }
 }

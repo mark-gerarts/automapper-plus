@@ -3,6 +3,8 @@
 namespace AutoMapperPlus\Configuration;
 
 use AutoMapperPlus\MappingOperation\Operation;
+use AutoMapperPlus\NameResolver\IdentityNameResolver;
+use AutoMapperPlus\NameResolver\NameResolverInterface;
 use function Functional\first;
 
 /**
@@ -23,13 +25,24 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     private $defaultOperation;
 
     /**
+     * @var NameResolverInterface
+     */
+    private $defaultNameResolver;
+
+    /**
      * AutoMapperConfig constructor.
      *
-     * @param callable $defaultOperation
+     * @param NameResolverInterface|null $defaultNameResolver
+     * @param callable|null $defaultOperation
      */
-    function __construct(callable $defaultOperation = null)
+    function __construct
+    (
+        NameResolverInterface $defaultNameResolver = null,
+        callable $defaultOperation = null
+    )
     {
-        $this->defaultOperation = $defaultOperation ?: Operation::getProperty();
+        $this->defaultNameResolver = $defaultNameResolver ?: new IdentityNameResolver();
+        $this->defaultOperation = $defaultOperation ?: Operation::getProperty($this->defaultNameResolver);
     }
 
     /**
