@@ -40,4 +40,12 @@ interface MappingInterface
      * @return callable|null
      */
     public function getMappingCallbackFor(string $propertyName): ?callable;
+
+    /**
+     * Overrides the default configuration for this specific mapping.
+     *
+     * @param callable $operation
+     * @return MappingInterface
+     */
+    public function setDefaultOperation(callable $operation): MappingInterface;
 }

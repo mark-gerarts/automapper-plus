@@ -23,4 +23,13 @@ class MappingTest extends TestCase
 
         $this->assertEquals(Operation::mapFrom($callable), $mapping->getMappingCallbackFor('name'));
     }
+
+    public function testItCanOverrideTheDefaultOperation()
+    {
+        $mapping = new Mapping(Source::class, Destination::class, Operation::getProperty(new IdentityNameResolver()));
+        $newDefault = Operation::ignore();
+        $mapping->setDefaultOperation($newDefault);
+
+        $this->assertEquals($newDefault, $mapping->getMappingCallbackFor('name'));
+    }
 }

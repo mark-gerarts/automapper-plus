@@ -95,4 +95,14 @@ class Mapping implements MappingInterface
     {
         return $this->mappingOperations[$propertyName] ?? $this->defaultOperation;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function setDefaultOperation(callable $defaultOperation): MappingInterface
+    {
+        $this->defaultOperation = $defaultOperation;
+
+        return $this;
+    }
 }
