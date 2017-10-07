@@ -2,6 +2,9 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\MappingOperation\MappingOperationInterface;
+use AutoMapperPlus\MappingOperation\Operation;
+
 /**
  * Class Mapping
  *
@@ -22,18 +25,25 @@ class Mapping implements MappingInterface
     /**
      * @var array
      */
-    private $mappingCallbacks = [];
+    private $mappingOperations = [];
+
+    /**
+     * @var callable
+     */
+    private $defaultOperation;
 
     /**
      * Mapping constructor.
      *
      * @param string $from
      * @param string $to
+     * @param callable $defaultOperation
      */
-    public function __construct(string $from, string $to)
+    public function __construct(string $from, string $to, callable $defaultOperation)
     {
         $this->from = $from;
         $this->to = $to;
+        $this->defaultOperation = $defaultOperation;
     }
 
     /**
@@ -61,7 +71,11 @@ class Mapping implements MappingInterface
         callable $mapCallback
     ): MappingInterface
     {
-        $this->mappingCallbacks[$propertyName] = $mapCallback;
+        // If it's just a regular callback, wrap it in an operation.
+        if (!$mapCallback instanceof MappingOperationInterface) {
+            $mapCallback = Operation::mapFrom($mapCallback);
+        }
+        $this->mappingOperations[$propertyName] = $mapCallback;
 
         return $this;
     }
@@ -71,10 +85,6 @@ class Mapping implements MappingInterface
      */
     public function getMappingCallbackFor(string $propertyName): ?callable
     {
-        // @todo:
-        // Don't work with callbacks, but with an 'Operation' class. You could,
-        // for example haven an Operation::ignore(), an
-        // Operation::mapFrom(<callback>), or an Operation::getPrivate(<name>).
-        return $this->mappingCallbacks[$propertyName] ?? null;
+        return $this->mappingOperations[$propertyName] ?? $this->defaultOperation;
     }
 }

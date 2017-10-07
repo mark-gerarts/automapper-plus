@@ -16,7 +16,7 @@ interface PrivateAccessorInterface
      * @param string $attribute
      * @return mixed
      */
-    public function getPrivate($object, string $attribute);
+    public static function getPrivate($object, string $attribute);
 
     /**
      * Sets the value of an object's private property.
@@ -25,5 +25,5 @@ interface PrivateAccessorInterface
      * @param string $attribute
      * @param $value
      */
-    public function setPrivate($object, string $attribute, $value): void;
+    public static function setPrivate($object, string $attribute, $value): void;
 }

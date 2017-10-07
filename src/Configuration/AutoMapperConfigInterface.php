@@ -14,19 +14,19 @@ interface AutoMapperConfigInterface
      * @param string $to
      * @return bool
      */
-    public function hasConfigFor(string $from, string $to): bool;
+    public function hasMappingFor(string $from, string $to): bool;
 
     /**
      * @param string $from
      * @param string $to
      * @return MappingInterface|null
      */
-    public function getConfigFor(string $from, string $to): ?MappingInterface;
+    public function getMappingFor(string $from, string $to): ?MappingInterface;
 
     /**
      * @param string $from
      * @param string $to
-     * @return void
+     * @return MappingInterface
      */
-    public function registerMapping(string $from, string $to): void;
+    public function registerMapping(string $from, string $to): MappingInterface;
 }

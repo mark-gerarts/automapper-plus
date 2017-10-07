@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\PrivateAccessor;
 
+use PHPUnit\Framework\TestCase;
 use Test\Models\SimpleProperties\HasPrivateProperties;
 
 /**
@@ -9,23 +10,21 @@ use Test\Models\SimpleProperties\HasPrivateProperties;
  *
  * @package AutoMapperPlus\PrivateAccessor
  */
-class PrivateAccessorTest extends \PHPUnit\Framework\TestCase
+class PrivateAccessorTest extends TestCase
 {
     public function testItCanAccessAPrivateProperty()
     {
         $object = new HasPrivateProperties('Username', 'hunter2');
-        $privateAccessor = new PrivateAccessor();
+        $password = PrivateAccessor::getPrivate($object, 'password');
 
-        $password = $privateAccessor->getPrivate($object, 'password');
         $this->assertEquals('hunter2', $password);
     }
 
     public function testItCanSetAPrivateProperty()
     {
         $object = new HasPrivateProperties('Username', 'hunter2');
-        $privateAccessor = new PrivateAccessor();
+        PrivateAccessor::setPrivate($object, 'password', 'changed');
 
-        $privateAccessor->setPrivate($object, 'password', 'changed');
         $this->assertEquals('changed', $object->getPassword());
     }
 }

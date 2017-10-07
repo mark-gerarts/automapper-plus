@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\MappingOperation\Operation;
 use function Functional\first;
 
 /**
@@ -14,22 +15,37 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     /**
      * @var Mapping[]
      */
-    private $configs = [];
+    private $mappings = [];
 
     /**
-     * @inheritdoc
+     * @var callable
      */
-    public function hasConfigFor(string $from, string $to): bool
+    private $defaultOperation;
+
+    /**
+     * AutoMapperConfig constructor.
+     *
+     * @param callable $defaultOperation
+     */
+    function __construct(callable $defaultOperation = null)
     {
-        return !empty($this->getConfigFor($from, $to));
+        $this->defaultOperation = $defaultOperation ?: Operation::getProperty();
     }
 
     /**
      * @inheritdoc
      */
-    public function getConfigFor(string $from, string $to): ?MappingInterface
+    public function hasMappingFor(string $from, string $to): bool
     {
-        return first($this->configs, function (MappingInterface $mapping) use ($from, $to){
+        return !empty($this->getMappingFor($from, $to));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMappingFor(string $from, string $to): ?MappingInterface
+    {
+        return first($this->mappings, function (MappingInterface $mapping) use ($from, $to) {
             return $mapping->getFrom() == $from && $mapping->getTo() == $to;
         });
     }
@@ -37,8 +53,11 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     /**
      * @inheritdoc
      */
-    public function registerMapping(string $from, string $to): void
+    public function registerMapping(string $from, string $to): MappingInterface
     {
-        $this->configs[] = new Mapping($from, $to);
+        $mapping = new Mapping($from, $to, $this->defaultOperation);
+        $this->mappings[] = $mapping;
+
+        return $mapping;
     }
 }

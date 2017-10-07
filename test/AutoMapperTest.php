@@ -4,6 +4,7 @@ namespace AutoMapperPlus;
 
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
+use PHPUnit\Framework\TestCase;
 use Test\Models\SimpleProperties\Destination;
 use Test\Models\SimpleProperties\Source;
 
@@ -12,7 +13,7 @@ use Test\Models\SimpleProperties\Source;
  *
  * @package AutoMapperPlus
  */
-class AutoMapperTest extends \PHPUnit\Framework\TestCase
+class AutoMapperTest extends TestCase
 {
     protected $source;
     protected $destination;
@@ -60,5 +61,18 @@ class AutoMapperTest extends \PHPUnit\Framework\TestCase
         $destination = $mapper->mapToObject($source, $destination);
 
         $this->assertEquals($source->name, $destination->name);
+    }
+
+    public function testItCanMapWithACallback()
+    {
+        $this->config->registerMapping(Source::class, Destination::class)
+            ->forMember('name', function () {
+                return 'NewName';
+            });
+        $mapper = new AutoMapper($this->config);
+        $source = new Source();
+        $destination = $mapper->map($source, Destination::class);
+
+        $this->assertEquals('NewName', $destination->name);
     }
 }

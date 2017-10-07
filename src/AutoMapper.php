@@ -4,9 +4,7 @@ namespace AutoMapperPlus;
 
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
-use AutoMapperPlus\Configuration\MappingInterface;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
-use AutoMapperPlus\PrivateAccessor\PrivateAccessor;
 
 /**
  * Class AutoMapper
@@ -33,25 +31,23 @@ class AutoMapper implements AutoMapperInterface
     /**
      * @inheritdoc
      */
+    public static function initialize(callable $configurator): AutoMapperInterface
+    {
+        $mapper = new static;
+        $configurator($mapper->autoMapperConfig);
+
+        return $mapper;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function map($from, string $to)
     {
-        $fromReflectionClass = new \ReflectionClass($from);
         $toReflectionClass = new \ReflectionClass($to);
-        $configExists = $this->autoMapperConfig->hasConfigFor($fromReflectionClass->getName(), $to);
-        if (!$configExists) {
-            throw UnregisteredMappingException::fromClasses(
-                $fromReflectionClass->getName(),
-                $to
-            );
-        }
+        $toObject = $toReflectionClass->newInstanceWithoutConstructor();
 
-        $mappingConfiguration = $this->autoMapperConfig->getConfigFor(
-            $fromReflectionClass->getName(),
-            $to
-        );
-        $targetObject = $toReflectionClass->newInstanceWithoutConstructor();
-
-        return $this->transferProperties($from, $targetObject, $mappingConfiguration);
+        return $this->mapToObject($from, $toObject);
     }
 
     /**
@@ -61,7 +57,7 @@ class AutoMapper implements AutoMapperInterface
     {
         $fromReflectionClass = new \ReflectionClass($from);
         $toReflectionClass = new \ReflectionClass($to);
-        $configExists = $this->autoMapperConfig->hasConfigFor(
+        $configExists = $this->autoMapperConfig->hasMappingFor(
             $fromReflectionClass->getName(),
             $toReflectionClass->getName()
         );
@@ -72,61 +68,21 @@ class AutoMapper implements AutoMapperInterface
             );
         }
 
-        $mappingConfiguration = $this->autoMapperConfig->getConfigFor(
+        $mapping = $this->autoMapperConfig->getMappingFor(
             $fromReflectionClass->getName(),
             $toReflectionClass->getName()
         );
 
-        return $this->transferProperties($from, $to, $mappingConfiguration);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function initialize(callable $configurator): AutoMapperInterface
-    {
-        $mapper = new static;
-        $configurator($mapper->autoMapperConfig);
-
-        return $mapper;
-    }
-
-    /**
-     * @param $sourceObject
-     * @param $targetObject
-     * @param MappingInterface $mapping
-     * @return mixed
-     */
-    private function transferProperties
-    (
-        $sourceObject,
-        $targetObject,
-        MappingInterface $mapping
-    )
-    {
-        $fromReflectionClass = new \ReflectionClass($sourceObject);
-        $toReflectionClass = new \ReflectionClass($targetObject);
-
         foreach ($toReflectionClass->getProperties() as $destinationProperty) {
-            // @todo:
-            // Delegate a lot of this logic onto the operation class.
-            $destinationPropertyName = $destinationProperty->getName();
-            $mappingCallback = $mapping->getMappingCallbackFor($destinationPropertyName);
-            if ($mappingCallback) {
-                $targetObject->{$destinationPropertyName} = $mappingCallback($sourceObject, $destinationPropertyName);
-                continue;
-            }
-
-            if ($fromReflectionClass->getProperty($destinationPropertyName)->isPublic()) {
-                $targetObject->{$destinationPropertyName} = $sourceObject->{$destinationPropertyName};
-                continue;
-            }
-
-            $privateAccessor = new PrivateAccessor();
-            $value = $privateAccessor->getPrivate($sourceObject, $destinationPropertyName);
-            $targetObject->{$destinationPropertyName} = $value;
+            $mappingOperation = $mapping->getMappingCallbackFor($destinationProperty->getName());
+            $mappingOperation(
+                $from,
+                $to,
+                $destinationProperty->getName(),
+                $this->autoMapperConfig
+            );
         }
 
-        return $targetObject;
+        return $to;
     }
 }

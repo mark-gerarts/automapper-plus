@@ -15,7 +15,7 @@ class PrivateAccessor implements PrivateAccessorInterface
     /**
      * @inheritdoc
      */
-    public function getPrivate($object, string $attribute)
+    public static function getPrivate($object, string $attribute)
     {
         $getter = function() use ($attribute) {
             return $this->$attribute;
@@ -28,7 +28,7 @@ class PrivateAccessor implements PrivateAccessorInterface
     /**
      * @inheritdoc
      */
-    public function setPrivate($object, string $attribute, $value): void
+    public static function setPrivate($object, string $attribute, $value): void
     {
         $setter = function($value) use ($attribute) {
             $this->$attribute = $value;
