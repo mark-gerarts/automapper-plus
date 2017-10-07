@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\Exception\InvalidPropertyException;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\MappingOperation\Operation;
 
@@ -71,6 +72,11 @@ class Mapping implements MappingInterface
         callable $mapCallback
     ): MappingInterface
     {
+        // Ensure the property exists on the target class before registering it.
+        if (!property_exists($this->getTo(), $propertyName)) {
+            throw InvalidPropertyException::fromNameAndClass($propertyName, $this->getTo());
+        }
+
         // If it's just a regular callback, wrap it in an operation.
         if (!$mapCallback instanceof MappingOperationInterface) {
             $mapCallback = Operation::mapFrom($mapCallback);

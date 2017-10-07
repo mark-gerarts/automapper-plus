@@ -139,12 +139,11 @@ $mapper->mapToObject($employee, $viewModel);
 - [x] Add tests
 - [x] Add PHP7.1 dependency to composer
 - [ ] Add comments (more than just PHPDoc blocks)
-- [ ] Add the ability to change the default conversion (e.g. first do camelcase converting instead of using the exact same name)
-- [ ] Add the 'Operation' type, @see Mapping.php
+- [ ] Add the ability to change the name resolver
+- [x] Add the 'Operation' type, @see Mapping.php
 - [x] Allow transferring data to an existing object
 - [ ] Copy as many usages from .net's automapper as possible
 - [ ] Provide a more detailed tutorial
 - [ ] Create a Symfony bundle
 - [ ] Create a sample app demonstrating the automapper
 - [ ] Check if Reflectionclass PrivateAccessor implementation is faster (https://gist.github.com/samsamm777/7230159)
-- [ ] Improve tests
