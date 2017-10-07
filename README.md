@@ -8,6 +8,7 @@ Transfers data from one object to another, allowing custom mapping operations.
 * [Usage](#usage)
     * [Basic example](#basic-example)
     * [Custom callbacks](#custom-callbacks)
+    * [Operations](#operations)
     * [Instantiating using the static constructor](#instantiating-using-the-static-constructor)
     * [Mapping to an existing object](#mapping-to-an-existing-object)
 * [Roadmap](#roadmap)
@@ -107,6 +108,29 @@ $config->registerMapping(Employee::class, EmployeeDto::class)
 
 echo $mapper->map($john, EmployeeDto::class)->fullName; // => "John Doe"
 ```
+
+The function passed will receive the following arguments:
+- The source object
+- The destination object
+- The target property name
+- The configuration object
+
+### Operations
+Behind the scenes, the callback in the previous examples is wrapped in an
+`Operation`. Some default operations have been provided. For example, the
+`Ignore` operation, which leaves the destination property alone:
+
+```php
+<?php
+
+use AutoMapperPlus\MappingOperation\Operation;
+
+$config->registerMapping(Employee::class, EmployeeDto::class)
+    ->forMember('fullName', Operation::ignore());
+```
+
+The available operations are `mapFrom`, `ignore` and `getProperty`. You can
+create your own by implementing the `MappingOperationInterface`.
 
 ### Instantiating using the static constructor
 An alternative way to initialize the mapper is using the `::initialize` static
