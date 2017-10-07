@@ -9,6 +9,7 @@ Transfers data from one object to another, allowing custom mapping operations.
     * [Basic example](#basic-example)
     * [Custom callbacks](#custom-callbacks)
     * [Operations](#operations)
+    * [Changing the defaults](#changing-the-defaults)
     * [Instantiating using the static constructor](#instantiating-using-the-static-constructor)
     * [Mapping to an existing object](#mapping-to-an-existing-object)
 * [Roadmap](#roadmap)
@@ -25,7 +26,7 @@ commands, response classes, etc.
 
 Automapper+ helps you by automatically transferring properties from one object 
 to another, **including private ones**. By default, properties with the same name
-will be converted. This can be overriden as you like.
+will be transferred. This can be overridden as you like.
 
 ## Usage
 
@@ -89,7 +90,8 @@ echo $dto->lastName; // => "Doe"
 
 ### Custom callbacks
 If you need something more complex than transferring properties with the same
-name, you can provide a custom callback:
+name, you can provide a custom callback. This can be done on a per-property
+basis with the `forMember` method:
 
 ```php
 <?php
@@ -132,6 +134,20 @@ $config->registerMapping(Employee::class, EmployeeDto::class)
 The available operations are `mapFrom`, `ignore` and `getProperty`. You can
 create your own by implementing the `MappingOperationInterface`.
 
+### Changing the defaults
+By default, properties with the same name will be transferred. You can change
+this behaviour by passing it as the first argument to the `AutoMapperConfig`.
+Classes to convert snake_case to camelCase and vice versa have been provided.
+You can write your own by implementing the `NameResolverInterface`.
+
+```php
+<?php
+
+use AutoMapperPlus\NameResolver\SnakeCaseToCamelCaseResolver;
+
+$config = new AutoMapperConfig(new SnakeCaseToCamelCaseResolver());
+```
+
 ### Instantiating using the static constructor
 An alternative way to initialize the mapper is using the `::initialize` static
 method. This allows you to configure the mapper using a callback.
@@ -163,7 +179,8 @@ $mapper->mapToObject($employee, $viewModel);
 - [x] Add tests
 - [x] Add PHP7.1 dependency to composer
 - [x] Add comments (more than just PHPDoc blocks)
-- [ ] Add the ability to change the name resolver
+- [x] Add the ability to change the name resolver
+- [ ] Make `GetProperty` use the config's resolver if none provided
 - [x] Add the 'Operation' type, @see Mapping.php
 - [x] Allow transferring data to an existing object
 - [ ] Copy as many usages from .net's automapper as possible
