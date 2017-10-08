@@ -15,9 +15,11 @@ Transfers data from one object to another, allowing custom mapping operations.
 * [Roadmap](#roadmap)
 
 ## Installation
-This is an alpha release, missing a lot of functionality and bound to be 
-refactored. The package will be made available on Packagist once the initial
-roadmap is completed ([see below](#roadmap)).
+This library is available via composer:
+
+```bash
+$ composer require "mark-gerarts/auto-mapper-plus"
+```
 
 ## Why?
 When you need to transfer data from one object to another, you'll have to write 
