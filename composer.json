@@ -1,7 +1,7 @@
 {
     "name": "mark-gerarts/auto-mapper-plus",
     "description": "An AutoMapper for PHP",
-    "licence": "MIT",
+    "license": "MIT",
     "type": "library",
     "authors": [
         {
