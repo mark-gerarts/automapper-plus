@@ -75,4 +75,12 @@ class AutoMapperTest extends TestCase
 
         $this->assertEquals('NewName', $destination->name);
     }
+
+    public function testTheConfigurationCanBeRetrieved()
+    {
+        $config = new AutoMapperConfig();
+        $mapper = new AutoMapper($config);
+
+        $this->assertEquals($config, $mapper->getConfiguration());
+    }
 }

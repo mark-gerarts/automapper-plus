@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus;
 
+use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 
 /**
@@ -52,4 +53,11 @@ interface AutoMapperInterface
      * @return AutoMapperInterface
      */
     public static function initialize(callable $configurator): AutoMapperInterface;
+
+    /**
+     * Returns the configuration object for the mapper.
+     *
+     * @return AutoMapperConfigInterface
+     */
+    public function getConfiguration(): AutoMapperConfigInterface;
 }

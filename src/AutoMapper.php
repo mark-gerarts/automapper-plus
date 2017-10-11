@@ -87,4 +87,12 @@ class AutoMapper implements AutoMapperInterface
 
         return $to;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getConfiguration(): AutoMapperConfigInterface
+    {
+        return $this->autoMapperConfig;
+    }
 }
