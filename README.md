@@ -12,14 +12,17 @@ Transfers data from one object to another, allowing custom mapping operations.
     * [Changing the defaults](#changing-the-defaults)
     * [Instantiating using the static constructor](#instantiating-using-the-static-constructor)
     * [Mapping to an existing object](#mapping-to-an-existing-object)
+* [See also](#see-also)
 * [Roadmap](#roadmap)
 
 ## Installation
-This library is available via composer:
+This library is available on [packagist](https://packagist.org/packages/mark-gerarts/auto-mapper-plus):
 
 ```bash
 $ composer require "mark-gerarts/auto-mapper-plus"
 ```
+
+If you're using Symfony, check out the [AutoMapper+ bundle](https://github.com/mark-gerarts/automapper-plus-bundle).
 
 ## Why?
 When you need to transfer data from one object to another, you'll have to write 
@@ -176,6 +179,10 @@ $employee = new Employee();
 $viewModel = new EmployeeDto();
 $mapper->mapToObject($employee, $viewModel);
 ```
+
+## See also
+- [The Symfony bundle](https://github.com/mark-gerarts/automapper-plus-bundle)
+- [The Symfony demo app (WIP)](https://github.com/mark-gerarts/automapper-plus-demo-app)
 
 ## Roadmap
 - [x] Add tests
