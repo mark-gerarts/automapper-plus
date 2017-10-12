@@ -194,6 +194,6 @@ $mapper->mapToObject($employee, $viewModel);
 - [x] Allow transferring data to an existing object
 - [ ] Copy as many usages from .net's automapper as possible
 - [ ] Provide a more detailed tutorial
-- [ ] Create a Symfony bundle
+- [x] Create a Symfony bundle
 - [ ] Create a sample app demonstrating the automapper
 - [ ] Check if Reflectionclass PrivateAccessor implementation is faster (https://gist.github.com/samsamm777/7230159)
