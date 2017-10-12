@@ -3,6 +3,7 @@
     "description": "An AutoMapper for PHP",
     "license": "MIT",
     "type": "library",
+    "keywords": ["automapper", "converter", "object-to-object"],
     "authors": [
         {
             "name": "Mark Gerarts",
