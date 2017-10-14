@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\NameResolver\IdentityNameResolver;
 use AutoMapperPlus\NameResolver\NameResolverInterface;
@@ -85,6 +86,7 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         $mapping = new Mapping(
             $sourceClassName,
             $destinationClassName,
+            $this,
             $this->mergeWithDefaults($options)
         );
         $this->mappings[] = $mapping;
@@ -104,5 +106,13 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         ];
 
         return $mappingOptions + $defaults;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDefaultOperation(): MappingOperationInterface
+    {
+        return $this->defaultOperation;
     }
 }

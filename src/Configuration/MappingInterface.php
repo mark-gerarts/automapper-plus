@@ -46,4 +46,12 @@ interface MappingInterface
      * @return bool
      */
     public function shouldSkipConstructor(): bool;
+
+    /**
+     * Creates a new mapping in the reverse direction.
+     *
+     * @param $options
+     * @return MappingInterface
+     */
+    public function reverseMap(array $options = []): MappingInterface;
 }

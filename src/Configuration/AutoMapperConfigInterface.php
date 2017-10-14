@@ -2,6 +2,8 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\MappingOperation\MappingOperationInterface;
+
 /**
  * Interface AutoMapperConfigInterface
  *
@@ -55,4 +57,9 @@ interface AutoMapperConfigInterface
         string $destinationClassName,
         array $options = []
     ): MappingInterface;
+
+    /**
+     * @return MappingOperationInterface
+     */
+    public function getDefaultOperation(): MappingOperationInterface;
 }

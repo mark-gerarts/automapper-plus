@@ -9,6 +9,7 @@ Transfers data from one object to another, allowing custom mapping operations.
     * [Basic example](#basic-example)
     * [Custom callbacks](#custom-callbacks)
     * [Operations](#operations)
+    * [Reverse map](#reverse-map)
     * [Changing the defaults](#changing-the-defaults)
         * [Global defaults](#global-defaults)
         * [Mapping specific defaults](#mapping-specific-defaults)
@@ -140,6 +141,26 @@ $config->registerMapping(Employee::class, EmployeeDto::class)
 
 The available operations are `mapFrom`, `ignore` and `getProperty`. You can
 create your own by implementing the `MappingOperationInterface`.
+
+### Reverse map
+
+IT'll often happen that a mapping has to be defined in two ways. As a matter
+of convenience, `reverseMap` has been provided. This allows you to chain the
+method calls.
+
+There isn't any magic happening in the reverse mapping. It simple creates a
+default mapping in the other direction.
+
+```php
+<?php
+
+$config->registerMapping(Employee::class, EmployeeDto::class)
+    ->reverseMap()
+    ->forMember('id', Operation::ignore());
+
+$config->hasMappingFor(Employee::class, EmployeeDto::class); // => True
+$config->hasMappingFor(EmployeeDto::class, Employee::class); // => True
+```
 
 ### Changing the defaults
 

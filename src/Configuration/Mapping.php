@@ -5,7 +5,6 @@ namespace AutoMapperPlus\Configuration;
 use AutoMapperPlus\Exception\InvalidPropertyException;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\MappingOperation\Operation;
-use AutoMapperPlus\NameResolver\IdentityNameResolver;
 
 /**
  * Class Mapping
@@ -35,10 +34,16 @@ class Mapping implements MappingInterface
     private $options = [];
 
     /**
+     * @var AutoMapperConfigInterface
+     */
+    private $config;
+
+    /**
      * Mapping constructor.
      *
      * @param string $sourceClassName
      * @param string $destinationClassName
+     * @param AutoMapperConfigInterface $config
      * @param array $options
      *   Accepts the following keys:
      *   - defaultOperation
@@ -48,11 +53,13 @@ class Mapping implements MappingInterface
     (
         string $sourceClassName,
         string $destinationClassName,
+        AutoMapperConfigInterface $config,
         array $options
     )
     {
         $this->sourceClassName = $sourceClassName;
         $this->destinationClassName = $destinationClassName;
+        $this->config = $config;
         $this->options = $options;
     }
 
@@ -101,6 +108,18 @@ class Mapping implements MappingInterface
     /**
      * @inheritdoc
      */
+    public function reverseMap(array $options = []): MappingInterface
+    {
+        return $this->config->registerMapping(
+            $this->getDestinationClassName(),
+            $this->getSourceClassName(),
+            $options
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getMappingCallbackFor(string $propertyName): callable
     {
         return $this->mappingOperations[$propertyName] ?? $this->getDefaultOperation();
@@ -120,6 +139,6 @@ class Mapping implements MappingInterface
     protected function getDefaultOperation(): MappingOperationInterface
     {
         return $this->options['defaultOperation']
-            ?? Operation::getProperty(new IdentityNameResolver());
+            ?? $this->config->getDefaultOperation();
     }
 }

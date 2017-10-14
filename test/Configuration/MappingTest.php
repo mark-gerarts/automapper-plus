@@ -20,6 +20,7 @@ class MappingTest extends TestCase
         $mapping = new Mapping(
             Source::class,
             Destination::class,
+            new AutoMapperConfig(),
             ['defaultOperation' => Operation::getProperty(new IdentityNameResolver())]
         );
         $callable = function() {};
@@ -34,9 +35,19 @@ class MappingTest extends TestCase
         $mapping = new Mapping(
             Source::class,
             Destination::class,
+            new AutoMapperConfig(),
             ['defaultOperation' => $newDefault]
         );
 
         $this->assertEquals($newDefault, $mapping->getMappingCallbackFor('name'));
+    }
+
+    public function testItCanReverseMap()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(Source::class, Destination::class)
+            ->reverseMap();
+
+        $this->assertTrue($config->hasMappingFor(Destination::class, Source::class));
     }
 }
