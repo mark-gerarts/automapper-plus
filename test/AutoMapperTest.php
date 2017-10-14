@@ -83,4 +83,27 @@ class AutoMapperTest extends TestCase
 
         $this->assertEquals($config, $mapper->getConfiguration());
     }
+
+    public function testItCanMapMultiple()
+    {
+        $this->config->registerMapping(Source::class, Destination::class);
+        $mapper = new AutoMapper($this->config);
+
+        $sourceCollection = [
+            new Source('One'),
+            new Source('Two'),
+            new Source('Three')
+        ];
+
+        $destinationCollection = [
+            new Destination('One'),
+            new Destination('Two'),
+            new Destination('Three')
+        ];
+
+        $this->assertEquals(
+            $destinationCollection,
+            $mapper->mapMultiple($sourceCollection, Destination::class)
+        );
+    }
 }

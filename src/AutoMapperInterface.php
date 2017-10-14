@@ -27,6 +27,16 @@ interface AutoMapperInterface
     public function map($from, string $to);
 
     /**
+     * @param array|\Traversable $from
+     *   The source collection.
+     * @param string $to
+     *   The target class
+     * @return array
+     *   An array of mapped objects. Keys are not preserved.
+     */
+    public function mapMultiple($from, string $to): array;
+
+    /**
      * Maps properties of object $from to an existing object $to.
      *
      * @param $from

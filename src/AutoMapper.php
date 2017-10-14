@@ -5,6 +5,7 @@ namespace AutoMapperPlus;
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
+use function Functional\map;
 
 /**
  * Class AutoMapper
@@ -48,6 +49,16 @@ class AutoMapper implements AutoMapperInterface
         $toObject = $toReflectionClass->newInstanceWithoutConstructor();
 
         return $this->mapToObject($from, $toObject);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function mapMultiple($from, string $to): array
+    {
+        return map($from, function ($source) use ($to) {
+            return $this->map($source, $to);
+        });
     }
 
     /**
