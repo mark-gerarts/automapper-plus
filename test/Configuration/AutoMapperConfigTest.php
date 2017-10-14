@@ -19,8 +19,8 @@ class AutoMapperConfigTest extends TestCase
         $mapping = $config->registerMapping(Source::class, Destination::class);
 
         $this->assertInstanceOf(MappingInterface::class, $mapping);
-        $this->assertEquals(Source::class, $mapping->getFrom());
-        $this->assertEquals(Destination::class, $mapping->getTo());
+        $this->assertEquals(Source::class, $mapping->getSourceClassName());
+        $this->assertEquals(Destination::class, $mapping->getDestinationClassName());
         $this->assertTrue($config->hasMappingFor(Source::class, Destination::class));
         $this->assertEquals($mapping, $config->getMappingFor(Source::class, Destination::class));
     }

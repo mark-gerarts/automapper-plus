@@ -11,15 +11,13 @@ interface MappingInterface
 {
     /**
      * @return string
-     *   The source class.
      */
-    public function getFrom(): string;
+    public function getSourceClassName(): string;
 
     /**
      * @return string
-     *   The destination class.
      */
-    public function getTo(): string;
+    public function getDestinationClassName(): string;
 
     /**
      * Register an operation to be performed for the given property.

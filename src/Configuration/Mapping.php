@@ -16,15 +16,13 @@ class Mapping implements MappingInterface
 {
     /**
      * @var string
-     *   The source class.
      */
-    private $from;
+    private $sourceClassName;
 
     /**
      * @var string
-     *   The destination class.
      */
-    private $to;
+    private $destinationClassName;
 
     /**
      * @var MappingOperationInterface[]
@@ -39,8 +37,8 @@ class Mapping implements MappingInterface
     /**
      * Mapping constructor.
      *
-     * @param string $from
-     * @param string $to
+     * @param string $sourceClassName
+     * @param string $destinationClassName
      * @param array $options
      *   Accepts the following keys:
      *   - defaultOperation
@@ -48,30 +46,30 @@ class Mapping implements MappingInterface
      */
     public function __construct
     (
-        string $from,
-        string $to,
+        string $sourceClassName,
+        string $destinationClassName,
         array $options
     )
     {
-        $this->from = $from;
-        $this->to = $to;
+        $this->sourceClassName = $sourceClassName;
+        $this->destinationClassName = $destinationClassName;
         $this->options = $options;
     }
 
     /**
      * @inheritdoc
      */
-    public function getFrom(): string
+    public function getSourceClassName(): string
     {
-        return $this->from;
+        return $this->sourceClassName;
     }
 
     /**
      * @inheritdoc
      */
-    public function getTo(): string
+    public function getDestinationClassName(): string
     {
-        return $this->to;
+        return $this->destinationClassName;
     }
 
     /**
@@ -84,8 +82,11 @@ class Mapping implements MappingInterface
     ): MappingInterface
     {
         // Ensure the property exists on the target class before registering it.
-        if (!property_exists($this->getTo(), $propertyName)) {
-            throw InvalidPropertyException::fromNameAndClass($propertyName, $this->getTo());
+        if (!property_exists($this->getSourceClassName(), $propertyName)) {
+            throw InvalidPropertyException::fromNameAndClass(
+                $propertyName,
+                $this->getSourceClassName()
+            );
         }
 
         // If it's just a regular callback, wrap it in an operation.

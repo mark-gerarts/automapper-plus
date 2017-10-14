@@ -48,31 +48,45 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     /**
      * @inheritdoc
      */
-    public function hasMappingFor(string $from, string $to): bool
+    public function hasMappingFor(
+        string $sourceClassName,
+        string $destinationClassName
+    ): bool
     {
-        return !empty($this->getMappingFor($from, $to));
+        return !empty($this->getMappingFor($sourceClassName, $destinationClassName));
     }
 
     /**
      * @inheritdoc
      */
-    public function getMappingFor(string $from, string $to): ?MappingInterface
+    public function getMappingFor(
+        string $sourceClassName,
+        string $destinationClassName
+    ): ?MappingInterface
     {
-        return first($this->mappings, function (MappingInterface $mapping) use ($from, $to) {
-            return $mapping->getFrom() == $from && $mapping->getTo() == $to;
-        });
+        return first(
+            $this->mappings,
+            function (MappingInterface $mapping) use ($sourceClassName, $destinationClassName) {
+                return $mapping->getSourceClassName() == $sourceClassName
+                    && $mapping->getDestinationClassName() == $destinationClassName;
+            }
+        );
     }
 
     /**
      * @inheritdoc
      */
     public function registerMapping(
-        string $from,
-        string $to,
+        string $sourceClassName,
+        string $destinationClassName,
         array $options = []
     ): MappingInterface
     {
-        $mapping = new Mapping($from, $to, $this->mergeWithDefaults($options));
+        $mapping = new Mapping(
+            $sourceClassName,
+            $destinationClassName,
+            $this->mergeWithDefaults($options)
+        );
         $this->mappings[] = $mapping;
 
         return $mapping;

@@ -12,28 +12,34 @@ interface AutoMapperConfigInterface
     /**
      * Checks if a mapping exists between the given classes.
      *
-     * @param string $from
-     * @param string $to
+     * @param string $sourceClassName
+     * @param string $destinationClassName
      * @return bool
      */
-    public function hasMappingFor(string $from, string $to): bool;
+    public function hasMappingFor(
+        string $sourceClassName,
+        string $destinationClassName
+    ): bool;
 
     /**
      * Retrieves the mapping for the given classes.
      *
-     * @param string $from
-     * @param string $to
+     * @param string $sourceClassName
+     * @param string $destinationClassName
      * @return MappingInterface|null
      */
-    public function getMappingFor(string $from, string $to): ?MappingInterface;
+    public function getMappingFor(
+        string $sourceClassName,
+        string $destinationClassName
+    ): ?MappingInterface;
 
     /**
      * Register a mapping between two classes. Without any additional
      * configuration, this will perform the default operation for every
      * property.
      *
-     * @param string $from
-     * @param string $to
+     * @param string $sourceClassName
+     * @param string $destinationClassName
      * @param array $options
      *   Possible keys:
      *   - defaultOperation (MappingOperationInterface)
@@ -45,8 +51,8 @@ interface AutoMapperConfigInterface
      * @return MappingInterface
      */
     public function registerMapping(
-        string $from,
-        string $to,
+        string $sourceClassName,
+        string $destinationClassName,
         array $options = []
     ): MappingInterface;
 }
