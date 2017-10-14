@@ -9,6 +9,8 @@ use Test\Models\Post\CreatePostViewModel;
 use Test\Models\Post\Post;
 use Test\Models\SimpleProperties\Destination;
 use Test\Models\SimpleProperties\Source;
+use Test\Models\SpecialConstructor\Source as ConstructorSource;
+use Test\Models\SpecialConstructor\Destination as ConstructorDestination;
 
 /**
  * Class AutoMapperTest
@@ -111,7 +113,11 @@ class AutoMapperTest extends TestCase
 
     public function testItCanMapToAnObjectWithLessProperties()
     {
-        $this->config->registerMapping(CreatePostViewModel::class, Post::class);
+        $this->config->registerMapping(
+            CreatePostViewModel::class,
+            Post::class,
+            ['skipConstructor' => true]
+        );
         $mapper = new AutoMapper($this->config);
 
         $source = new CreatePostViewModel();
@@ -120,5 +126,21 @@ class AutoMapperTest extends TestCase
 
         $expected = new Post(null, 'Im a title', 'Im a body');
         $this->assertEquals($expected, $mapper->map($source, Post::class));
+    }
+
+    public function testItCanSkipTheConstructor()
+    {
+        $this->config->registerMapping(
+            ConstructorSource::class,
+            ConstructorDestination::class,
+            ['skipConstructor' => true]
+        );
+        $mapper = new AutoMapper($this->config);
+
+        $source = new ConstructorSource();
+        /** @var ConstructorDestination $result */
+        $result = $mapper->map($source, ConstructorDestination::class);
+
+        $this->assertFalse($result->constructorRan);
     }
 }

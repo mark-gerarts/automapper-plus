@@ -42,10 +42,10 @@ interface MappingInterface
     public function getMappingCallbackFor(string $propertyName): callable;
 
     /**
-     * Overrides the default configuration for this specific mapping.
+     * Whether or not the constructor will be skipped when a new object is
+     * instantiated within this mapping.
      *
-     * @param callable $operation
-     * @return MappingInterface
+     * @return bool
      */
-    public function setDefaultOperation(callable $operation): MappingInterface;
+    public function shouldSkipConstructor(): bool;
 }

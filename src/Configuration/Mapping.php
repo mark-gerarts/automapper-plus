@@ -5,6 +5,7 @@ namespace AutoMapperPlus\Configuration;
 use AutoMapperPlus\Exception\InvalidPropertyException;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\MappingOperation\Operation;
+use AutoMapperPlus\NameResolver\IdentityNameResolver;
 
 /**
  * Class Mapping
@@ -31,22 +32,30 @@ class Mapping implements MappingInterface
     private $mappingOperations = [];
 
     /**
-     * @var callable
+     * @var array
      */
-    private $defaultOperation;
+    private $options = [];
 
     /**
      * Mapping constructor.
      *
      * @param string $from
      * @param string $to
-     * @param callable $defaultOperation
+     * @param array $options
+     *   Accepts the following keys:
+     *   - defaultOperation
+     *   - skipConstructor
      */
-    public function __construct(string $from, string $to, callable $defaultOperation)
+    public function __construct
+    (
+        string $from,
+        string $to,
+        array $options
+    )
     {
         $this->from = $from;
         $this->to = $to;
-        $this->defaultOperation = $defaultOperation;
+        $this->options = $options;
     }
 
     /**
@@ -93,16 +102,23 @@ class Mapping implements MappingInterface
      */
     public function getMappingCallbackFor(string $propertyName): callable
     {
-        return $this->mappingOperations[$propertyName] ?? $this->defaultOperation;
+        return $this->mappingOperations[$propertyName] ?? $this->getDefaultOperation();
     }
 
     /**
      * @inheritdoc
      */
-    public function setDefaultOperation(callable $defaultOperation): MappingInterface
+    public function shouldSkipConstructor(): bool
     {
-        $this->defaultOperation = $defaultOperation;
+        return (bool) $this->options['skipConstructor'] ?? false;
+    }
 
-        return $this;
+    /**
+     * @return MappingOperationInterface
+     */
+    protected function getDefaultOperation(): MappingOperationInterface
+    {
+        return $this->options['defaultOperation']
+            ?? Operation::getProperty(new IdentityNameResolver());
     }
 }

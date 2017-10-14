@@ -66,11 +66,29 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     /**
      * @inheritdoc
      */
-    public function registerMapping(string $from, string $to): MappingInterface
+    public function registerMapping(
+        string $from,
+        string $to,
+        array $options = []
+    ): MappingInterface
     {
-        $mapping = new Mapping($from, $to, $this->defaultOperation);
+        $mapping = new Mapping($from, $to, $this->mergeWithDefaults($options));
         $this->mappings[] = $mapping;
 
         return $mapping;
+    }
+
+    /**
+     * @param array $mappingOptions
+     * @return array
+     */
+    protected function mergeWithDefaults(array $mappingOptions): array
+    {
+        $defaults = [
+            'skipConstructor' => false,
+            'defaultOperation' => $this->defaultOperation
+        ];
+
+        return $mappingOptions + $defaults;
     }
 }

@@ -45,8 +45,19 @@ class AutoMapper implements AutoMapperInterface
      */
     public function map($from, string $to)
     {
-        $toReflectionClass = new \ReflectionClass($to);
-        $toObject = $toReflectionClass->newInstanceWithoutConstructor();
+        $mapping = $this->autoMapperConfig->getMappingFor(
+            get_class($from),
+            $to
+        );
+
+        // Check if we need to skip the constructor.
+        if ($mapping->shouldSkipConstructor()) {
+            $toReflectionClass = new \ReflectionClass($to);
+            $toObject = $toReflectionClass->newInstanceWithoutConstructor();
+        }
+        else {
+            $toObject = new $to;
+        }
 
         return $this->mapToObject($from, $toObject);
     }

@@ -17,7 +17,11 @@ class MappingTest extends TestCase
 {
     public function testItCanAddAMappingCallback()
     {
-        $mapping = new Mapping(Source::class, Destination::class, Operation::getProperty(new IdentityNameResolver()));
+        $mapping = new Mapping(
+            Source::class,
+            Destination::class,
+            ['defaultOperation' => Operation::getProperty(new IdentityNameResolver())]
+        );
         $callable = function() {};
         $mapping->forMember('name', $callable);
 
@@ -26,9 +30,12 @@ class MappingTest extends TestCase
 
     public function testItCanOverrideTheDefaultOperation()
     {
-        $mapping = new Mapping(Source::class, Destination::class, Operation::getProperty(new IdentityNameResolver()));
         $newDefault = Operation::ignore();
-        $mapping->setDefaultOperation($newDefault);
+        $mapping = new Mapping(
+            Source::class,
+            Destination::class,
+            ['defaultOperation' => $newDefault]
+        );
 
         $this->assertEquals($newDefault, $mapping->getMappingCallbackFor('name'));
     }
