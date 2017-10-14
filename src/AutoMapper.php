@@ -45,10 +45,9 @@ class AutoMapper implements AutoMapperInterface
      */
     public function map($from, string $to)
     {
-        $mapping = $this->autoMapperConfig->getMappingFor(
-            get_class($from),
-            $to
-        );
+        $fromClass = get_class($from);
+        $mapping = $this->autoMapperConfig->getMappingFor($fromClass, $to);
+        $this->ensureConfigExists($fromClass, $to);
 
         // Check if we need to skip the constructor.
         if ($mapping->shouldSkipConstructor()) {
@@ -81,16 +80,10 @@ class AutoMapper implements AutoMapperInterface
         $toReflectionClass = new \ReflectionClass($to);
 
         // First, check if a mapping exists for the given objects.
-        $configExists = $this->autoMapperConfig->hasMappingFor(
+        $this->ensureConfigExists(
             $fromReflectionClass->getName(),
-            $toReflectionClass->getName()
-        );
-        if (!$configExists) {
-            throw UnregisteredMappingException::fromClasses(
-                $fromReflectionClass->getName(),
                 $toReflectionClass->getName()
-            );
-        }
+        );
 
         $mapping = $this->autoMapperConfig->getMappingFor(
             $fromReflectionClass->getName(),
@@ -116,5 +109,19 @@ class AutoMapper implements AutoMapperInterface
     public function getConfiguration(): AutoMapperConfigInterface
     {
         return $this->autoMapperConfig;
+    }
+
+    /**
+     * @param string $from
+     * @param string $to
+     * @return void
+     * @throws UnregisteredMappingException
+     */
+    protected function ensureConfigExists(string $from, string $to): void
+    {
+        $configExists = $this->autoMapperConfig->hasMappingFor($from, $to);
+        if (!$configExists) {
+            throw UnregisteredMappingException::fromClasses($from, $to);
+        }
     }
 }
