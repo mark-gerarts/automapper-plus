@@ -43,13 +43,25 @@ class GetProperty implements MappingOperationInterface
     ): void
     {
         $fromReflectionClass = new \ReflectionClass($from);
+        $toReflectionClass = new \ReflectionClass($to);
         $sourcePropertyName = $this->nameResolver->resolve($propertyName);
+        if (!$fromReflectionClass->hasProperty($sourcePropertyName)) {
+            // We could add a config option to throw an error here instead.
+            return;
+        }
+
+        // Get the source value.
         $sourceProperty = $fromReflectionClass->getProperty($sourcePropertyName);
-        if ($sourceProperty->isPublic()) {
-            $to->{$propertyName} = $from->{$sourcePropertyName};
+        $sourceValue = $sourceProperty->isPublic()
+            ? $from->{$sourcePropertyName}
+            : PrivateAccessor::getPrivate($from, $sourcePropertyName);
+
+        // Set the value on the destination object.
+        if ($toReflectionClass->getProperty($propertyName)->isPublic()) {
+            $to->{$propertyName} = $sourceValue;
         }
         else {
-            $to->{$propertyName} = PrivateAccessor::getPrivate($from, $sourcePropertyName);
+            PrivateAccessor::setPrivate($to, $propertyName, $sourceValue);
         }
     }
 

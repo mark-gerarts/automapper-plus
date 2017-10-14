@@ -5,6 +5,8 @@ namespace AutoMapperPlus;
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use PHPUnit\Framework\TestCase;
+use Test\Models\Post\CreatePostViewModel;
+use Test\Models\Post\Post;
 use Test\Models\SimpleProperties\Destination;
 use Test\Models\SimpleProperties\Source;
 
@@ -105,5 +107,18 @@ class AutoMapperTest extends TestCase
             $destinationCollection,
             $mapper->mapMultiple($sourceCollection, Destination::class)
         );
+    }
+
+    public function testItCanMapToAnObjectWithLessProperties()
+    {
+        $this->config->registerMapping(CreatePostViewModel::class, Post::class);
+        $mapper = new AutoMapper($this->config);
+
+        $source = new CreatePostViewModel();
+        $source->title = 'Im a title';
+        $source->body = 'Im a body';
+
+        $expected = new Post(null, 'Im a title', 'Im a body');
+        $this->assertEquals($expected, $mapper->map($source, Post::class));
     }
 }
