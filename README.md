@@ -10,6 +10,8 @@ Transfers data from one object to another, allowing custom mapping operations.
     * [Custom callbacks](#custom-callbacks)
     * [Operations](#operations)
     * [Changing the defaults](#changing-the-defaults)
+        * [Global defaults](#global-defaults)
+        * [Mapping specific defaults](#mapping-specific-defaults)
     * [Instantiating using the static constructor](#instantiating-using-the-static-constructor)
     * [Mapping to an existing object](#mapping-to-an-existing-object)
 * [See also](#see-also)
@@ -140,6 +142,8 @@ The available operations are `mapFrom`, `ignore` and `getProperty`. You can
 create your own by implementing the `MappingOperationInterface`.
 
 ### Changing the defaults
+
+#### Global defaults
 By default, properties with the same name will be transferred. You can change
 this behaviour by passing it as the first argument to the `AutoMapperConfig`.
 Classes to convert snake_case to camelCase and vice versa have been provided.
@@ -152,6 +156,26 @@ use AutoMapperPlus\NameResolver\SnakeCaseToCamelCaseResolver;
 
 $config = new AutoMapperConfig(new SnakeCaseToCamelCaseResolver());
 ```
+
+#### Mapping specific defaults
+Defaults can be overridden on a per-mapping basis. An `$options` array can be
+passed as the third argument of `registerMapping`.
+
+```php
+<?php
+
+$config->registerMapping(
+    Employee::class,
+    EmployeeDto::class,
+    ['defaultOperation' => Operation::ignore()]
+);
+```
+
+Available options are:
+- `defaultOperation` (MappingOperationInterface)<br>
+  The default mapping operation used for a property.
+- `skipConstructor` (bool)<br>
+  Whether or not to skip the constructor when instantiating a new object.
 
 ### Instantiating using the static constructor
 An alternative way to initialize the mapper is using the `::initialize` static
