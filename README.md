@@ -243,3 +243,8 @@ $mapper->mapToObject($employee, $viewModel);
 - [ ] Create a sample app demonstrating the automapper
 - [ ] Provide options to copy a mapping
 - [x] Check if Reflectionclass PrivateAccessor implementation is faster (https://gist.github.com/samsamm777/7230159)
+
+## Refactor roadmap
+- [ ] Configuration value object
+- [ ] Source/destination naming convention that will allow for reverseMap
+- [ ] Figure out an alternative for the Operation logic.

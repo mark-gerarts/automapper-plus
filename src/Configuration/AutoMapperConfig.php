@@ -115,4 +115,6 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     {
         return $this->defaultOperation;
     }
+
+    // setDefaults(callable $f)
 }
