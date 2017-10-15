@@ -2,7 +2,11 @@
 
 namespace AutoMapperPlus\Configuration;
 
-use AutoMapperPlus\NameResolver\NamingConvention\NamingConventionInterface;
+use AutoMapperPlus\MappingOperation\DefaultMappingOperation;
+use AutoMapperPlus\MappingOperation\MappingOperationInterface;
+use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
+use AutoMapperPlus\PropertyAccessor\PropertyAccessor;
+use AutoMapperPlus\PropertyAccessor\PropertyAccessorInterface;
 
 /**
  * Class Configuration
@@ -12,12 +16,12 @@ use AutoMapperPlus\NameResolver\NamingConvention\NamingConventionInterface;
 class Configuration
 {
     /**
-     * @var NamingConventionInterface
+     * @var NamingConventionInterface|null
      */
     private $sourceMemberNamingConvention;
 
     /**
-     * @var NamingConventionInterface
+     * @var NamingConventionInterface|null
      */
     private $destinationMemberNamingConvention;
 
@@ -25,4 +29,134 @@ class Configuration
      * @var bool
      */
     private $shouldSkipConstructor;
+
+    /**
+     * @var PropertyAccessorInterface
+     */
+    private $propertyAccessor;
+
+    /**
+     * @var MappingOperationInterface
+     */
+    private $defaultMappingOperation;
+
+    /**
+     * @return Configuration
+     */
+    public static function default(): Configuration
+    {
+        $config = new static();
+        $config->dontSkipConstructor();
+        $config->setPropertyAccessor(new PropertyAccessor());
+        $config->setDefaultMappingOperation(new DefaultMappingOperation());
+
+        return $config;
+    }
+
+    /**
+     * @return NamingConventionInterface|null
+     */
+    public function getSourceMemberNamingConvention(): ?NamingConventionInterface
+    {
+        return $this->sourceMemberNamingConvention;
+    }
+
+    /**
+     * @param NamingConventionInterface $sourceMemberNamingConvention
+     */
+    public function setSourceMemberNamingConvention
+    (
+        NamingConventionInterface $sourceMemberNamingConvention
+    )
+    {
+        $this->sourceMemberNamingConvention = $sourceMemberNamingConvention;
+    }
+
+    /**
+     * @return NamingConventionInterface|null
+     */
+    public function getDestinationMemberNamingConvention(): ?NamingConventionInterface
+    {
+        return $this->destinationMemberNamingConvention;
+    }
+
+    /**
+     * @param NamingConventionInterface $destinationMemberNamingConvention
+     */
+    public function setDestinationMemberNamingConvention
+    (
+        NamingConventionInterface $destinationMemberNamingConvention
+    )
+    {
+        $this->destinationMemberNamingConvention = $destinationMemberNamingConvention;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldSkipConstructor(): bool
+    {
+        return $this->shouldSkipConstructor;
+    }
+
+    public function skipConstructor()
+    {
+        $this->shouldSkipConstructor = true;
+    }
+
+    public function dontSkipConstructor()
+    {
+        $this->shouldSkipConstructor = false;
+    }
+
+    /**
+     * @return PropertyAccessorInterface
+     */
+    public function getPropertyAccessor(): PropertyAccessorInterface
+    {
+        return $this->propertyAccessor;
+    }
+
+    /**
+     * @param PropertyAccessorInterface $propertyAccessor
+     */
+    public function setPropertyAccessor(PropertyAccessorInterface $propertyAccessor)
+    {
+        $this->propertyAccessor = $propertyAccessor;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShouldSkipConstructor(): bool
+    {
+        return $this->shouldSkipConstructor;
+    }
+
+    /**
+     * @param bool $shouldSkipConstructor
+     */
+    public function setShouldSkipConstructor(bool $shouldSkipConstructor)
+    {
+        $this->shouldSkipConstructor = $shouldSkipConstructor;
+    }
+
+    /**
+     * @return MappingOperationInterface
+     */
+    public function getDefaultMappingOperation(): MappingOperationInterface
+    {
+        return $this->defaultMappingOperation;
+    }
+
+    /**
+     * @param MappingOperationInterface $defaultMappingOperation
+     */
+    public function setDefaultMappingOperation
+    (
+        MappingOperationInterface $defaultMappingOperation
+    )
+    {
+        $this->defaultMappingOperation = $defaultMappingOperation;
+    }
 }

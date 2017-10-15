@@ -2,7 +2,7 @@
 
 namespace AutoMapperPlus\MappingOperation;
 
-use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
+use AutoMapperPlus\Configuration\Configuration;
 
 /**
  * Interface MappingOperationInterface
@@ -12,15 +12,15 @@ use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 interface MappingOperationInterface
 {
     /**
-     * @param $from
-     * @param $to
      * @param string $propertyName
-     * @param AutoMapperConfigInterface $config
+     * @param $source
+     * @param $destination
+     * @return void
      */
-    public function __invoke(
-        $from,
-        $to,
-        string $propertyName,
-        AutoMapperConfigInterface $config
-    ): void;
+    public function mapProperty(string $propertyName, $source, $destination): void;
+
+    /**
+     * @param Configuration $config
+     */
+    public function setConfig(Configuration $config): void;
 }

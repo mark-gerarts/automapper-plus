@@ -1,11 +1,11 @@
 <?php
 
-namespace AutoMapperPlus\NameResolver\NamingConvention;
+namespace AutoMapperPlus\NameConverter\NamingConvention;
 
 /**
  * Class SnakeCaseNamingConvention
  *
- * @package AutoMapperPlus\NameResolver\NamingConvention
+ * @package AutoMapperPlus\NameConverter\NamingConvention
  */
 class SnakeCaseNamingConvention extends BaseNamingConvention
 {

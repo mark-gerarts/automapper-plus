@@ -1,13 +1,13 @@
 <?php
 
-namespace AutoMapperPlus\NameResolver\NamingConvention;
+namespace AutoMapperPlus\NameConverter\NamingConvention;
 
 use function Functional\map;
 
 /**
  * Class BaseNamingConvention
  *
- * @package AutoMapperPlus\NameResolver\NamingConvention
+ * @package AutoMapperPlus\NameConverter\NamingConvention
  */
 abstract class BaseNamingConvention implements NamingConventionInterface
 {

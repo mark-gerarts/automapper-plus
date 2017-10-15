@@ -1,15 +1,15 @@
 <?php
 
-namespace AutoMapperPlus\NameResolver\NamingConvention;
+namespace AutoMapperPlus\NameConverter\NamingConvention;
 
 use function Functional\map;
 
 /**
- * Class PascalCaseNamingConvention
+ * Class CamelCaseNamingConvention
  *
- * @package AutoMapperPlus\NameResolver\NamingConvention
+ * @package AutoMapperPlus\NameConverter\NamingConvention
  */
-class PascalCaseNamingConvention extends BaseNamingConvention
+class CamelCaseNamingConvention extends BaseNamingConvention
 {
     /**
      * @inheritdoc
@@ -30,6 +30,6 @@ class PascalCaseNamingConvention extends BaseNamingConvention
             return ucfirst($part);
         });
 
-        return implode('', $parts);
+        return lcfirst(implode('', $parts));
     }
 }

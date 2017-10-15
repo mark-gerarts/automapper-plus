@@ -42,24 +42,10 @@ interface AutoMapperConfigInterface
      *
      * @param string $sourceClassName
      * @param string $destinationClassName
-     * @param array $options
-     *   Possible keys:
-     *   - defaultOperation (MappingOperationInterface)
-     *       The default operation used for a property.
-     *   - skipConstructor (bool)
-     *       Whether or not to skip the constructor when instantiating a new
-     *       object.
-     *
      * @return MappingInterface
      */
     public function registerMapping(
         string $sourceClassName,
-        string $destinationClassName,
-        array $options = []
+        string $destinationClassName
     ): MappingInterface;
-
-    /**
-     * @return MappingOperationInterface
-     */
-    public function getDefaultOperation(): MappingOperationInterface;
 }

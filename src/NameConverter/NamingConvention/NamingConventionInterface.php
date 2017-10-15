@@ -1,11 +1,11 @@
 <?php
 
-namespace AutoMapperPlus\NameResolver\NamingConvention;
+namespace AutoMapperPlus\NameConverter\NamingConvention;
 
 /**
  * Interface NamingConventionInterface
  *
- * @package AutoMapperPlus\NameResolver\NamingConvention
+ * @package AutoMapperPlus\NameConverter\NamingConvention
  */
 interface NamingConventionInterface
 {

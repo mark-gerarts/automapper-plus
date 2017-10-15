@@ -1,13 +1,13 @@
 <?php
 
-namespace AutoMapperPlus\NameResolver\NamingConvention;
+namespace AutoMapperPlus\NameConverter\NamingConvention;
 
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class PascalCaseNamingConventionTest
  *
- * @package AutoMapperPlus\NameResolver\NamingConvention
+ * @package AutoMapperPlus\NameConverter\NamingConvention
  * @group namingConventions
  */
 class PascalCaseNamingConventionTest extends TestCase
