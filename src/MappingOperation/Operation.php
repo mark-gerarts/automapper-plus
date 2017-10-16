@@ -4,6 +4,7 @@ namespace AutoMapperPlus\MappingOperation;
 
 use AutoMapperPlus\MappingOperation\Implementations\Ignore;
 use AutoMapperPlus\MappingOperation\Implementations\MapFrom;
+use AutoMapperPlus\MappingOperation\Implementations\MapTo;
 
 /**
  * Class Operation
@@ -16,19 +17,34 @@ use AutoMapperPlus\MappingOperation\Implementations\MapFrom;
 class Operation
 {
     /**
+     * Set a property's value from a callback.
+     *
      * @param callable $valueCallback
-     * @return MappingOperationInterface
+     * @return MapFrom
      */
-    public static function mapFrom(callable $valueCallback): MappingOperationInterface
+    public static function mapFrom(callable $valueCallback): MapFrom
     {
         return new MapFrom($valueCallback);
     }
 
     /**
-     * @return MappingOperationInterface
+     * Ignore a property.
+     *
+     * @return Ignore
      */
-    public static function ignore(): MappingOperationInterface
+    public static function ignore(): Ignore
     {
         return new Ignore();
+    }
+
+    /**
+     * Map a property to a class.
+     *
+     * @param string $destinationClass
+     * @return MapTo
+     */
+    public static function mapTo(string $destinationClass): MapTo
+    {
+        return new MapTo($destinationClass);
     }
 }

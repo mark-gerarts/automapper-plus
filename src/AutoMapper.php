@@ -5,6 +5,7 @@ namespace AutoMapperPlus;
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
+use AutoMapperPlus\MappingOperation\Implementations\MapTo;
 use function Functional\map;
 
 /**
@@ -92,6 +93,13 @@ class AutoMapper implements AutoMapperInterface
 
         foreach ($destinationReflectionClass->getProperties() as $destinationProperty) {
             $mappingOperation = $mapping->getMappingOperationFor($destinationProperty->getName());
+
+            // @todo: find another solution to this hacky implementation of
+            // recursive mapping.
+            if ($mappingOperation instanceof MapTo) {
+                $mappingOperation->setMapper($this);
+            }
+
             $mappingOperation->mapProperty(
                 $destinationProperty->getName(),
                 $source,

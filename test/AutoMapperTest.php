@@ -4,8 +4,12 @@ namespace AutoMapperPlus;
 
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
-use AutoMapperPlus\Configuration\Options;
+use AutoMapperPlus\MappingOperation\Operation;
 use PHPUnit\Framework\TestCase;
+use Test\Models\Nested\ChildClass;
+use Test\Models\Nested\ChildClassDto;
+use Test\Models\Nested\ParentClass;
+use Test\Models\Nested\ParentClassDto;
 use Test\Models\Post\CreatePostViewModel;
 use Test\Models\Post\Post;
 use Test\Models\SimpleProperties\Destination;
@@ -141,5 +145,23 @@ class AutoMapperTest extends TestCase
         $result = $mapper->map($source, ConstructorDestination::class);
 
         $this->assertFalse($result->constructorRan);
+    }
+
+    public function testItCanMapNestedProperties()
+    {
+        $this->config->registerMapping(ChildClass::class, ChildClassDto::class);
+        $this->config->registerMapping(ParentClass::class, ParentClassDto::class)
+            ->forMember('child', Operation::mapTo(ChildClassDto::class));
+        $mapper = new AutoMapper($this->config);
+
+        $parent = new ParentClass();
+        $child = new ChildClass();
+        $child->name = 'ChildName';
+        $parent->child = $child;
+
+        $result = $mapper->map($parent, ParentClassDto::class);
+
+        $this->assertInstanceOf(ChildClassDto::class, $result->child);
+        $this->assertEquals('ChildName', $result->child->name);
     }
 }
