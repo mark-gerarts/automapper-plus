@@ -122,8 +122,7 @@ class Mapping implements MappingInterface
      */
     public function getMappingOperationFor(string $propertyName): MappingOperationInterface
     {
-        return $this->mappingOperations[$propertyName]
-            ?? $this->options->getDefaultMappingOperation();
+        return $this->mappingOperations[$propertyName] ?? $this->getDefaultMappingOperation();
     }
 
     /**
@@ -143,5 +142,13 @@ class Mapping implements MappingInterface
     public function getOptions(): Options
     {
         return $this->options;
+    }
+
+    protected function getDefaultMappingOperation(): MappingOperationInterface
+    {
+        $operation = $this->options->getDefaultMappingOperation();
+        $operation->setOptions($this->options);
+
+        return $operation;
     }
 }

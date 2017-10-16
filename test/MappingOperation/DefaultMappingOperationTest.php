@@ -23,7 +23,7 @@ class DefaultMappingOperationTest extends TestCase
     public function setUp()
     {
         $this->operation = new DefaultMappingOperation();
-        $this->operation->setConfig(Options::default());
+        $this->operation->setOptions(Options::default());
     }
 
     public function testItMapsAProperty()

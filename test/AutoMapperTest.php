@@ -4,6 +4,7 @@ namespace AutoMapperPlus;
 
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
+use AutoMapperPlus\Configuration\Options;
 use PHPUnit\Framework\TestCase;
 use Test\Models\Post\CreatePostViewModel;
 use Test\Models\Post\Post;
@@ -48,7 +49,7 @@ class AutoMapperTest extends TestCase
         $mapper = new AutoMapper($this->config);
         $source = new Source();
         $source->name = 'Hello';
-        /** @var Destination $dest */
+        /** @var Destination $destination */
         $destination = $mapper->map($source, Destination::class);
 
         $this->assertInstanceOf(Destination::class, $destination);
@@ -115,8 +116,7 @@ class AutoMapperTest extends TestCase
     {
         $this->config->registerMapping(
             CreatePostViewModel::class,
-            Post::class,
-            ['skipConstructor' => true]
+            Post::class
         );
         $mapper = new AutoMapper($this->config);
 
@@ -132,8 +132,7 @@ class AutoMapperTest extends TestCase
     {
         $this->config->registerMapping(
             ConstructorSource::class,
-            ConstructorDestination::class,
-            ['skipConstructor' => true]
+            ConstructorDestination::class
         );
         $mapper = new AutoMapper($this->config);
 

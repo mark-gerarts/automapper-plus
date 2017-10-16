@@ -22,6 +22,10 @@ class DefaultMappingOperation implements MappingOperationInterface
      */
     public function mapProperty(string $propertyName, $source, $destination): void
     {
+        if (!$this->canMapProperty($propertyName, $source)) {
+            // Alternatively throw an error here.
+            return;
+        }
         $sourceValue = $this->getSourceValue($source, $propertyName);
         $this->setDestinationValue($destination, $propertyName, $sourceValue);
     }
@@ -32,6 +36,20 @@ class DefaultMappingOperation implements MappingOperationInterface
     public function setOptions(Options $options): void
     {
         $this->options = $options;
+    }
+
+    /**
+     * @param string $propertyName
+     * @param $source
+     * @return bool
+     */
+    protected function canMapProperty(string $propertyName, $source): bool
+    {
+
+        $sourceReflectionClass = new \ReflectionClass($source);
+
+        // @todo: convert name if needed.
+        return $sourceReflectionClass->hasProperty($propertyName);
     }
 
     /**

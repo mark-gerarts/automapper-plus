@@ -46,7 +46,7 @@ class Options
     public static function default(): Options
     {
         $config = new static();
-        $config->dontSkipConstructor();
+        $config->skipConstructor();
         $config->setPropertyAccessor(new PropertyAccessor());
         $config->setDefaultMappingOperation(new DefaultMappingOperation());
 
