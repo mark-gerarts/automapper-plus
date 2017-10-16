@@ -35,6 +35,8 @@ class PropertyAccessor implements PropertyAccessorInterface
     }
 
     /**
+     * Adapted from https://gist.github.com/githubjeka/153e5a0f6d15cf20512e.
+     *
      * @param $object
      * @param string $propertyName
      * @return mixed
