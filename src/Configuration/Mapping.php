@@ -136,4 +136,12 @@ class Mapping implements MappingInterface
 
         return $this;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getOptions(): Options
+    {
+        return $this->options;
+    }
 }

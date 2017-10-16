@@ -56,4 +56,9 @@ interface MappingInterface
      * @return MappingInterface
      */
     public function setDefaults(callable $configurator): MappingInterface;
+
+    /**
+     * @return Options
+     */
+    public function getOptions(): Options;
 }

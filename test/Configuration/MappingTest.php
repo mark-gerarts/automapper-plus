@@ -3,6 +3,7 @@
 namespace AutoMapperPlus\Configuration;
 
 use AutoMapperPlus\MappingOperation\Operation;
+use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use AutoMapperPlus\NameResolver\IdentityNameResolver;
 use PHPUnit\Framework\TestCase;
 use Test\Models\SimpleProperties\Destination;
@@ -50,5 +51,28 @@ class MappingTest extends TestCase
         $config->registerMapping(Source::class, Destination::class)->reverseMap();
 
         $this->assertTrue($config->hasMappingFor(Destination::class, Source::class));
+    }
+
+    public function testTheOptionsCanBeOverridden()
+    {
+        $config = new AutoMapperConfig();
+        $initialOptions = $config->getOptions();
+
+        $mapping = new Mapping(
+            Source::class,
+            Destination::class,
+            $config
+        );
+
+        $mapping->setDefaults(function (Options $options) {
+            $options->setDestinationMemberNamingConvention(new SnakeCaseNamingConvention());
+        });
+
+        $this->assertEquals(
+            $mapping->getOptions()->getDestinationMemberNamingConvention(),
+            new SnakeCaseNamingConvention()
+        );
+        // Ensure the parent options aren't changed.
+        $this->assertEquals($initialOptions, $config->getOptions());
     }
 }
