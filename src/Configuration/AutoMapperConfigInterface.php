@@ -2,8 +2,6 @@
 
 namespace AutoMapperPlus\Configuration;
 
-use AutoMapperPlus\MappingOperation\MappingOperationInterface;
-
 /**
  * Interface AutoMapperConfigInterface
  *

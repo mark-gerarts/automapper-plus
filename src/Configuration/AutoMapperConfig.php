@@ -29,10 +29,10 @@ class AutoMapperConfig implements AutoMapperConfigInterface
      */
     function __construct(callable $configurator = null)
     {
-        $defaultConfig = Options::default();
+        $defaultOptions = Options::default();
         $this->options = $configurator
-            ? $configurator($defaultConfig)
-            : $defaultConfig;
+            ? $configurator($defaultOptions)
+            : $defaultOptions;
     }
 
     /**
@@ -82,14 +82,6 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         $this->mappings[] = $mapping;
 
         return $mapping;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getDefaultOperation(): MappingOperationInterface
-    {
-        return $this->defaultOperation;
     }
 
     /**
