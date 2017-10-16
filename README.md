@@ -75,7 +75,7 @@ class EmployeeDto
 }
 ```
 
-The following snippet provides an quick overview how the mapper can be 
+The following snippet provides a quick overview on how the mapper can be 
 configured and used.
 
 ```php
@@ -155,7 +155,7 @@ $mapper->mapMultiple($employees, EmployeeDto::class);
 
 ### Registering mappings
 Mappings are defined using the `AutoMapperConfig`'s `registerMapping()` method.
-Every mapping you use has to be defined to be available to the AutoMapper.
+Every mapping has to be explicitly defined before you can use it.
 
 A mapping is defined by providing the source class and the destination class.
 The most basic definition would be as follows:
@@ -195,10 +195,10 @@ The following operations are provided:
 
 | Name  | Explanation |
 | ------------- | ------------- |
-| MapFrom | Maps the property from the value returned from the provided callback |
-| Ignore | Ignores the property |
-| MapTo | Maps the property to another class. Allows for nested mappings |
-| DefaultMappingOperation | Simply transfers the property |
+| MapFrom | Maps the property from the value returned from the provided callback. |
+| Ignore | Ignores the property. |
+| MapTo | Maps the property to another class. Allows for nested mappings. |
+| DefaultMappingOperation | Simply transfers the property, taking into account the provided naming conventions (if there are any). |
 
 You can use them with the same `forMember()` method. The `Operation` class can
 be used for clarity.
@@ -220,8 +220,9 @@ $mapping->forMember('employee', Operation::mapTo(EmployeeDto::class));
 ```
 
 You can create your own operations by implementing the 
-`MappingOperationInterface`. Take a look at the provided implementations for
-some inspiration <@todo: insert link>
+`MappingOperationInterface`. Take a look at the
+[provided implementations](https://github.com/mark-gerarts/automapper-plus/tree/master/src/MappingOperation)
+for some inspiration.
 
 #### Naming conventions
 By default, a mapping will try to transfer data between properties of the same
@@ -257,10 +258,11 @@ The following conventions are provided (more to come):
 You can implement your own by using the `NamingConventionInterface`.
 
 #### ReverseMap
-Since it is a common usecase the map in both directions, the `reverseMap()`
+Since it is a common usecase to map in both directions, the `reverseMap()`
 method has been provided. This creates a new mapping in the alternate direction.
 
-`reverseMap` will keep into account the naming conventions.
+`reverseMap` will keep the registered naming conventions into account, if there
+are any.
 
 ```php
 <?php
@@ -306,11 +308,11 @@ The available options that can be set are:
 
 | Name  | Default value | Comments |
 | ------------- | ------------- | ------------- |
-| Source naming convention | `null` | The naming convention of the source class (e.g. `CamelCaseNamingConversion`). Also see <@todo naming conventions>. |
-| Destination naming convention | `null` | |
+| Source naming convention | `null` | The naming convention of the source class (e.g. `CamelCaseNamingConversion`). Also see [naming conventions](#naming-conventions). |
+| Destination naming convention | `null` | See above. |
 | Skip constructor | `true` | whether or not the constructor should be skipped when instantiating a new class. Use `$options->skipConstructor()` and `$options->dontSkipConstructor()` to change. |
 | Property accessor | `PropertyAccessor` | Use this to provide an alternative implementation of the property accessor. |
-| Default mapping operation | `DefaultMappingOperation` | the default operation used when mapping a property. Also see <@todo mapping operations> |
+| Default mapping operation | `DefaultMappingOperation` | the default operation used when mapping a property. Also see [mapping operations](#operations) |
 
 ### Setting the options
 
@@ -330,6 +332,7 @@ constructor. The callback will be passed an instance of the default `Options`:
 ```php
 <?php
 
+// This will set the options for this specific mapping.
 $config = new AutoMapperConfig(function (Options $options) {
     $options->dontSkipConstructor();
     $options->setDefaultMappingOperation(Operation::ignore());
