@@ -370,7 +370,7 @@ $config->registerMapping(Source::class, Destination::class)
 - [The Symfony demo app (WIP)](https://github.com/mark-gerarts/automapper-plus-demo-app)
 
 ## Roadmap
-- [ ] Provide a more detailed tutorial
+- [x] Provide a more detailed tutorial
 - [ ] Create a sample app demonstrating the automapper
 - [ ] Provide options to copy a mapping
 - [ ] Allow setting of prefix for name resolver (see [automapper](https://github.com/AutoMapper/AutoMapper/wiki/Configuration#recognizing-prepostfixes))
