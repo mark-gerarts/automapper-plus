@@ -5,16 +5,19 @@ Transfers data from one object to another, allowing custom mapping operations.
 ## Table of Contents
 * [Installation](#installation)
 * [Why?](#why)
-* [Usage](#usage)
-    * [Basic example](#basic-example)
-    * [Custom callbacks](#custom-callbacks)
-    * [Operations](#operations)
-    * [Reverse map](#reverse-map)
-    * [Changing the defaults](#changing-the-defaults)
-        * [Global defaults](#global-defaults)
-        * [Mapping specific defaults](#mapping-specific-defaults)
-    * [Instantiating using the static constructor](#instantiating-using-the-static-constructor)
-    * [Mapping to an existing object](#mapping-to-an-existing-object)
+* [Example usage](#example-usage)
+* [In depth](#in-depth)
+    * [Instantiating the AutoMapper](#instantiating-the-automapper)
+    * [Using the AutoMapper](#using-the-automapper)
+    * [Registering mappings](#registering-mappings)
+        * [Custom callbacks](#custom-callbacks)
+        * [Operations](#operations)
+        * [Naming conventions](#naming-conventions)
+        * [ReverseMap](#reversemap)
+    * [The Options object](#the-options-object)
+    * [Setting the options](#setting-the-options)
+        * [For the AutoMapperConfig](#for-the-automapperconfig)
+        * [For the mappings](#for-the-mappings)
 * [See also](#see-also)
 * [Roadmap](#roadmap)
 
@@ -30,16 +33,14 @@ If you're using Symfony, check out the [AutoMapper+ bundle](https://github.com/m
 ## Why?
 When you need to transfer data from one object to another, you'll have to write 
 a lot of boilerplate code. For example when using view models, CommandBus 
-commands, response classes, etc.
+commands, working with API responses, etc.
 
 Automapper+ helps you by automatically transferring properties from one object 
 to another, **including private ones**. By default, properties with the same name
 will be transferred. This can be overridden as you like.
 
-## Usage
-
-### Basic example
-Suppose you have a class Employee for which you want to create a DTO.
+## Example usage
+Suppose you have a class Employee and an associated DTO.
 
 ```php
 <?php
@@ -49,12 +50,13 @@ class Employee
     private $id;
     private $firstName;
     private $lastName;
+    private $birthYear;
     
-    public function __construct($id, $firstName, $lastName)
+    public function __construct($firstName, $lastName, $birthYear)
     {
-        $this->id = $id;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
+        $this->birthYear = $birthYear;
     }
 
     public function getId()
@@ -69,12 +71,12 @@ class EmployeeDto
 {
     public $firstName;
     public $lastName;
+    public $age;
 }
 ```
 
-The most basic thing AutoMapper+ can do, is transferring properties with the
-same name. After registering the mapping, there's no additional configuration
-needed to do this.
+The following snippet provides an quick overview how the mapper can be 
+configured and used.
 
 ```php
 <?php
@@ -83,77 +85,188 @@ use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\AutoMapper;
 
 $config = new AutoMapperConfig();
-// If we only need to convert properties with the same name, simply registering
-// the mapping is enough.
-$config->registerMapping(Employee::class, EmployeeDto::class);
+
+// Simply registering the mapping is enough to convert properties with the same
+// name. Custom actions can be registered for each individual property.
+$config
+    ->registerMapping(Employee::class, EmployeeDto::class)
+    ->forMember('age', function (Employee $source) {
+        return date('Y') - $source->getBirthYear();
+    })
+    ->reverseMap(); // Register the reverse mapping as well.
+                            
 $mapper = new AutoMapper($config);
 
 // With this configuration we can start converting our objects.
-$john = new Employee(10, "John", "Doe");
+$john = new Employee(10, "John", "Doe", 1980);
 $dto = $mapper->map($john, EmployeeDto::class);
 
 echo $dto->firstName; // => "John"
 echo $dto->lastName; // => "Doe"
+echo $dto->age; // => 37
 ```
 
-### Custom callbacks
-If you need something more complex than transferring properties with the same
-name, you can provide a custom callback. This can be done on a per-property
-basis with the `forMember` method:
+## In depth
+
+### Instantiating the AutoMapper
+The AutoMapper has to be provided with an `AutoMapperConfig`, which holds the
+registered mappings. This can be done in 2 ways:
+
+**Passing it to the constructor:**
+```php
+<?php
+
+use AutoMapperPlus\Configuration\AutoMapperConfig;
+use AutoMapperPlus\AutoMapper;
+
+$config = new AutoMapperConfig();
+$config->registerMapping(Source::class, Destination::class);
+$mapper = new AutoMapper($config);
+```
+
+**Using the static constructor**
+```php
+<?php
+
+$mapper = AutoMapper::initialize(function (AutoMapperConfig $config) {
+    $config->registerMapping(Source::class, Destination::class);
+    $config->registerMapping(AnotherSource::class, Destination::class);
+    // ...
+});
+```
+
+### Using the AutoMapper
+Once configured, using the AutoMapper is pretty straightforward:
 
 ```php
 <?php
 
-class EmployeeDto
-{
-    public $fullName;
-}
+$john = new Employee("John", "Doe", 1980);
 
-$config = new \AutoMapperPlus\Configuration\AutoMapperConfig();
+// Map the source object to a new instance of the destination class.
+$mapper->map($john, EmployeeDto::class);
+
+// Mapping to an existing object is possible as well.
+$mapper->mapToObject($john, new EmployeeDto());
+
+// Map a collection using mapMultiple
+$mapper->mapMultiple($employees, EmployeeDto::class);
+```
+
+### Registering mappings
+Mappings are defined using the `AutoMapperConfig`'s `registerMapping()` method.
+Every mapping you use has to be defined to be available to the AutoMapper.
+
+A mapping is defined by providing the source class and the destination class.
+The most basic definition would be as follows:
+
+```php
+<?php
+
+$config->registerMapping(Employee::class, EmployeeDto::class);
+```
+
+This will allow objects of the `Employee` class to be mapped to `EmployeeDto`
+instances. Since no extra configuration is provided, the mapping will only 
+transfer properties with the same name.
+
+#### Custom callbacks
+With the `forMember()` method, you can specify what should happen for the given
+property of the destination class. When you pass a callback to this method, the
+return value will be used to set the property.
+
+The callback receives the source object as argument.
+
+```php
+<?php
+
 $config->registerMapping(Employee::class, EmployeeDto::class)
     ->forMember('fullName', function (Employee $source) {
-        // You can put some custom conversions here.
         return $source->getFirstName() . ' ' . $source->getLastName();
     });
-
-echo $mapper->map($john, EmployeeDto::class)->fullName; // => "John Doe"
 ```
 
-The function passed will receive the following arguments:
-- The source object
-- The destination object
-- The target property name
-- The configuration object
+#### Operations
+Behind the scenes, the callback in the previous example is wrapped in a 
+`MapFrom` operation. Operations represent the action that should be performed
+for the given property.
 
-### Operations
-Behind the scenes, the callback in the previous examples is wrapped in an
-`Operation`. Some default operations have been provided. For example, the
-`Ignore` operation, which leaves the destination property alone:
+The following operations are provided:
+
+| Name  | Explanation |
+| ------------- | ------------- |
+| MapFrom | Maps the property from the value returned from the provided callback |
+| Ignore | Ignores the property |
+| MapTo | Maps the property to another class. Allows for nested mappings |
+| DefaultMappingOperation | Simply transfers the property |
+
+You can use them with the same `forMember()` method. The `Operation` class can
+be used for clarity.
 
 ```php
 <?php
 
-use AutoMapperPlus\MappingOperation\Operation;
+$getName = function() { return 'John'; };
 
-$config->registerMapping(Employee::class, EmployeeDto::class)
-    ->forMember('fullName', Operation::ignore());
+$mapping->forMember('name', $getName);
+// The above is a shortcut for the following:
+$mapping->forMember('name', Operation::mapFrom($getName));
+// Which in turn is equivalent to:
+$mapping->forMember('name', new MapFrom($getName));
+
+// Other examples:
+$mapping->forMember('id', Operation::ignore());
+$mapping->forMember('employee', Operation::mapTo(EmployeeDto::class));
 ```
 
-The available operations are `mapFrom`, `ignore` and `getProperty`. You can
-create your own by implementing the `MappingOperationInterface`.
+You can create your own operations by implementing the 
+`MappingOperationInterface`. Take a look at the provided implementations for
+some inspiration <@todo: insert link>
 
-### Reverse map
+#### Naming conventions
+By default, a mapping will try to transfer data between properties of the same
+name. You can, however, specify the naming conventions followed by the source &
+destination classes. The mapper will take this into account.
 
-IT'll often happen that a mapping has to be defined in two ways. As a matter
-of convenience, `reverseMap` has been provided. This allows you to chain the
-method calls.
-
-There isn't any magic happening in the reverse mapping. It simple creates a
-default mapping in the other direction.
+For example:
 
 ```php
 <?php
 
+use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
+use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
+
+$config->registerMapping(CamelCaseSource::class, SnakeCaseDestination::class)
+    ->withNamingConventions(
+        new CamelCaseNamingConvention(), // The naming convention of the source class.
+        new SnakeCaseNamingConvention() // The naming convention of the destination class.
+    );
+
+$source = new CamelCaseSource();
+$source->propertyName = 'camel';
+
+$result = $mapper->map($source, SnakeCaseDestination::class);
+echo $result->property_name; // => "camel"
+```
+
+The following conventions are provided (more to come):
+- CamelCaseNamingConvention
+- PascalCaseNamingConvention
+- SnakeCaseNamingConvention
+
+You can implement your own by using the `NamingConventionInterface`.
+
+#### ReverseMap
+Since it is a common usecase the map in both directions, the `reverseMap()`
+method has been provided. This creates a new mapping in the alternate direction.
+
+`reverseMap` will keep into account the naming conventions.
+
+```php
+<?php
+
+// reverseMap() returns the new mapping, allowing to continue configuring the 
+// new mapping.
 $config->registerMapping(Employee::class, EmployeeDto::class)
     ->reverseMap()
     ->forMember('id', Operation::ignore());
@@ -162,67 +275,91 @@ $config->hasMappingFor(Employee::class, EmployeeDto::class); // => True
 $config->hasMappingFor(EmployeeDto::class, Employee::class); // => True
 ```
 
-### Changing the defaults
+**Note**: `reverseMap()` simply creates a completely new mapping in the reverse 
+direction, using the default options. 
 
-#### Global defaults
-By default, properties with the same name will be transferred. You can change
-this behaviour by passing it as the first argument to the `AutoMapperConfig`.
-Classes to convert snake_case to camelCase and vice versa have been provided.
-You can write your own by implementing the `NameResolverInterface`.
+### The Options object
+The `Options` object is a value object containing the possible options for both
+the `AutoMapperConfig` and the `Mapping` instances.
+
+The `Options` you set for the `AutoMapperConfig` will act as the default options
+for every `Mapping` you register. These options can be overridden for every
+mapping.
+
+For example:
 
 ```php
 <?php
 
-use AutoMapperPlus\NameResolver\SnakeCaseToCamelCaseResolver;
+$config = new AutoMapperConfig();
+$config->getOptions()->setDefaultMappingOperation(Operation::ignore());
 
-$config = new AutoMapperConfig(new SnakeCaseToCamelCaseResolver());
+$defaultMapping = $config->registerMapping(Source::class, Destination::class);
+$overriddenMapping = $config->registerMapping(AnotherSource::class, Destination::class)
+    ->withDefaultOperation(new DefaultMappingOperation());
+
+$defaultMapping->getOptions()->getDefaultMappingOperation(); // => Ignore
+$overriddenMapping->getOptions()->getDefaultMappingOperation(); // => DefaultMappingOperation
 ```
 
-#### Mapping specific defaults
-Defaults can be overridden on a per-mapping basis. An `$options` array can be
-passed as the third argument of `registerMapping`.
+The available options that can be set are:
+
+| Name  | Default value | Comments |
+| ------------- | ------------- | ------------- |
+| Source naming convention | `null` | The naming convention of the source class (e.g. `CamelCaseNamingConversion`). Also see <@todo naming conventions>. |
+| Destination naming convention | `null` | |
+| Skip constructor | `true` | whether or not the constructor should be skipped when instantiating a new class. Use `$options->skipConstructor()` and `$options->dontSkipConstructor()` to change. |
+| Property accessor | `PropertyAccessor` | Use this to provide an alternative implementation of the property accessor. |
+| Default mapping operation | `DefaultMappingOperation` | the default operation used when mapping a property. Also see <@todo mapping operations> |
+
+### Setting the options
+
+#### For the AutoMapperConfig
+You can set the options for the `AutoMapperConfig` by retrieving the object:
 
 ```php
 <?php
 
-$config->registerMapping(
-    Employee::class,
-    EmployeeDto::class,
-    ['defaultOperation' => Operation::ignore()]
-);
+$config = new AutoMapperConfig();
+$config->getOptions()->dontSkipConstructor();
 ```
 
-Available options are:
-- `defaultOperation` (MappingOperationInterface)<br>
-  The default mapping operation used for a property.
-- `skipConstructor` (bool)<br>
-  Whether or not to skip the constructor when instantiating a new object.
-
-### Instantiating using the static constructor
-An alternative way to initialize the mapper is using the `::initialize` static
-method. This allows you to configure the mapper using a callback.
+Alternatively, you can set the options by providing a callback to the 
+constructor. The callback will be passed an instance of the default `Options`:
 
 ```php
 <?php
 
-use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
-
-$mapper = AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
-    $config->registerMapping(Employee::class, EmployeeDto::class);
+$config = new AutoMapperConfig(function (Options $options) {
+    $options->dontSkipConstructor();
+    $options->setDefaultMappingOperation(Operation::ignore());
+    // ...
 });
 ```
 
-### Mapping to an existing object
-
-By default, the method `map` creates a new instance of the target class. It is
-possible to map to an existing object using the `mapToObject` method.
+#### For the Mappings
+A mapping also has the `getOptions` method available. However, chainable helper 
+methods exists for more convenient overriding of the options:
 
 ```php
 <?php
 
-$employee = new Employee();
-$viewModel = new EmployeeDto();
-$mapper->mapToObject($employee, $viewModel);
+$config->registerMapping(Source::class, Destination::class)
+    ->skipConstructor()
+    ->withDefaultOperation(Operation::ignore());
+```
+
+Setting options via a callable has been provided for mappings as well, using the
+`setDefaults()` method:
+
+```php
+<?php
+
+$config->registerMapping(Source::class, Destination::class)
+    ->setDefaults(function (Options $options) {
+        $options->dontSkipConstructor();
+        // ...
+    });
 ```
 
 ## See also
@@ -230,17 +367,11 @@ $mapper->mapToObject($employee, $viewModel);
 - [The Symfony demo app (WIP)](https://github.com/mark-gerarts/automapper-plus-demo-app)
 
 ## Roadmap
-- [x] Add tests
-- [x] Add PHP7.1 dependency to composer
-- [x] Add comments (more than just PHPDoc blocks)
-- [x] Add the ability to change the name resolver
-- [x] Make `GetProperty` use the config's resolver if none provided
-- [x] Add the 'Operation' type, @see Mapping.php
-- [x] Allow transferring data to an existing object
 - [ ] Provide a more detailed tutorial
-- [x] Create a Symfony bundle
 - [ ] Create a sample app demonstrating the automapper
 - [ ] Provide options to copy a mapping
-- [ ] Allow setting of prefix for name resolver
-- [x] Check if Reflectionclass PrivateAccessor implementation is faster (https://gist.github.com/samsamm777/7230159)
-
+- [ ] Allow setting of prefix for name resolver (see [automapper](https://github.com/AutoMapper/AutoMapper/wiki/Configuration#recognizing-prepostfixes))
+- [ ] Create operation to copy value from property
+- [ ] Allow configuring of options in AutoMapperConfig -> error when trying with a registered mapping
+- [ ] Consider: passing of options to a single mapping operation
+- [ ] MapTo: allow mapping of collection
