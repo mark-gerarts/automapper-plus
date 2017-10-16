@@ -5,7 +5,11 @@ namespace AutoMapperPlus;
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use AutoMapperPlus\MappingOperation\Operation;
+use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
+use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use PHPUnit\Framework\TestCase;
+use Test\Models\NamingConventions\CamelCaseSource;
+use Test\Models\NamingConventions\SnakeCaseSource;
 use Test\Models\Nested\ChildClass;
 use Test\Models\Nested\ChildClassDto;
 use Test\Models\Nested\ParentClass;
@@ -163,5 +167,30 @@ class AutoMapperTest extends TestCase
 
         $this->assertInstanceOf(ChildClassDto::class, $result->child);
         $this->assertEquals('ChildName', $result->child->name);
+    }
+
+    public function testItCanResolveNamingConventions()
+    {
+        $this->config->registerMapping(CamelCaseSource::class, SnakeCaseSource::class)
+            ->withNamingConventions(
+                new CamelCaseNamingConvention(),
+                new SnakeCaseNamingConvention()
+            )
+            ->reverseMap();
+        $mapper = new AutoMapper($this->config);
+
+        $camel = new CamelCaseSource();
+        $camel->propertyName = 'camel';
+
+        /** @var SnakeCaseSource $snake */
+        $snake = $mapper->map($camel, SnakeCaseSource::class);
+
+        $this->assertEquals('camel', $snake->property_name);
+
+        // Let's try the reverse as well.
+        $snake->property_name = 'snake';
+        $camel = $mapper->map($snake, CamelCaseSource::class);
+
+        $this->assertEquals('snake', $camel->propertyName);
     }
 }

@@ -3,6 +3,7 @@
 namespace AutoMapperPlus\MappingOperation;
 
 use AutoMapperPlus\Configuration\Options;
+use AutoMapperPlus\NameConverter\NameConverter;
 use AutoMapperPlus\PropertyAccessor\PropertyAccessorInterface;
 
 /**
@@ -45,11 +46,10 @@ class DefaultMappingOperation implements MappingOperationInterface
      */
     protected function canMapProperty(string $propertyName, $source): bool
     {
-
         $sourceReflectionClass = new \ReflectionClass($source);
+        $sourcePropertyName = $this->getSourcePropertyName($propertyName);
 
-        // @todo: convert name if needed.
-        return $sourceReflectionClass->hasProperty($propertyName);
+        return $sourceReflectionClass->hasProperty($sourcePropertyName);
     }
 
     /**
@@ -59,8 +59,10 @@ class DefaultMappingOperation implements MappingOperationInterface
      */
     protected function getSourceValue($source, string $propertyName)
     {
-        // @todo: convert name if needed.
-        return $this->getPropertyAccessor()->getProperty($source, $propertyName);
+        return $this->getPropertyAccessor()->getProperty(
+            $source,
+            $this->getSourcePropertyName($propertyName)
+        );
     }
 
     /**
@@ -79,5 +81,24 @@ class DefaultMappingOperation implements MappingOperationInterface
     protected function getPropertyAccessor(): PropertyAccessorInterface
     {
         return $this->options->getPropertyAccessor();
+    }
+
+    /**
+     * Returns the name of the property we should fetch from the source object.
+     *
+     * @param string $propertyName
+     * @return string
+     */
+    protected function getSourcePropertyName(string $propertyName): string
+    {
+        if (!$this->options->shouldConvertName()) {
+            return $propertyName;
+        }
+
+        return NameConverter::convert(
+            $this->options->getDestinationMemberNamingConvention(),
+            $this->options->getSourceMemberNamingConvention(),
+            $propertyName
+        );
     }
 }

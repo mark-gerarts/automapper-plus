@@ -3,6 +3,7 @@
 namespace AutoMapperPlus\Configuration;
 
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
+use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
 
 /**
  * Interface MappingInterface
@@ -61,4 +62,30 @@ interface MappingInterface
      * @return Options
      */
     public function getOptions(): Options;
+
+    /**
+     * @return MappingInterface
+     */
+    public function skipConstructor(): MappingInterface;
+
+    /**
+     * @return MappingInterface
+     */
+    public function dontSkipConstructor(): MappingInterface;
+
+    /**
+     * @param NamingConventionInterface $sourceNamingConvention
+     * @param NamingConventionInterface $destinationNamingConvention
+     * @return MappingInterface
+     */
+    public function withNamingConventions(
+        NamingConventionInterface $sourceNamingConvention,
+        NamingConventionInterface $destinationNamingConvention
+    ): MappingInterface;
+
+    /**
+     * @param MappingOperationInterface $mappingOperation
+     * @return MappingInterface
+     */
+    public function withDefaultOperation(MappingOperationInterface $mappingOperation): MappingInterface;
 }

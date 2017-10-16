@@ -3,7 +3,11 @@
 namespace AutoMapperPlus\MappingOperation;
 
 use AutoMapperPlus\Configuration\Options;
+use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
+use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use PHPUnit\Framework\TestCase;
+use Test\Models\NamingConventions\CamelCaseSource;
+use Test\Models\NamingConventions\SnakeCaseSource;
 use Test\Models\SimpleProperties\Destination;
 use Test\Models\SimpleProperties\Source;
 
@@ -35,5 +39,20 @@ class DefaultMappingOperationTest extends TestCase
         $this->operation->mapProperty('name', $source, $destination);
 
         $this->assertEquals('Hello, world', $destination->name);
+    }
+
+    public function testItCanResolveNamingConventions()
+    {
+        $options = Options::default();
+        $options->setSourceMemberNamingConvention(new CamelCaseNamingConvention());
+        $options->setDestinationMemberNamingConvention(new SnakeCaseNamingConvention());
+        $this->operation->setOptions($options);
+
+        $source = new CamelCaseSource();
+        $source->propertyName = 'ima property';
+        $destination = new SnakeCaseSource();
+        $this->operation->mapProperty('property_name', $source, $destination);
+
+        $this->assertEquals('ima property', $destination->property_name);
     }
 }

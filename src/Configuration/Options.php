@@ -159,4 +159,16 @@ class Options
     {
         $this->defaultMappingOperation = $defaultMappingOperation;
     }
+
+    /**
+     * Whether or not property names should be converted between source and
+     * destination.
+     *
+     * @return bool
+     */
+    public function shouldConvertName(): bool
+    {
+        return !empty($this->sourceMemberNamingConvention)
+            && !empty($this->destinationMemberNamingConvention);
+    }
 }
