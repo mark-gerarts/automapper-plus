@@ -5,6 +5,7 @@ namespace AutoMapperPlus\Configuration;
 use AutoMapperPlus\Exception\InvalidPropertyException;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\MappingOperation\Operation;
+use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
 
 /**
  * Class Mapping
@@ -29,38 +30,35 @@ class Mapping implements MappingInterface
     private $mappingOperations = [];
 
     /**
-     * @var array
+     * @var Options
      */
-    private $options = [];
+    private $options;
 
     /**
      * @var AutoMapperConfigInterface
      */
-    private $config;
+    private $autoMapperConfig;
 
     /**
      * Mapping constructor.
      *
      * @param string $sourceClassName
      * @param string $destinationClassName
-     * @param AutoMapperConfigInterface $config
-     * @param array $options
-     *   Accepts the following keys:
-     *   - defaultOperation
-     *   - skipConstructor
+     * @param AutoMapperConfigInterface $autoMapperConfig
      */
     public function __construct
     (
         string $sourceClassName,
         string $destinationClassName,
-        AutoMapperConfigInterface $config,
-        array $options
+        AutoMapperConfigInterface $autoMapperConfig
     )
     {
         $this->sourceClassName = $sourceClassName;
         $this->destinationClassName = $destinationClassName;
-        $this->config = $config;
-        $this->options = $options;
+        $this->autoMapperConfig = $autoMapperConfig;
+
+        // Inherit the options from the config.
+        $this->options = clone $autoMapperConfig->getOptions();
     }
 
     /**
@@ -85,7 +83,7 @@ class Mapping implements MappingInterface
     public function forMember
     (
         string $propertyName,
-        callable $mapCallback
+        $operation
     ): MappingInterface
     {
         // Ensure the property exists on the target class before registering it.
@@ -97,10 +95,14 @@ class Mapping implements MappingInterface
         }
 
         // If it's just a regular callback, wrap it in an operation.
-        if (!$mapCallback instanceof MappingOperationInterface) {
-            $mapCallback = Operation::mapFrom($mapCallback);
+        if (!$operation instanceof MappingOperationInterface) {
+            $operation = Operation::mapFrom($operation);
         }
-        $this->mappingOperations[$propertyName] = $mapCallback;
+
+        // Make the config available to the operation.
+        $operation->setOptions($this->options);
+
+        $this->mappingOperations[$propertyName] = $operation;
 
         return $this;
     }
@@ -110,35 +112,105 @@ class Mapping implements MappingInterface
      */
     public function reverseMap(array $options = []): MappingInterface
     {
-        return $this->config->registerMapping(
+        $reverseMapping = $this->autoMapperConfig->registerMapping(
             $this->getDestinationClassName(),
-            $this->getSourceClassName(),
-            $options
+            $this->getSourceClassName()
         );
+
+        // If there are any naming conventions set, we should reverse those as
+        // well for the new mapping.
+        if ($this->options->shouldConvertName()) {
+            $reverseMapping->withNamingConventions(
+                $this->options->getDestinationMemberNamingConvention(),
+                $this->options->getSourceMemberNamingConvention()
+            );
+        }
+
+        return $reverseMapping;
     }
 
     /**
      * @inheritdoc
      */
-    public function getMappingCallbackFor(string $propertyName): callable
+    public function getMappingOperationFor(string $propertyName): MappingOperationInterface
     {
-        return $this->mappingOperations[$propertyName] ?? $this->getDefaultOperation();
+        return $this->mappingOperations[$propertyName] ?? $this->getDefaultMappingOperation();
     }
 
     /**
      * @inheritdoc
      */
-    public function shouldSkipConstructor(): bool
+    public function setDefaults(callable $configurator): MappingInterface
     {
-        return (bool) $this->options['skipConstructor'] ?? false;
+        $configurator($this->options);
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getOptions(): Options
+    {
+        return $this->options;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function skipConstructor(): MappingInterface
+    {
+        $this->options->skipConstructor();
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function dontSkipConstructor(): MappingInterface
+    {
+        $this->options->dontSkipConstructor();
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function withNamingConventions
+    (
+        NamingConventionInterface $sourceNamingConvention,
+        NamingConventionInterface $destinationNamingConvention
+    ): MappingInterface
+    {
+        $this->options->setSourceMemberNamingConvention($sourceNamingConvention);
+        $this->options->setDestinationMemberNamingConvention($destinationNamingConvention);
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function withDefaultOperation
+    (
+        MappingOperationInterface $mappingOperation
+    ): MappingInterface
+    {
+        $this->options->setDefaultMappingOperation($mappingOperation);
+
+        return $this;
     }
 
     /**
      * @return MappingOperationInterface
      */
-    protected function getDefaultOperation(): MappingOperationInterface
+    protected function getDefaultMappingOperation(): MappingOperationInterface
     {
-        return $this->options['defaultOperation']
-            ?? $this->config->getDefaultOperation();
+        $operation = $this->options->getDefaultMappingOperation();
+        $operation->setOptions($this->options);
+
+        return $operation;
     }
 }

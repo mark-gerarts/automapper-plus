@@ -5,6 +5,7 @@ namespace AutoMapperPlus;
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
+use AutoMapperPlus\MappingOperation\Implementations\MapTo;
 use function Functional\map;
 
 /**
@@ -43,64 +44,70 @@ class AutoMapper implements AutoMapperInterface
     /**
      * @inheritdoc
      */
-    public function map($from, string $to)
+    public function map($source, string $destinationClass)
     {
-        $fromClass = get_class($from);
-        $mapping = $this->autoMapperConfig->getMappingFor($fromClass, $to);
-        $this->ensureConfigExists($fromClass, $to);
+        $sourceClass = get_class($source);
+        $mapping = $this->autoMapperConfig->getMappingFor($sourceClass, $destinationClass);
+        $this->ensureConfigExists($sourceClass, $destinationClass);
 
         // Check if we need to skip the constructor.
-        if ($mapping->shouldSkipConstructor()) {
-            $toReflectionClass = new \ReflectionClass($to);
-            $toObject = $toReflectionClass->newInstanceWithoutConstructor();
+        if ($mapping->getOptions()->shouldSkipConstructor()) {
+            $destinationReflectionClass = new \ReflectionClass($destinationClass);
+            $destinationObject = $destinationReflectionClass->newInstanceWithoutConstructor();
         }
         else {
-            $toObject = new $to;
+            $destinationObject = new $destinationClass;
         }
 
-        return $this->mapToObject($from, $toObject);
+        return $this->mapToObject($source, $destinationObject);
     }
 
     /**
      * @inheritdoc
      */
-    public function mapMultiple($from, string $to): array
+    public function mapMultiple($sourceCollection, string $destinationClass): array
     {
-        return map($from, function ($source) use ($to) {
-            return $this->map($source, $to);
+        return map($sourceCollection, function ($source) use ($destinationClass) {
+            return $this->map($source, $destinationClass);
         });
     }
 
     /**
      * @inheritdoc
      */
-    public function mapToObject($from, $to)
+    public function mapToObject($source, $destination)
     {
-        $fromReflectionClass = new \ReflectionClass($from);
-        $toReflectionClass = new \ReflectionClass($to);
+        $sourceReflectionClass = new \ReflectionClass($source);
+        $destinationReflectionClass = new \ReflectionClass($destination);
 
         // First, check if a mapping exists for the given objects.
         $this->ensureConfigExists(
-            $fromReflectionClass->getName(),
-                $toReflectionClass->getName()
+            $sourceReflectionClass->getName(),
+            $destinationReflectionClass->getName()
         );
 
         $mapping = $this->autoMapperConfig->getMappingFor(
-            $fromReflectionClass->getName(),
-            $toReflectionClass->getName()
+            $sourceReflectionClass->getName(),
+            $destinationReflectionClass->getName()
         );
 
-        foreach ($toReflectionClass->getProperties() as $destinationProperty) {
-            $mappingOperation = $mapping->getMappingCallbackFor($destinationProperty->getName());
-            $mappingOperation(
-                $from,
-                $to,
+        foreach ($destinationReflectionClass->getProperties() as $destinationProperty) {
+            $mappingOperation = $mapping->getMappingOperationFor($destinationProperty->getName());
+
+            // @todo: find another solution to this hacky implementation of
+            // recursive mapping.
+            if ($mappingOperation instanceof MapTo) {
+                $mappingOperation->setMapper($this);
+            }
+
+            $mappingOperation->mapProperty(
                 $destinationProperty->getName(),
-                $this->autoMapperConfig
+                $source,
+                $destination
             );
         }
 
-        return $to;
+        return $destination;
     }
 
     /**
@@ -112,16 +119,16 @@ class AutoMapper implements AutoMapperInterface
     }
 
     /**
-     * @param string $from
-     * @param string $to
+     * @param string $sourceClass
+     * @param string $destinationClass
      * @return void
      * @throws UnregisteredMappingException
      */
-    protected function ensureConfigExists(string $from, string $to): void
+    protected function ensureConfigExists(string $sourceClass, string $destinationClass): void
     {
-        $configExists = $this->autoMapperConfig->hasMappingFor($from, $to);
+        $configExists = $this->autoMapperConfig->hasMappingFor($sourceClass, $destinationClass);
         if (!$configExists) {
-            throw UnregisteredMappingException::fromClasses($from, $to);
+            throw UnregisteredMappingException::fromClasses($sourceClass, $destinationClass);
         }
     }
 }

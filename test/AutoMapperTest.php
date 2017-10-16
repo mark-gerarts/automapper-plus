@@ -4,7 +4,16 @@ namespace AutoMapperPlus;
 
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
+use AutoMapperPlus\MappingOperation\Operation;
+use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
+use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use PHPUnit\Framework\TestCase;
+use Test\Models\NamingConventions\CamelCaseSource;
+use Test\Models\NamingConventions\SnakeCaseSource;
+use Test\Models\Nested\ChildClass;
+use Test\Models\Nested\ChildClassDto;
+use Test\Models\Nested\ParentClass;
+use Test\Models\Nested\ParentClassDto;
 use Test\Models\Post\CreatePostViewModel;
 use Test\Models\Post\Post;
 use Test\Models\SimpleProperties\Destination;
@@ -48,7 +57,7 @@ class AutoMapperTest extends TestCase
         $mapper = new AutoMapper($this->config);
         $source = new Source();
         $source->name = 'Hello';
-        /** @var Destination $dest */
+        /** @var Destination $destination */
         $destination = $mapper->map($source, Destination::class);
 
         $this->assertInstanceOf(Destination::class, $destination);
@@ -115,8 +124,7 @@ class AutoMapperTest extends TestCase
     {
         $this->config->registerMapping(
             CreatePostViewModel::class,
-            Post::class,
-            ['skipConstructor' => true]
+            Post::class
         );
         $mapper = new AutoMapper($this->config);
 
@@ -132,8 +140,7 @@ class AutoMapperTest extends TestCase
     {
         $this->config->registerMapping(
             ConstructorSource::class,
-            ConstructorDestination::class,
-            ['skipConstructor' => true]
+            ConstructorDestination::class
         );
         $mapper = new AutoMapper($this->config);
 
@@ -142,5 +149,48 @@ class AutoMapperTest extends TestCase
         $result = $mapper->map($source, ConstructorDestination::class);
 
         $this->assertFalse($result->constructorRan);
+    }
+
+    public function testItCanMapNestedProperties()
+    {
+        $this->config->registerMapping(ChildClass::class, ChildClassDto::class);
+        $this->config->registerMapping(ParentClass::class, ParentClassDto::class)
+            ->forMember('child', Operation::mapTo(ChildClassDto::class));
+        $mapper = new AutoMapper($this->config);
+
+        $parent = new ParentClass();
+        $child = new ChildClass();
+        $child->name = 'ChildName';
+        $parent->child = $child;
+
+        $result = $mapper->map($parent, ParentClassDto::class);
+
+        $this->assertInstanceOf(ChildClassDto::class, $result->child);
+        $this->assertEquals('ChildName', $result->child->name);
+    }
+
+    public function testItCanResolveNamingConventions()
+    {
+        $this->config->registerMapping(CamelCaseSource::class, SnakeCaseSource::class)
+            ->withNamingConventions(
+                new CamelCaseNamingConvention(),
+                new SnakeCaseNamingConvention()
+            )
+            ->reverseMap();
+        $mapper = new AutoMapper($this->config);
+
+        $camel = new CamelCaseSource();
+        $camel->propertyName = 'camel';
+
+        /** @var SnakeCaseSource $snake */
+        $snake = $mapper->map($camel, SnakeCaseSource::class);
+
+        $this->assertEquals('camel', $snake->property_name);
+
+        // Let's try the reverse as well.
+        $snake->property_name = 'snake';
+        $camel = $mapper->map($snake, CamelCaseSource::class);
+
+        $this->assertEquals('snake', $camel->propertyName);
     }
 }

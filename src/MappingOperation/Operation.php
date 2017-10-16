@@ -2,7 +2,9 @@
 
 namespace AutoMapperPlus\MappingOperation;
 
-use AutoMapperPlus\NameResolver\NameResolverInterface;
+use AutoMapperPlus\MappingOperation\Implementations\Ignore;
+use AutoMapperPlus\MappingOperation\Implementations\MapFrom;
+use AutoMapperPlus\MappingOperation\Implementations\MapTo;
 
 /**
  * Class Operation
@@ -15,28 +17,34 @@ use AutoMapperPlus\NameResolver\NameResolverInterface;
 class Operation
 {
     /**
-     * @param callable $f
-     * @return callable
+     * Set a property's value from a callback.
+     *
+     * @param callable $valueCallback
+     * @return MapFrom
      */
-    public static function mapFrom(callable $f): callable
+    public static function mapFrom(callable $valueCallback): MapFrom
     {
-        return new MapFrom($f);
+        return new MapFrom($valueCallback);
     }
 
     /**
-     * @return callable
+     * Ignore a property.
+     *
+     * @return Ignore
      */
-    public static function ignore(): callable
+    public static function ignore(): Ignore
     {
         return new Ignore();
     }
 
     /**
-     * @param NameResolverInterface $nameResolver
-     * @return callable
+     * Map a property to a class.
+     *
+     * @param string $destinationClass
+     * @return MapTo
      */
-    public static function getProperty(NameResolverInterface $nameResolver): callable
+    public static function mapTo(string $destinationClass): MapTo
     {
-        return new GetProperty($nameResolver);
+        return new MapTo($destinationClass);
     }
 }

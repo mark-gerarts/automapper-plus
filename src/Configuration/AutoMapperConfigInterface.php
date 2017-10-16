@@ -2,8 +2,6 @@
 
 namespace AutoMapperPlus\Configuration;
 
-use AutoMapperPlus\MappingOperation\MappingOperationInterface;
-
 /**
  * Interface AutoMapperConfigInterface
  *
@@ -42,24 +40,15 @@ interface AutoMapperConfigInterface
      *
      * @param string $sourceClassName
      * @param string $destinationClassName
-     * @param array $options
-     *   Possible keys:
-     *   - defaultOperation (MappingOperationInterface)
-     *       The default operation used for a property.
-     *   - skipConstructor (bool)
-     *       Whether or not to skip the constructor when instantiating a new
-     *       object.
-     *
      * @return MappingInterface
      */
     public function registerMapping(
         string $sourceClassName,
-        string $destinationClassName,
-        array $options = []
+        string $destinationClassName
     ): MappingInterface;
 
     /**
-     * @return MappingOperationInterface
+     * @return Options
      */
-    public function getDefaultOperation(): MappingOperationInterface;
+    public function getOptions(): Options;
 }

@@ -3,9 +3,6 @@
 namespace AutoMapperPlus\Configuration;
 
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
-use AutoMapperPlus\MappingOperation\Operation;
-use AutoMapperPlus\NameResolver\IdentityNameResolver;
-use AutoMapperPlus\NameResolver\NameResolverInterface;
 use function Functional\first;
 
 /**
@@ -21,35 +18,28 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     private $mappings = [];
 
     /**
-     * @var callable
+     * @var Options
      */
-    private $defaultOperation;
-
-    /**
-     * @var NameResolverInterface
-     */
-    private $defaultNameResolver;
+    private $options;
 
     /**
      * AutoMapperConfig constructor.
      *
-     * @param NameResolverInterface|null $defaultNameResolver
-     * @param callable|null $defaultOperation
+     * @param callable $configurator
      */
-    function __construct
-    (
-        NameResolverInterface $defaultNameResolver = null,
-        callable $defaultOperation = null
-    )
+    function __construct(callable $configurator = null)
     {
-        $this->defaultNameResolver = $defaultNameResolver ?: new IdentityNameResolver();
-        $this->defaultOperation = $defaultOperation ?: Operation::getProperty($this->defaultNameResolver);
+        $this->options = Options::default();
+        if ($configurator) {
+            $configurator($this->options);
+        }
     }
 
     /**
      * @inheritdoc
      */
-    public function hasMappingFor(
+    public function hasMappingFor
+    (
         string $sourceClassName,
         string $destinationClassName
     ): bool
@@ -60,7 +50,8 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     /**
      * @inheritdoc
      */
-    public function getMappingFor(
+    public function getMappingFor
+    (
         string $sourceClassName,
         string $destinationClassName
     ): ?MappingInterface
@@ -77,17 +68,16 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     /**
      * @inheritdoc
      */
-    public function registerMapping(
+    public function registerMapping
+    (
         string $sourceClassName,
-        string $destinationClassName,
-        array $options = []
+        string $destinationClassName
     ): MappingInterface
     {
         $mapping = new Mapping(
             $sourceClassName,
             $destinationClassName,
-            $this,
-            $this->mergeWithDefaults($options)
+            $this
         );
         $this->mappings[] = $mapping;
 
@@ -95,24 +85,10 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     }
 
     /**
-     * @param array $mappingOptions
-     * @return array
-     */
-    protected function mergeWithDefaults(array $mappingOptions): array
-    {
-        $defaults = [
-            'skipConstructor' => false,
-            'defaultOperation' => $this->defaultOperation
-        ];
-
-        return $mappingOptions + $defaults;
-    }
-
-    /**
      * @inheritdoc
      */
-    public function getDefaultOperation(): MappingOperationInterface
+    public function getOptions(): Options
     {
-        return $this->defaultOperation;
+        return $this->options;
     }
 }

@@ -16,38 +16,38 @@ interface AutoMapperInterface
      * Maps an object to an instance of class $to, provided a mapping is
      * configured.
      *
-     * @param $from
+     * @param $source
      *   The source object.
-     * @param string $to
-     *   The target class.
+     * @param string $targetClass
+     *   The target classname.
      * @return mixed
-     *   An instance on class $to.
+     *   An instance of class $to.
      * @throws UnregisteredMappingException
      */
-    public function map($from, string $to);
+    public function map($source, string $targetClass);
 
     /**
-     * @param array|\Traversable $from
-     *   The source collection.
-     * @param string $to
-     *   The target class
+     * @param array|\Traversable $sourceCollection
+     *   The source collection containing objects.
+     * @param string $targetClass
+     *   The target classname.
      * @return array
      *   An array of mapped objects. Keys are not preserved.
      */
-    public function mapMultiple($from, string $to): array;
+    public function mapMultiple($sourceCollection, string $targetClass): array;
 
     /**
      * Maps properties of object $from to an existing object $to.
      *
-     * @param $from
+     * @param $source
      *   The source object.
-     * @param $to
+     * @param $destination
      *   The target object.
      * @return mixed
      *   $to, with properties copied from $from.
      * @throws UnregisteredMappingException
      */
-    public function mapToObject($from, $to);
+    public function mapToObject($source, $destination);
 
     /**
      * Instantiate the mapper with a given configuration callback. The callback
