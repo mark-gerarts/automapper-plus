@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use PHPUnit\Framework\TestCase;
 use Test\Models\SimpleProperties\Destination;
@@ -35,13 +36,13 @@ class AutoMapperConfigTest extends TestCase
 
     public function testOptionsCanBeSet()
     {
-        $options = Options::default();
-        $options->setDestinationMemberNamingConvention(new SnakeCaseNamingConvention());
-
-        $config = new AutoMapperConfig(function (Options $defaultOptions) use ($options) {
-            return $options;
+        $config = new AutoMapperConfig(function (Options $options) {
+            $options->setDefaultMappingOperation(Operation::ignore());
         });
 
-        $this->assertEquals($options, $config->getOptions());
+        $this->assertEquals(
+            Operation::ignore(),
+            $config->getOptions()->getDefaultMappingOperation()
+        );
     }
 }
