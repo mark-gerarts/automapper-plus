@@ -237,14 +237,10 @@ $mapper->mapToObject($employee, $viewModel);
 - [x] Make `GetProperty` use the config's resolver if none provided
 - [x] Add the 'Operation' type, @see Mapping.php
 - [x] Allow transferring data to an existing object
-- [ ] Copy as many usages from .net's automapper as possible
 - [ ] Provide a more detailed tutorial
 - [x] Create a Symfony bundle
 - [ ] Create a sample app demonstrating the automapper
 - [ ] Provide options to copy a mapping
+- [ ] Allow setting of prefix for name resolver
 - [x] Check if Reflectionclass PrivateAccessor implementation is faster (https://gist.github.com/samsamm777/7230159)
 
-## Refactor roadmap
-- [ ] Configuration value object
-- [ ] Source/destination naming convention that will allow for reverseMap
-- [ ] Figure out an alternative for the Operation logic.
