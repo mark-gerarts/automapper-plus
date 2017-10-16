@@ -2,7 +2,7 @@
 
 namespace AutoMapperPlus\MappingOperation\Implementations;
 
-use AutoMapperPlus\Configuration\Configuration;
+use AutoMapperPlus\Configuration\Options;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 
 /**
@@ -23,7 +23,7 @@ class Ignore implements MappingOperationInterface
     /**
      * @inheritdoc
      */
-    public function setConfig(Configuration $config): void
+    public function setOptions(Options $options): void
     {
         // We don't need any configuration.
     }

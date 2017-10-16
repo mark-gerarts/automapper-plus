@@ -2,7 +2,7 @@
 
 namespace AutoMapperPlus\MappingOperation\Implementations;
 
-use AutoMapperPlus\Configuration\Configuration;
+use AutoMapperPlus\Configuration\Options;
 use PHPUnit\Framework\TestCase;
 use Test\Models\SimpleProperties\Destination;
 use Test\Models\SimpleProperties\Source;
@@ -20,7 +20,7 @@ class MapFromTest extends TestCase
         $operation = new MapFrom(function ($source) {
             return 42;
         });
-        $operation->setConfig(Configuration::default());
+        $operation->setOptions(Options::default());
 
         $source = new Source();
         $destination = new Destination();
@@ -35,7 +35,7 @@ class MapFromTest extends TestCase
         $operation = new MapFrom(function ($source) {
             return $source;
         });
-        $operation->setConfig(Configuration::default());
+        $operation->setOptions(Options::default());
 
         $source = new Source();
         $destination = new Destination();

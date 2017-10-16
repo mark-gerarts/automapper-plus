@@ -50,7 +50,7 @@ interface MappingInterface
 
     /**
      * Allows overriding of the configuration. The $configurator will be passed
-     * the config associated with this mapping.
+     * the options associated with this mapping.
      *
      * @param callable $configurator
      * @return MappingInterface

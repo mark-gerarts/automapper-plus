@@ -9,11 +9,11 @@ use AutoMapperPlus\PropertyAccessor\PropertyAccessor;
 use AutoMapperPlus\PropertyAccessor\PropertyAccessorInterface;
 
 /**
- * Class Configuration
+ * Class Options
  *
  * @package AutoMapperPlus\Configuration
  */
-class Configuration
+class Options
 {
     /**
      * @var NamingConventionInterface|null
@@ -41,9 +41,9 @@ class Configuration
     private $defaultMappingOperation;
 
     /**
-     * @return Configuration
+     * @return Options
      */
-    public static function default(): Configuration
+    public static function default(): Options
     {
         $config = new static();
         $config->dontSkipConstructor();

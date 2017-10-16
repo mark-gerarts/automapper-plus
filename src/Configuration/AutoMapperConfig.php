@@ -3,9 +3,6 @@
 namespace AutoMapperPlus\Configuration;
 
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
-use AutoMapperPlus\MappingOperation\Operation;
-use AutoMapperPlus\NameResolver\IdentityNameResolver;
-use AutoMapperPlus\NameResolver\NameConverterInterface;
 use function Functional\first;
 
 /**
@@ -21,9 +18,9 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     private $mappings = [];
 
     /**
-     * @var Configuration
+     * @var Options
      */
-    private $config;
+    private $options;
 
     /**
      * AutoMapperConfig constructor.
@@ -32,8 +29,8 @@ class AutoMapperConfig implements AutoMapperConfigInterface
      */
     function __construct(callable $configurator = null)
     {
-        $defaultConfig = Configuration::default();
-        $this->config = $configurator
+        $defaultConfig = Options::default();
+        $this->options = $configurator
             ? $configurator($defaultConfig)
             : $defaultConfig;
     }
@@ -95,5 +92,11 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         return $this->defaultOperation;
     }
 
-    // setDefaults(callable $f)
+    /**
+     * @inheritdoc
+     */
+    public function getOptions(): Options
+    {
+        return $this->options;
+    }
 }

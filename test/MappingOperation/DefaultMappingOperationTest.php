@@ -2,7 +2,7 @@
 
 namespace AutoMapperPlus\MappingOperation;
 
-use AutoMapperPlus\Configuration\Configuration;
+use AutoMapperPlus\Configuration\Options;
 use PHPUnit\Framework\TestCase;
 use Test\Models\SimpleProperties\Destination;
 use Test\Models\SimpleProperties\Source;
@@ -23,7 +23,7 @@ class DefaultMappingOperationTest extends TestCase
     public function setUp()
     {
         $this->operation = new DefaultMappingOperation();
-        $this->operation->setConfig(Configuration::default());
+        $this->operation->setConfig(Options::default());
     }
 
     public function testItMapsAProperty()

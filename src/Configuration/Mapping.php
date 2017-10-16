@@ -29,9 +29,9 @@ class Mapping implements MappingInterface
     private $mappingOperations = [];
 
     /**
-     * @var Configuration
+     * @var Options
      */
-    private $config;
+    private $options;
 
     /**
      * @var AutoMapperConfigInterface
@@ -55,6 +55,9 @@ class Mapping implements MappingInterface
         $this->sourceClassName = $sourceClassName;
         $this->destinationClassName = $destinationClassName;
         $this->autoMapperConfig = $autoMapperConfig;
+
+        // Inherit the options from the config.
+        $this->options = $autoMapperConfig->getOptions();
     }
 
     /**
@@ -96,7 +99,7 @@ class Mapping implements MappingInterface
         }
 
         // Make the config available to the operation.
-        $operation->setConfig($this->config);
+        $operation->setOptions($this->options);
 
         $this->mappingOperations[$propertyName] = $operation;
 
@@ -120,7 +123,7 @@ class Mapping implements MappingInterface
     public function getMappingOperationFor(string $propertyName): MappingOperationInterface
     {
         return $this->mappingOperations[$propertyName]
-            ?? $this->config->getDefaultMappingOperation();
+            ?? $this->options->getDefaultMappingOperation();
     }
 
     /**
@@ -128,8 +131,8 @@ class Mapping implements MappingInterface
      */
     public function setDefaults(callable $configurator): MappingInterface
     {
-        $this->config = clone $this->config;
-        $configurator($this->config);
+        $this->options = clone $this->options;
+        $configurator($this->options);
 
         return $this;
     }

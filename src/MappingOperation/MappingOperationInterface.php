@@ -2,7 +2,7 @@
 
 namespace AutoMapperPlus\MappingOperation;
 
-use AutoMapperPlus\Configuration\Configuration;
+use AutoMapperPlus\Configuration\Options;
 
 /**
  * Interface MappingOperationInterface
@@ -20,7 +20,7 @@ interface MappingOperationInterface
     public function mapProperty(string $propertyName, $source, $destination): void;
 
     /**
-     * @param Configuration $config
+     * @param Options $options
      */
-    public function setConfig(Configuration $config): void;
+    public function setOptions(Options $options): void;
 }

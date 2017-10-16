@@ -48,4 +48,9 @@ interface AutoMapperConfigInterface
         string $sourceClassName,
         string $destinationClassName
     ): MappingInterface;
+
+    /**
+     * @return Options
+     */
+    public function getOptions(): Options;
 }

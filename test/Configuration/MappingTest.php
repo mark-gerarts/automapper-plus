@@ -17,36 +17,37 @@ class MappingTest extends TestCase
 {
     public function testItCanAddAMappingCallback()
     {
+        $autoMapperConfig = new AutoMapperConfig();
         $mapping = new Mapping(
             Source::class,
             Destination::class,
-            new AutoMapperConfig(),
-            ['defaultOperation' => Operation::getProperty(new IdentityNameResolver())]
+            $autoMapperConfig
         );
-        $callable = function() {};
+        $callable = function() { return 'x'; };
         $mapping->forMember('name', $callable);
 
-        $this->assertEquals(Operation::mapFrom($callable), $mapping->getMappingCallbackFor('name'));
+        $expected = Operation::mapFrom($callable);
+        $expected->setOptions($autoMapperConfig->getOptions());
+
+        $this->assertEquals($expected, $mapping->getMappingOperationFor('name'));
     }
 
-    public function testItCanOverrideTheDefaultOperation()
+    public function testItReturnsTheCorrectClassNames()
     {
-        $newDefault = Operation::ignore();
         $mapping = new Mapping(
             Source::class,
             Destination::class,
-            new AutoMapperConfig(),
-            ['defaultOperation' => $newDefault]
+            new AutoMapperConfig()
         );
 
-        $this->assertEquals($newDefault, $mapping->getMappingCallbackFor('name'));
+        $this->assertEquals(Source::class, $mapping->getSourceClassName());
+        $this->assertEquals(Destination::class, $mapping->getDestinationClassName());
     }
 
     public function testItCanReverseMap()
     {
         $config = new AutoMapperConfig();
-        $config->registerMapping(Source::class, Destination::class)
-            ->reverseMap();
+        $config->registerMapping(Source::class, Destination::class)->reverseMap();
 
         $this->assertTrue($config->hasMappingFor(Destination::class, Source::class));
     }

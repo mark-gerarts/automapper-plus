@@ -2,7 +2,7 @@
 
 namespace AutoMapperPlus\MappingOperation;
 
-use AutoMapperPlus\Configuration\Configuration;
+use AutoMapperPlus\Configuration\Options;
 use AutoMapperPlus\PropertyAccessor\PropertyAccessorInterface;
 
 /**
@@ -13,9 +13,9 @@ use AutoMapperPlus\PropertyAccessor\PropertyAccessorInterface;
 class DefaultMappingOperation implements MappingOperationInterface
 {
     /**
-     * @var Configuration
+     * @var Options
      */
-    protected $config;
+    protected $options;
 
     /**
      * @inheritdoc
@@ -29,9 +29,9 @@ class DefaultMappingOperation implements MappingOperationInterface
     /**
      * @inheritdoc
      */
-    public function setConfig(Configuration $config): void
+    public function setOptions(Options $options): void
     {
-        $this->config = $config;
+        $this->options = $options;
     }
 
     /**
@@ -60,6 +60,6 @@ class DefaultMappingOperation implements MappingOperationInterface
      */
     protected function getPropertyAccessor(): PropertyAccessorInterface
     {
-        return $this->config->getPropertyAccessor();
+        return $this->options->getPropertyAccessor();
     }
 }
