@@ -57,6 +57,20 @@ class MapTo extends DefaultMappingOperation
     {
         $value = $this->getPropertyAccessor()->getProperty($source, $propertyName);
 
-        return $this->mapper->map($value, $this->destinationClass);
+        return $this->isCollection($value)
+            ? $this->mapper->mapMultiple($value, $this->destinationClass)
+            : $this->mapper->map($value, $this->destinationClass);
+    }
+
+    /**
+     * Checks if the provided input is a collection.
+     * @todo: might want to move this outside of this class.
+     *
+     * @param $variable
+     * @return bool
+     */
+    private function isCollection($variable): bool
+    {
+        return is_array($variable) || $variable instanceof \Traversable;
     }
 }

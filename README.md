@@ -197,7 +197,7 @@ The following operations are provided:
 | ------------- | ------------- |
 | MapFrom | Maps the property from the value returned from the provided callback. |
 | Ignore | Ignores the property. |
-| MapTo | Maps the property to another class. Allows for nested mappings. |
+| MapTo | Maps the property to another class. Allows for nested mappings. Supports both single values and collections. |
 | DefaultMappingOperation | Simply transfers the property, taking into account the provided naming conventions (if there are any). |
 
 You can use them with the same `forMember()` method. The `Operation` class can
@@ -377,4 +377,4 @@ $config->registerMapping(Source::class, Destination::class)
 - [ ] Create operation to copy value from property
 - [ ] Allow configuring of options in AutoMapperConfig -> error when trying with a registered mapping
 - [ ] Consider: passing of options to a single mapping operation
-- [ ] MapTo: allow mapping of collection
+- [x] MapTo: allow mapping of collection
