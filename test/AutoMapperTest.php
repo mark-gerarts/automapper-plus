@@ -20,6 +20,7 @@ use Test\Models\SimpleProperties\Destination;
 use Test\Models\SimpleProperties\Source;
 use Test\Models\SpecialConstructor\Source as ConstructorSource;
 use Test\Models\SpecialConstructor\Destination as ConstructorDestination;
+use Test\Models\Visibility\Visibility;
 
 /**
  * Class AutoMapperTest
@@ -176,22 +177,30 @@ class AutoMapperTest extends TestCase
                 new CamelCaseNamingConvention(),
                 new SnakeCaseNamingConvention()
             )
+            // Test if fromProperty overrides the naming convention.
+            ->forMember('some_other_property', Operation::fromProperty('anotherProperty'))
             ->reverseMap();
         $mapper = new AutoMapper($this->config);
 
         $camel = new CamelCaseSource();
         $camel->propertyName = 'camel';
+        $camel->anotherProperty = 'someOther';
 
         /** @var SnakeCaseSource $snake */
         $snake = $mapper->map($camel, SnakeCaseSource::class);
 
         $this->assertEquals('camel', $snake->property_name);
+        $this->assertEquals('someOther', $snake->some_other_property);
 
         // Let's try the reverse as well.
         $snake->property_name = 'snake';
+        $snake->some_other_property = 'snakeprop';
         $camel = $mapper->map($snake, CamelCaseSource::class);
 
         $this->assertEquals('snake', $camel->propertyName);
+        // @todo
+        // Let's see if reverseMap() takes fromProperty into account.
+        $this->assertEquals('snakeprop', $camel->anotherProperty);
     }
 
     /**
@@ -208,5 +217,20 @@ class AutoMapperTest extends TestCase
         $destination = $mapper->map($source, Destination::class);
 
         $this->assertEquals('sourceName', $destination->name);
+    }
+
+    /**
+     * Will test if we can map by providing the source property name.
+     */
+    public function testItMapsFromAProperty()
+    {
+        $this->config->registerMapping(Visibility::class, Destination::class)
+            ->forMember('name', Operation::fromProperty('privateProperty'));
+        $mapper = new AutoMapper($this->config);
+
+        $source = new Visibility();
+        $result = $mapper->map($source, Destination::class);
+
+        $this->assertTrue($result->name);
     }
 }

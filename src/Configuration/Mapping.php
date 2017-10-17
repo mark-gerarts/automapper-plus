@@ -3,6 +3,8 @@
 namespace AutoMapperPlus\Configuration;
 
 use AutoMapperPlus\Exception\InvalidPropertyException;
+use AutoMapperPlus\MappingOperation\AlternativePropertyProvider;
+use AutoMapperPlus\MappingOperation\Implementations\FromProperty;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
@@ -82,14 +84,19 @@ class Mapping implements MappingInterface
      */
     public function forMember
     (
-        string $propertyName,
+        string $targetPropertyName,
         $operation
     ): MappingInterface
     {
+        $sourcePropertyName = $targetPropertyName;
+        if ($operation instanceof AlternativePropertyProvider) {
+            $sourcePropertyName = $operation->getAlternativePropertyName();
+        }
+
         // Ensure the property exists on the target class before registering it.
-        if (!property_exists($this->getSourceClassName(), $propertyName)) {
+        if (!property_exists($this->getSourceClassName(), $sourcePropertyName)) {
             throw InvalidPropertyException::fromNameAndClass(
-                $propertyName,
+                $sourcePropertyName,
                 $this->getSourceClassName()
             );
         }
@@ -102,7 +109,7 @@ class Mapping implements MappingInterface
         // Make the config available to the operation.
         $operation->setOptions($this->options);
 
-        $this->mappingOperations[$propertyName] = $operation;
+        $this->mappingOperations[$targetPropertyName] = $operation;
 
         return $this;
     }

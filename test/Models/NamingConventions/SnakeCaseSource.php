@@ -10,4 +10,5 @@ namespace Test\Models\NamingConventions;
 class SnakeCaseSource
 {
     public $property_name;
+    public $some_other_property;
 }

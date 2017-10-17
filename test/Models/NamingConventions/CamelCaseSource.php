@@ -10,4 +10,5 @@ namespace Test\Models\NamingConventions;
 class CamelCaseSource
 {
     public $propertyName;
+    public $anotherProperty;
 }
