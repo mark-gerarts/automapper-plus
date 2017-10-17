@@ -55,4 +55,33 @@ class DefaultMappingOperationTest extends TestCase
 
         $this->assertEquals('ima property', $destination->property_name);
     }
+
+    /**
+     * @group stdClass
+     */
+    public function testItCanMapFromAStdClass()
+    {
+        $source = new \stdClass();
+        $source->name = 'stdclass property';
+        $destination = new Destination();
+
+        $this->operation->mapProperty('name', $source, $destination);
+
+        $this->assertEquals('stdclass property', $destination->name);
+    }
+
+    public function testItCanResolveNamingConventionsOnAStdClass()
+    {
+        $options = Options::default();
+        $options->setSourceMemberNamingConvention(new SnakeCaseNamingConvention());
+        $options->setDestinationMemberNamingConvention(new CamelCaseNamingConvention());
+        $this->operation->setOptions($options);
+
+        $source = new \stdClass();
+        $source->property_name = 'stdclass snake';
+        $destination = new CamelCaseSource();
+        $this->operation->mapProperty('propertyName', $source, $destination);
+
+        $this->assertEquals('stdclass snake', $destination->propertyName);
+    }
 }

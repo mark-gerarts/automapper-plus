@@ -2,7 +2,6 @@
 
 namespace AutoMapperPlus\Configuration;
 
-use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use function Functional\first;
 
 /**

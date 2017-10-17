@@ -372,7 +372,9 @@ $config->registerMapping(Source::class, Destination::class)
 ## Roadmap
 - [x] Provide a more detailed tutorial
 - [x] Create a sample app demonstrating the automapper
-- [ ] Allow mapping from `stdClass`, or perhaps even an associative array
+- [x] Allow mapping from `stdClass`,
+- [ ] or perhaps even an associative array (could have)
+- [ ] Allow mapping to `stdClass`
 - [ ] Provide options to copy a mapping
 - [ ] Allow setting of prefix for name resolver (see [automapper](https://github.com/AutoMapper/AutoMapper/wiki/Configuration#recognizing-prepostfixes))
 - [ ] Create operation to copy value from property

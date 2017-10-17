@@ -193,4 +193,20 @@ class AutoMapperTest extends TestCase
 
         $this->assertEquals('snake', $camel->propertyName);
     }
+
+    /**
+     * @group stdClass
+     */
+    public function testItCanMapFromAStdClass()
+    {
+        $this->config->registerMapping(\stdClass::class, Destination::class);
+        $mapper = new AutoMapper($this->config);
+
+        $source = new \stdClass();
+        $source->name = 'sourceName';
+        /** @var Destination $destination */
+        $destination = $mapper->map($source, Destination::class);
+
+        $this->assertEquals('sourceName', $destination->name);
+    }
 }

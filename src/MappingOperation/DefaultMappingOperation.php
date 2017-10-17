@@ -46,10 +46,9 @@ class DefaultMappingOperation implements MappingOperationInterface
      */
     protected function canMapProperty(string $propertyName, $source): bool
     {
-        $sourceReflectionClass = new \ReflectionClass($source);
         $sourcePropertyName = $this->getSourcePropertyName($propertyName);
 
-        return $sourceReflectionClass->hasProperty($sourcePropertyName);
+        return $this->getPropertyAccessor()->hasProperty($source, $sourcePropertyName);
     }
 
     /**
@@ -91,6 +90,7 @@ class DefaultMappingOperation implements MappingOperationInterface
      */
     protected function getSourcePropertyName(string $propertyName): string
     {
+        // @todo: move the resolving of names to a separate class.
         if (!$this->options->shouldConvertName()) {
             return $propertyName;
         }

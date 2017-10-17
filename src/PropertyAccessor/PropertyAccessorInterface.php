@@ -12,6 +12,13 @@ interface PropertyAccessorInterface
     /**
      * @param $object
      * @param string $propertyName
+     * @return bool
+     */
+    public function hasProperty($object, string $propertyName): bool;
+
+    /**
+     * @param $object
+     * @param string $propertyName
      * @return mixed
      */
     public function getProperty($object, string $propertyName);
