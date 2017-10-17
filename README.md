@@ -18,6 +18,7 @@ Transfers data from one object to another, allowing custom mapping operations.
     * [Setting the options](#setting-the-options)
         * [For the AutoMapperConfig](#for-the-automapperconfig)
         * [For the mappings](#for-the-mappings)
+    * [Mapping with stdClass](#mapping-with-stdclass)
 * [See also](#see-also)
 * [Roadmap](#roadmap)
 
@@ -278,7 +279,7 @@ $config->hasMappingFor(EmployeeDto::class, Employee::class); // => True
 ```
 
 **Note**: `reverseMap()` simply creates a completely new mapping in the reverse 
-direction, using the default options. 
+direction, using the default options.
 
 ### The Options object
 The `Options` object is a value object containing the possible options for both
@@ -364,6 +365,28 @@ $config->registerMapping(Source::class, Destination::class)
         // ...
     });
 ```
+
+### Mapping with stdClass
+As a side note it is worth mentioning that it is possible to map from a
+`stdClass`. This is done as you would expect:
+
+```php
+<?php
+
+// Register the mapping.
+$config->registerMapping(\stdClass::class, Employee::class);
+$mapper = new AutoMapper($config);
+
+$employee = new \stdClass();
+$employee->firstName = 'John';
+$employee->lastName = 'Doe';
+
+$result = $mapper->map($employee, Employee::class);
+echo $employee->firstName; // => "John"
+echo $employee->lastName; // => "Doe"
+```
+
+Mapping **to** a `stdClass` is not supported (yet).
 
 ## See also
 - [The Symfony bundle](https://github.com/mark-gerarts/automapper-plus-bundle)
