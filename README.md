@@ -342,7 +342,7 @@ $config = new AutoMapperConfig(function (Options $options) {
 
 #### For the Mappings
 A mapping also has the `getOptions` method available. However, chainable helper 
-methods exists for more convenient overriding of the options:
+methods exist for more convenient overriding of the options:
 
 ```php
 <?php
