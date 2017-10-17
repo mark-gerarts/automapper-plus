@@ -371,7 +371,7 @@ $config->registerMapping(Source::class, Destination::class)
 
 ## Roadmap
 - [x] Provide a more detailed tutorial
-- [ ] Create a sample app demonstrating the automapper
+- [x] Create a sample app demonstrating the automapper
 - [ ] Provide options to copy a mapping
 - [ ] Allow setting of prefix for name resolver (see [automapper](https://github.com/AutoMapper/AutoMapper/wiki/Configuration#recognizing-prepostfixes))
 - [ ] Create operation to copy value from property
