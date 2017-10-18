@@ -12,6 +12,7 @@ Transfers data from one object to another, allowing custom mapping operations.
     * [Registering mappings](#registering-mappings)
         * [Custom callbacks](#custom-callbacks)
         * [Operations](#operations)
+        * [Dealing with nested mappings](#dealing-with-nested-mappings)
         * [Naming conventions](#naming-conventions)
         * [ReverseMap](#reversemap)
     * [The Options object](#the-options-object)
@@ -224,6 +225,18 @@ You can create your own operations by implementing the
 `MappingOperationInterface`. Take a look at the
 [provided implementations](https://github.com/mark-gerarts/automapper-plus/tree/master/src/MappingOperation)
 for some inspiration.
+
+#### Dealing with nested mappings
+Nested mappings can be registered using the `MapTo` operation. Keep in mind that the mapping for the
+child class has to be registered as well.
+
+```php
+<?php
+
+$config->createMapping(Child::class, ChildDto::class);
+$config->createMapping(Parent::class, ParentDto::class)
+    ->forMember('child', Operation::mapTo(ChildDto::class));
+```
 
 #### Naming conventions
 By default, a mapping will try to transfer data between properties of the same
