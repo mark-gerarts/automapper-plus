@@ -91,3 +91,4 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         return $this->options;
     }
 }
+?>

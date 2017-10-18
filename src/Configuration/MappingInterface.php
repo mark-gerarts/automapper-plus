@@ -89,3 +89,4 @@ interface MappingInterface
      */
     public function withDefaultOperation(MappingOperationInterface $mappingOperation): MappingInterface;
 }
+?>
