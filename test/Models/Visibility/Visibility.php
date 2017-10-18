@@ -13,26 +13,17 @@ class Visibility
     protected $protectedProperty = true;
     private $privateProperty = true;
 
-    /**
-     * @return bool
-     */
-    public function getPublicProperty(): bool
+    public function getPublicProperty()
     {
         return $this->publicProperty;
     }
 
-    /**
-     * @return bool
-     */
-    public function getProtectedProperty(): bool
+    public function getProtectedProperty()
     {
         return $this->protectedProperty;
     }
 
-    /**
-     * @return bool
-     */
-    public function getPrivateProperty(): bool
+    public function getPrivateProperty()
     {
         return $this->privateProperty;
     }

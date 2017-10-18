@@ -7,6 +7,7 @@ use AutoMapperPlus\MappingOperation\AlternativePropertyProvider;
 use AutoMapperPlus\MappingOperation\Implementations\FromProperty;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\MappingOperation\Operation;
+use AutoMapperPlus\MappingOperation\Reversible;
 use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
 
 /**
@@ -131,6 +132,25 @@ class Mapping implements MappingInterface
                 $this->options->getDestinationMemberNamingConvention(),
                 $this->options->getSourceMemberNamingConvention()
             );
+        }
+
+        // Check if we can reverse any operations for the new mapping.
+        foreach ($this->mappingOperations as $originalProperty => $mappingOperation) {
+            // We can only define the reverse operation for operations
+            // implementing Reversible.
+            if (!$mappingOperation instanceof Reversible) {
+                continue;
+            }
+
+            $reverseTargetProperty = $mappingOperation->getReverseTargetPropertyName(
+                $originalProperty,
+                $this->getOptions()
+            );
+            $reverseOperation = $mappingOperation->getReverseOperation(
+                $originalProperty,
+                $reverseMapping->getOptions()
+            );
+            $reverseMapping->forMember($reverseTargetProperty, $reverseOperation);
         }
 
         return $reverseMapping;

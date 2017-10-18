@@ -198,7 +198,6 @@ class AutoMapperTest extends TestCase
         $camel = $mapper->map($snake, CamelCaseSource::class);
 
         $this->assertEquals('snake', $camel->propertyName);
-        // @todo
         // Let's see if reverseMap() takes fromProperty into account.
         $this->assertEquals('snakeprop', $camel->anotherProperty);
     }
@@ -230,6 +229,47 @@ class AutoMapperTest extends TestCase
 
         $source = new Visibility();
         $result = $mapper->map($source, Destination::class);
+
+        $this->assertTrue($result->name);
+    }
+
+    public function testItCanSetARestrictedProperties()
+    {
+        $this->config->registerMapping(\stdClass::class, Visibility::class);
+        $mapper = new AutoMapper($this->config);
+
+        $source = new \stdClass();
+        $source->protectedProperty = 'protected';
+        $source->privateProperty = 'private';
+
+        /** @var Visibility $result */
+        $result = $mapper->map($source, Visibility::class);
+
+        $this->assertEquals('protected', $result->getProtectedProperty());
+        $this->assertEquals('private', $result->getPrivateProperty());
+    }
+
+    /**
+     * @group test
+     */
+    public function testItCanReverseMapWithReversibles()
+    {
+        $this->config->registerMapping(Source::class, Visibility::class)
+            ->forMember('privateProperty', Operation::fromProperty('name'))
+            ->reverseMap();
+        $mapper = new AutoMapper($this->config);
+
+        $source = new Source();
+        $source->name = 'Hello';
+        /** @var Visibility $result */
+        $result = $mapper->map($source, Visibility::class);
+
+        // Assert the initial mapping succeeds.
+        $this->assertEquals('Hello', $result->getPrivateProperty());
+
+        // The privateProperty of $source is now true.
+        $source = new Visibility();
+        $result = $mapper->map($source, Source::class);
 
         $this->assertTrue($result->name);
     }
