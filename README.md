@@ -454,8 +454,8 @@ $employee->firstName = 'John';
 $employee->lastName = 'Doe';
 
 $result = $mapper->map($employee, Employee::class);
-echo $employee->firstName; // => "John"
-echo $employee->lastName; // => "Doe"
+echo $result->firstName; // => "John"
+echo $result->lastName; // => "Doe"
 ```
 
 Mapping **to** a `stdClass` is not supported (yet).
