@@ -52,3 +52,4 @@ interface AutoMapperConfigInterface
      */
     public function getOptions(): Options;
 }
+?>

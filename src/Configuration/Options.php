@@ -172,3 +172,4 @@ class Options
             && !empty($this->destinationMemberNamingConvention);
     }
 }
+?>

@@ -241,3 +241,4 @@ class Mapping implements MappingInterface
         return $operation;
     }
 }
+?>
