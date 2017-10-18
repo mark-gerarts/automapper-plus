@@ -199,7 +199,7 @@ The following operations are provided:
 | ------------- | ------------- |
 | MapFrom | Maps the property from the value returned from the provided callback. |
 | Ignore | Ignores the property. |
-| MapTo | Maps the property to another class. Allows for nested mappings. Supports both single values and collections. |
+| MapTo | Maps the property to another class. Allows for [nested mappings](#dealing-with-nested-mappings). Supports both single values and collections. |
 | DefaultMappingOperation | Simply transfers the property, taking into account the provided naming conventions (if there are any). |
 
 You can use them with the same `forMember()` method. The `Operation` class can
@@ -229,6 +229,9 @@ for some inspiration.
 #### Dealing with nested mappings
 Nested mappings can be registered using the `MapTo` operation. Keep in mind that the mapping for the
 child class has to be registered as well.
+
+`MapTo` supports both single entities and collections.
+
 
 ```php
 <?php
