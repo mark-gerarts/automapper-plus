@@ -55,8 +55,9 @@ class Employee
     private $lastName;
     private $birthYear;
     
-    public function __construct($firstName, $lastName, $birthYear)
+    public function __construct($id, $firstName, $lastName, $birthYear)
     {
+        $this->id = $id;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->birthYear = $birthYear;
