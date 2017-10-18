@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\MappingOperation;
 
+use AutoMapperPlus\MappingOperation\Implementations\FromProperty;
 use AutoMapperPlus\MappingOperation\Implementations\Ignore;
 use AutoMapperPlus\MappingOperation\Implementations\MapFrom;
 use AutoMapperPlus\MappingOperation\Implementations\MapTo;
@@ -46,5 +47,16 @@ class Operation
     public static function mapTo(string $destinationClass): MapTo
     {
         return new MapTo($destinationClass);
+    }
+
+    /**
+     * Allows the source property name to be explicitly stated.
+     *
+     * @param string $propertyName
+     * @return FromProperty
+     */
+    public static function fromProperty(string $propertyName): FromProperty
+    {
+        return new FromProperty($propertyName);
     }
 }

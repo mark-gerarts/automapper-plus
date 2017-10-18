@@ -25,7 +25,7 @@ interface MappingInterface
     /**
      * Register an operation to be performed for the given property.
      *
-     * @param string $propertyName
+     * @param string $targetPropertyName
      *   The name of a property of the destination class.
      * @param $operation
      *   The operation to be performed. Either a callback function or an
@@ -34,7 +34,7 @@ interface MappingInterface
      * @return MappingInterface
      *   Return this mapping to allow for chaining.
      */
-    public function forMember(string $propertyName, $operation): MappingInterface;
+    public function forMember(string $targetPropertyName, $operation): MappingInterface;
 
     /**
      * @param string $propertyName

@@ -14,6 +14,7 @@ Transfers data from one object to another, allowing custom mapping operations.
         * [Operations](#operations)
         * [Dealing with nested mappings](#dealing-with-nested-mappings)
         * [Naming conventions](#naming-conventions)
+        * [Explicitly state source property](#explicitly-state-source-property)
         * [ReverseMap](#reversemap)
     * [The Options object](#the-options-object)
     * [Setting the options](#setting-the-options)
@@ -200,6 +201,7 @@ The following operations are provided:
 | MapFrom | Maps the property from the value returned from the provided callback. |
 | Ignore | Ignores the property. |
 | MapTo | Maps the property to another class. Allows for [nested mappings](#dealing-with-nested-mappings). Supports both single values and collections. |
+| FromProperty | Use this to explicitly state the source property name. |
 | DefaultMappingOperation | Simply transfers the property, taking into account the provided naming conventions (if there are any). |
 
 You can use them with the same `forMember()` method. The `Operation` class can
@@ -217,8 +219,12 @@ $mapping->forMember('name', Operation::mapFrom($getName));
 $mapping->forMember('name', new MapFrom($getName));
 
 // Other examples:
+// Ignore this property.
 $mapping->forMember('id', Operation::ignore());
+// Map this property to the given class.
 $mapping->forMember('employee', Operation::mapTo(EmployeeDto::class));
+// Explicitly state what the property name is of the source object.
+$mapping->forMember('name', Operation::fromProperty('unconventially_named_property'));
 ```
 
 You can create your own operations by implementing the 
@@ -274,6 +280,25 @@ The following conventions are provided (more to come):
 
 You can implement your own by using the `NamingConventionInterface`.
 
+#### Explicitly state source property
+As mentioned earlier, the operation `FromProperty` allows you to explicitly
+state what property of the source object should be used.
+
+```php
+<?php
+
+$config->registerMapping(Source::class, Destination::class)
+    ->forMember('id', Operation::fromProperty('identifier'));
+```
+
+You should read the previous snippet as follows: *"For the property named 'id'
+on the destination object, use the value of the 'identifier' property of the
+source object"*.
+
+`FromProperty` is `Reversible`, meaning that when you apply `reverseMap()`,
+AutoMapper will know how to map between the two properties. For more info, read
+the section about `reverseMap`.
+
 #### ReverseMap
 Since it is a common usecase to map in both directions, the `reverseMap()`
 method has been provided. This creates a new mapping in the alternate direction.
@@ -294,8 +319,39 @@ $config->hasMappingFor(Employee::class, EmployeeDto::class); // => True
 $config->hasMappingFor(EmployeeDto::class, Employee::class); // => True
 ```
 
+<!-- I feel this can be explained better. Any help appreciated! -->
 **Note**: `reverseMap()` simply creates a completely new mapping in the reverse 
-direction, using the default options.
+direction, using the default options. However, every operation you defined with
+`forMember` that implements the `Reversible` interface, gets defined for the new
+mapping as well. Currently, only `fromProperty` supports being reversed.
+
+To make things more clear, take a look at the following example.
+
+```php
+<?php
+
+// Source class properties:         Destination class properties:
+// - 'some_property',               - 'some_property'
+// - 'some_alternative_property'    - 'some_other_property'
+// - 'the_last_property'            - 'the_last_property'
+//
+$config->registerMapping(Source::class, Destination::class)
+    ->forMember('some_property', Operation::ignore())
+    ->forMember('some_other_property', Operation::fromProperty('some_alternative_property'))
+    ->reverseMap();
+
+// When mapping from Source to Destination, the following will happen:
+// - some_property gets ignored
+// - some_other_property gets mapped by using the value form some_alternative_property
+// - the_last_property gets mapped because the names are equal.
+//
+// Now, when we go in the reverse direction things are different:
+// - some_property gets mapped, because Ignore is not reversible
+// - some_alternative_property gets mapped because FromProperty is reversible
+// - the_last_property gets mapped as well
+```
+
+
 
 ### The Options object
 The `Options` object is a value object containing the possible options for both
