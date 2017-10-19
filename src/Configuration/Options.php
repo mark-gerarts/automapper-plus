@@ -5,6 +5,8 @@ namespace AutoMapperPlus\Configuration;
 use AutoMapperPlus\MappingOperation\DefaultMappingOperation;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
+use AutoMapperPlus\NameResolver\NameResolver;
+use AutoMapperPlus\NameResolver\NameResolverInterface;
 use AutoMapperPlus\PropertyAccessor\PropertyAccessor;
 use AutoMapperPlus\PropertyAccessor\PropertyAccessorInterface;
 
@@ -36,6 +38,11 @@ class Options
     private $propertyAccessor;
 
     /**
+     * @var NameResolverInterface
+     */
+    private $nameResolver;
+
+    /**
      * @var MappingOperationInterface
      */
     private $defaultMappingOperation;
@@ -49,6 +56,7 @@ class Options
         $config->skipConstructor();
         $config->setPropertyAccessor(new PropertyAccessor());
         $config->setDefaultMappingOperation(new DefaultMappingOperation());
+        $config->setNameResolver(new NameResolver());
 
         return $config;
     }
@@ -158,6 +166,22 @@ class Options
     )
     {
         $this->defaultMappingOperation = $defaultMappingOperation;
+    }
+
+    /**
+     * @return NameResolverInterface
+     */
+    public function getNameResolver(): NameResolverInterface
+    {
+        return $this->nameResolver;
+    }
+
+    /**
+     * @param NameResolverInterface $nameResolver
+     */
+    public function setNameResolver(NameResolverInterface $nameResolver)
+    {
+        $this->nameResolver = $nameResolver;
     }
 
     /**

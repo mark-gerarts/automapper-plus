@@ -4,11 +4,11 @@ namespace AutoMapperPlus\Configuration;
 
 use AutoMapperPlus\Exception\InvalidPropertyException;
 use AutoMapperPlus\MappingOperation\AlternativePropertyProvider;
-use AutoMapperPlus\MappingOperation\Implementations\FromProperty;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\MappingOperation\Reversible;
 use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
+use AutoMapperPlus\NameResolver\NameResolverInterface;
 
 /**
  * Class Mapping
@@ -89,10 +89,19 @@ class Mapping implements MappingInterface
         $operation
     ): MappingInterface
     {
-        $sourcePropertyName = $targetPropertyName;
-        if ($operation instanceof AlternativePropertyProvider) {
-            $sourcePropertyName = $operation->getAlternativePropertyName();
+        // If it's just a regular callback, wrap it in an operation.
+        if (!$operation instanceof MappingOperationInterface) {
+            $operation = Operation::mapFrom($operation);
         }
+
+        // @todo
+        // Since we already calculate the source name here, we might be able to
+        // add some caching layer.
+        $sourcePropertyName = $this->getNameResolver()->getSourcePropertyName(
+            $targetPropertyName,
+            $operation,
+            $this->options
+        );
 
         // Ensure the property exists on the target class before registering it.
         if (!property_exists($this->getSourceClassName(), $sourcePropertyName)) {
@@ -100,11 +109,6 @@ class Mapping implements MappingInterface
                 $sourcePropertyName,
                 $this->getSourceClassName()
             );
-        }
-
-        // If it's just a regular callback, wrap it in an operation.
-        if (!$operation instanceof MappingOperationInterface) {
-            $operation = Operation::mapFrom($operation);
         }
 
         // Make the config available to the operation.
@@ -239,5 +243,13 @@ class Mapping implements MappingInterface
         $operation->setOptions($this->options);
 
         return $operation;
+    }
+
+    /**
+     * @return NameResolverInterface
+     */
+    private function getNameResolver(): NameResolverInterface
+    {
+        return $this->options->getNameResolver();
     }
 }

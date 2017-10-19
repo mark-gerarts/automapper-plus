@@ -249,9 +249,6 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('private', $result->getPrivateProperty());
     }
 
-    /**
-     * @group test
-     */
     public function testItCanReverseMapWithReversibles()
     {
         $this->config->registerMapping(Source::class, Visibility::class)

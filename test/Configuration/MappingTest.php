@@ -2,12 +2,17 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\Exception\InvalidPropertyException;
 use AutoMapperPlus\MappingOperation\Operation;
+use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
 use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use AutoMapperPlus\NameResolver\IdentityNameResolver;
 use PHPUnit\Framework\TestCase;
+use Test\Models\NamingConventions\CamelCaseSource;
+use Test\Models\NamingConventions\SnakeCaseSource;
 use Test\Models\SimpleProperties\Destination;
 use Test\Models\SimpleProperties\Source;
+use Test\Models\Visibility\Visibility;
 
 /**
  * Class MappingTest
@@ -74,5 +79,58 @@ class MappingTest extends TestCase
         );
         // Ensure the parent options aren't changed.
         $this->assertEquals($initialOptions, $config->getOptions());
+    }
+
+    public function testItThrowsAnExcptionWhenRegisteringAnUnknownProperty()
+    {
+        $mapping = new Mapping(
+            Source::class,
+            Destination::class,
+            new AutoMapperConfig()
+        );
+
+        $this->expectException(InvalidPropertyException::class);
+        $mapping->forMember('i_dont_exist', Operation::ignore());
+    }
+
+    public function testForMemberWithDifferentNames()
+    {
+        $mapping = new Mapping(
+            CamelCaseSource::class,
+            SnakeCaseSource::class,
+            new AutoMapperConfig()
+        );
+        $mapping->withNamingConventions(
+            new CamelCaseNamingConvention(),
+            new SnakeCaseNamingConvention()
+        );
+
+        // We're mostly testing if the InvalidPropertyException isn't thrown
+        // here.
+        $operation = Operation::mapFrom(function () { return 'something'; });
+        $mapping->forMember('property_name', $operation);
+
+        $this->assertEquals(
+            $operation,
+            $mapping->getMappingOperationFor('property_name')
+        );
+    }
+
+    public function testInvalidPropertyWithFromProperty()
+    {
+        $mapping = new Mapping(
+            Source::class,
+            Visibility::class,
+            new AutoMapperConfig()
+        );
+
+        // Again, we're basically testing an exception isn't thrown.
+        $operation = Operation::fromProperty('name');
+        $operation->setOptions(Options::default());
+        $mapping->forMember('privateProperty', $operation);
+        $this->assertEquals(
+            $operation,
+            $mapping->getMappingOperationFor('privateProperty')
+        );
     }
 }

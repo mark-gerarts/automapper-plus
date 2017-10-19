@@ -2,7 +2,10 @@
 
 namespace AutoMapperPlus\NameResolver;
 
+use AutoMapperPlus\Configuration\MappingInterface;
 use AutoMapperPlus\Configuration\Options;
+use AutoMapperPlus\MappingOperation\AlternativePropertyProvider;
+use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\NameConverter\NameConverter;
 
 /**
@@ -12,13 +15,20 @@ use AutoMapperPlus\NameConverter\NameConverter;
  */
 class NameResolver implements NameResolverInterface
 {
+    /**
+     * @inheritdoc
+     */
     public function getSourcePropertyName
     (
         string $targetPropertyName,
-        $source,
+        MappingOperationInterface $operation,
         Options $options
     ): string
     {
+        if ($operation instanceof AlternativePropertyProvider) {
+            return $operation->getAlternativePropertyName();
+        }
+
         if (!$options->shouldConvertName()) {
             return $targetPropertyName;
         }

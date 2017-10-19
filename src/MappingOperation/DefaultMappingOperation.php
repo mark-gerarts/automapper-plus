@@ -3,7 +3,6 @@
 namespace AutoMapperPlus\MappingOperation;
 
 use AutoMapperPlus\Configuration\Options;
-use AutoMapperPlus\NameConverter\NameConverter;
 use AutoMapperPlus\PropertyAccessor\PropertyAccessorInterface;
 
 /**
@@ -90,15 +89,10 @@ class DefaultMappingOperation implements MappingOperationInterface
      */
     protected function getSourcePropertyName(string $propertyName): string
     {
-        // @todo: move the resolving of names to a separate class.
-        if (!$this->options->shouldConvertName()) {
-            return $propertyName;
-        }
-
-        return NameConverter::convert(
-            $this->options->getDestinationMemberNamingConvention(),
-            $this->options->getSourceMemberNamingConvention(),
-            $propertyName
+        return $this->options->getNameResolver()->getSourcePropertyName(
+            $propertyName,
+            $this,
+            $this->options
         );
     }
 }
