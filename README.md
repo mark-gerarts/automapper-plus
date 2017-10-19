@@ -2,6 +2,8 @@
 An automapper for PHP inspired by [.NET's automapper](https://github.com/AutoMapper/AutoMapper).
 Transfers data from one object to another, allowing custom mapping operations.
 
+[![Build Status](https://travis-ci.org/mark-gerarts/automapper-plus.svg?branch=master)](https://travis-ci.org/mark-gerarts/automapper-plus)
+
 ## Table of Contents
 * [Installation](#installation)
 * [Why?](#why)
