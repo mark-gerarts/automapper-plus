@@ -52,13 +52,13 @@ class Options
      */
     public static function default(): Options
     {
-        $config = new static();
-        $config->skipConstructor();
-        $config->setPropertyAccessor(new PropertyAccessor());
-        $config->setDefaultMappingOperation(new DefaultMappingOperation());
-        $config->setNameResolver(new NameResolver());
+        $options = new static;
+        $options->skipConstructor();
+        $options->setPropertyAccessor(new PropertyAccessor());
+        $options->setDefaultMappingOperation(new DefaultMappingOperation());
+        $options->setNameResolver(new NameResolver());
 
-        return $config;
+        return $options;
     }
 
     /**
