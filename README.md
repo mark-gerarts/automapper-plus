@@ -13,9 +13,11 @@ Transfers data from one object to another, allowing custom mapping operations.
         * [Custom callbacks](#custom-callbacks)
         * [Operations](#operations)
         * [Dealing with nested mappings](#dealing-with-nested-mappings)
+        * [ReverseMap](#reversemap)
+    * [Resolving property names](#resolving-property-names)
         * [Naming conventions](#naming-conventions)
         * [Explicitly state source property](#explicitly-state-source-property)
-        * [ReverseMap](#reversemap)
+        * [Resolving names with a callback](#resolving-names-with-a-callback)
     * [The Options object](#the-options-object)
     * [Setting the options](#setting-the-options)
         * [For the AutoMapperConfig](#for-the-automapperconfig)
@@ -250,10 +252,70 @@ $config->createMapping(Parent::class, ParentDto::class)
     ->forMember('child', Operation::mapTo(ChildDto::class));
 ```
 
+#### ReverseMap
+Since it is a common usecase to map in both directions, the `reverseMap()`
+method has been provided. This creates a new mapping in the alternate direction.
+
+`reverseMap` will keep the registered naming conventions into account, if there
+are any.
+
+```php
+<?php
+
+// reverseMap() returns the new mapping, allowing to continue configuring the
+// new mapping.
+$config->registerMapping(Employee::class, EmployeeDto::class)
+    ->reverseMap()
+    ->forMember('id', Operation::ignore());
+
+$config->hasMappingFor(Employee::class, EmployeeDto::class); // => True
+$config->hasMappingFor(EmployeeDto::class, Employee::class); // => True
+```
+
+<!-- I feel this can be explained better. Any help appreciated! -->
+**Note**: `reverseMap()` simply creates a completely new mapping in the reverse
+direction, using the default options. However, every operation you defined with
+`forMember` that implements the `Reversible` interface, gets defined for the new
+mapping as well. Currently, only `fromProperty` supports being reversed.
+
+To make things more clear, take a look at the following example.
+
+```php
+<?php
+
+// Source class properties:         Destination class properties:
+// - 'some_property',               - 'some_property'
+// - 'some_alternative_property'    - 'some_other_property'
+// - 'the_last_property'            - 'the_last_property'
+//
+$config->registerMapping(Source::class, Destination::class)
+    ->forMember('some_property', Operation::ignore())
+    ->forMember('some_other_property', Operation::fromProperty('some_alternative_property'))
+    ->reverseMap();
+
+// When mapping from Source to Destination, the following will happen:
+// - some_property gets ignored
+// - some_other_property gets mapped by using the value form some_alternative_property
+// - the_last_property gets mapped because the names are equal.
+//
+// Now, when we go in the reverse direction things are different:
+// - some_property gets mapped, because Ignore is not reversible
+// - some_alternative_property gets mapped because FromProperty is reversible
+// - the_last_property gets mapped as well
+```
+
+### Resolving property names
+Unless you define a specific way to fetch a value (e.g. `mapFrom`), the mapper
+has to have a way to know which source property to map from. By default, it will
+try to transfer data between properties of the same name. There are, however, a
+few ways to alter this behaviour.
+
+If a source property is [specifically defined](#explicitly-state-source-property)
+(e.g. `FromProperty`), this will be used in all cases.
+
 #### Naming conventions
-By default, a mapping will try to transfer data between properties of the same
-name. You can, however, specify the naming conventions followed by the source &
-destination classes. The mapper will take this into account.
+You can specify the naming conventions followed by the source & destination 
+classes. The mapper will take this into account when resolving names.
 
 For example:
 
@@ -300,61 +362,42 @@ source object"*.
 
 `FromProperty` is `Reversible`, meaning that when you apply `reverseMap()`,
 AutoMapper will know how to map between the two properties. For more info, read
-the section about `reverseMap`.
+the [section about `reverseMap`](#reversemap).
 
-#### ReverseMap
-Since it is a common usecase to map in both directions, the `reverseMap()`
-method has been provided. This creates a new mapping in the alternate direction.
+#### Resolving names with a callback
+Should naming conventions and explicitly stating property names not be 
+sufficient, you can resort to a `CallbackNameResolver` (or implement your own
+`NameResolverInterface`).
 
-`reverseMap` will keep the registered naming conventions into account, if there
-are any.
-
-```php
-<?php
-
-// reverseMap() returns the new mapping, allowing to continue configuring the 
-// new mapping.
-$config->registerMapping(Employee::class, EmployeeDto::class)
-    ->reverseMap()
-    ->forMember('id', Operation::ignore());
-
-$config->hasMappingFor(Employee::class, EmployeeDto::class); // => True
-$config->hasMappingFor(EmployeeDto::class, Employee::class); // => True
-```
-
-<!-- I feel this can be explained better. Any help appreciated! -->
-**Note**: `reverseMap()` simply creates a completely new mapping in the reverse 
-direction, using the default options. However, every operation you defined with
-`forMember` that implements the `Reversible` interface, gets defined for the new
-mapping as well. Currently, only `fromProperty` supports being reversed.
-
-To make things more clear, take a look at the following example.
+This `CallbackNameResolver` takes a callback as an argument, and will use this 
+to transform property names.
 
 ```php
 <?php
 
-// Source class properties:         Destination class properties:
-// - 'some_property',               - 'some_property'
-// - 'some_alternative_property'    - 'some_other_property'
-// - 'the_last_property'            - 'the_last_property'
-//
-$config->registerMapping(Source::class, Destination::class)
-    ->forMember('some_property', Operation::ignore())
-    ->forMember('some_other_property', Operation::fromProperty('some_alternative_property'))
-    ->reverseMap();
+class Uppercase
+{
+    public $IMAPROPERTY;
+}
 
-// When mapping from Source to Destination, the following will happen:
-// - some_property gets ignored
-// - some_other_property gets mapped by using the value form some_alternative_property
-// - the_last_property gets mapped because the names are equal.
-//
-// Now, when we go in the reverse direction things are different:
-// - some_property gets mapped, because Ignore is not reversible
-// - some_alternative_property gets mapped because FromProperty is reversible
-// - the_last_property gets mapped as well
+class Lowercase
+{
+    public $imaproperty;
+}
+
+$uppercaseResolver = new CallbackNameResolver(function ($targetProperty) {
+    return strtolower($targetProperty);
+});
+
+$config->registerMapping(Uppercase::class; Lowercase::class)
+    ->withNameResolver($uppercaseResolver);
+
+$uc = new Uppercase();
+$uc->IMAPROPERTY = 'value';
+
+$lc = $mapper->map($uc, Lowercase::class);
+echo $lc->imaproperty; // => "value"
 ```
-
-
 
 ### The Options object
 The `Options` object is a value object containing the possible options for both

@@ -235,6 +235,19 @@ class Mapping implements MappingInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function withNameResolver
+    (
+        NameResolverInterface $nameResolver
+    ): MappingInterface
+    {
+        $this->options->setNameResolver($nameResolver);
+
+        return $this;
+    }
+
+    /**
      * @return MappingOperationInterface
      */
     protected function getDefaultMappingOperation(): MappingOperationInterface

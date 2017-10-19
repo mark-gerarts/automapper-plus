@@ -3,9 +3,11 @@
 namespace AutoMapperPlus\Configuration;
 
 use AutoMapperPlus\Exception\InvalidPropertyException;
+use AutoMapperPlus\MappingOperation\Implementations\Ignore;
 use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
 use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
+use AutoMapperPlus\NameResolver\CallbackNameResolver;
 use AutoMapperPlus\NameResolver\IdentityNameResolver;
 use PHPUnit\Framework\TestCase;
 use Test\Models\NamingConventions\CamelCaseSource;
@@ -58,7 +60,7 @@ class MappingTest extends TestCase
         $this->assertTrue($config->hasMappingFor(Destination::class, Source::class));
     }
 
-    public function testTheOptionsCanBeOverridden()
+    public function testTheOptionsCanBeOverriddenWithSetDefaults()
     {
         $config = new AutoMapperConfig();
         $initialOptions = $config->getOptions();
@@ -131,6 +133,43 @@ class MappingTest extends TestCase
         $this->assertEquals(
             $operation,
             $mapping->getMappingOperationFor('privateProperty')
+        );
+    }
+
+    public function testItSetsOptionsViaHelperMethods()
+    {
+        $mapping = new Mapping(
+            Source::class,
+            Destination::class,
+            new AutoMapperConfig()
+        );
+
+        $mapping->dontSkipConstructor();
+        $this->assertEquals(false, $mapping->getOptions()->shouldSkipConstructor());
+
+        $mapping->withNamingConventions(
+            new CamelCaseNamingConvention(),
+            new SnakeCaseNamingConvention()
+        );
+        $this->assertInstanceOf(
+            CamelCaseNamingConvention::class,
+            $mapping->getOptions()->getSourceMemberNamingConvention()
+        );
+        $this->assertInstanceOf(
+            SnakeCaseNamingConvention::class,
+            $mapping->getOptions()->getDestinationMemberNamingConvention()
+        );
+
+        $mapping->withDefaultOperation(Operation::ignore());
+        $this->assertInstanceOf(
+            Ignore::class,
+            $mapping->getOptions()->getDefaultMappingOperation()
+        );
+
+        $mapping->withNameResolver(new CallbackNameResolver(function() {}));
+        $this->assertInstanceOf(
+            CallbackNameResolver::class,
+            $mapping->getOptions()->getNameResolver()
         );
     }
 }

@@ -7,6 +7,7 @@ use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
 use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
+use AutoMapperPlus\NameResolver\CallbackNameResolver;
 use PHPUnit\Framework\TestCase;
 use Test\Models\NamingConventions\CamelCaseSource;
 use Test\Models\NamingConventions\SnakeCaseSource;
@@ -16,6 +17,8 @@ use Test\Models\Nested\ParentClass;
 use Test\Models\Nested\ParentClassDto;
 use Test\Models\Post\CreatePostViewModel;
 use Test\Models\Post\Post;
+use Test\Models\Prefix\PrefixedSource;
+use Test\Models\Prefix\UnPrefixedSource;
 use Test\Models\SimpleProperties\Destination;
 use Test\Models\SimpleProperties\Source;
 use Test\Models\SpecialConstructor\Source as ConstructorSource;
@@ -292,5 +295,23 @@ class AutoMapperTest extends TestCase
         $result = $mapper->map($source, Source::class);
 
         $this->assertTrue($result->name);
+    }
+
+    public function testItCanResolveNamesWithACallbackNameResolver()
+    {
+        $resolver = new CallbackNameResolver(function ($target) {
+            return 'prefix' . ucfirst($target);
+        });
+
+        $this->config->registerMapping(PrefixedSource::class, UnPrefixedSource::class)
+            ->withNameResolver($resolver);
+        $mapper = new AutoMapper($this->config);
+
+        $source = new PrefixedSource('Hello', 'world!');
+        /** @var UnPrefixedSource $result */
+        $result = $mapper->map($source, UnPrefixedSource::class);
+
+        $this->assertEquals('Hello', $result->getName());
+        $this->assertEquals('world!', $result->getPrivateProperty());
     }
 }

@@ -4,6 +4,7 @@ namespace AutoMapperPlus\Configuration;
 
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
+use AutoMapperPlus\NameResolver\NameResolverInterface;
 
 /**
  * Interface MappingInterface
@@ -74,6 +75,8 @@ interface MappingInterface
     public function dontSkipConstructor(): MappingInterface;
 
     /**
+     * Specifies the naming conventions for this mapping.
+     *
      * @param NamingConventionInterface $sourceNamingConvention
      * @param NamingConventionInterface $destinationNamingConvention
      * @return MappingInterface
@@ -84,8 +87,18 @@ interface MappingInterface
     ): MappingInterface;
 
     /**
+     * Specifies the default operation for this mapping.
+     *
      * @param MappingOperationInterface $mappingOperation
      * @return MappingInterface
      */
     public function withDefaultOperation(MappingOperationInterface $mappingOperation): MappingInterface;
+
+    /**
+     * Specifies a name resolver to be used for this mapping.
+     *
+     * @param NameResolverInterface $nameResolver
+     * @return MappingInterface
+     */
+    public function withNameResolver(NameResolverInterface $nameResolver): MappingInterface;
 }
