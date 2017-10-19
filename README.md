@@ -73,6 +73,8 @@ class Employee
 
 class EmployeeDto
 {
+    // While the properties are public for this example, we can map to private
+    // or protected properties just the same.
     public $firstName;
     public $lastName;
     public $age;
