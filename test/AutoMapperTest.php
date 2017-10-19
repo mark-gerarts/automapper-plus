@@ -69,12 +69,28 @@ class AutoMapperTest extends TestCase
     {
         $this->config->registerMapping(Source::class, Destination::class);
         $mapper = new AutoMapper($this->config);
+
         $source = new Source();
         $source->name = 'Hello';
         $destination = new Destination();
+        $destination->anotherProperty = 'another';
         $destination = $mapper->mapToObject($source, $destination);
 
         $this->assertEquals($source->name, $destination->name);
+        // Make sure we don't override other properties.
+        $this->assertEquals('another', $destination->anotherProperty);
+    }
+
+    public function testSourceDoesntGetOverridden()
+    {
+        $this->config->registerMapping(Source::class, Destination::class);
+        $mapper = new AutoMapper($this->config);
+
+        $source = new Source();
+        $source->name = 'John';
+        $result = $mapper->map($source, Destination::class);
+
+        $this->assertEquals('John', $source->name);
     }
 
     public function testItCanMapWithACallback()
@@ -118,6 +134,13 @@ class AutoMapperTest extends TestCase
         $this->assertEquals(
             $destinationCollection,
             $mapper->mapMultiple($sourceCollection, Destination::class)
+        );
+
+        // Now let's see if we can handle traversables.
+        $traversable = new \ArrayIterator($sourceCollection);
+        $this->assertEquals(
+            $destinationCollection,
+            $mapper->mapMultiple($traversable, Destination::class)
         );
     }
 
