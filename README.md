@@ -387,6 +387,7 @@ The available options that can be set are:
 | Skip constructor | `true` | whether or not the constructor should be skipped when instantiating a new class. Use `$options->skipConstructor()` and `$options->dontSkipConstructor()` to change. |
 | Property accessor | `PropertyAccessor` | Use this to provide an alternative implementation of the property accessor. |
 | Default mapping operation | `DefaultMappingOperation` | the default operation used when mapping a property. Also see [mapping operations](#operations) |
+| Default name resolver | `NameResolver` | The default class to resolve property names |
 
 ### Setting the options
 
