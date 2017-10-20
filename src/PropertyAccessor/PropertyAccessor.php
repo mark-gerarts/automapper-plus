@@ -14,8 +14,8 @@ class PropertyAccessor implements PropertyAccessorInterface
      */
     public function hasProperty($object, string $propertyName): bool
     {
-        if ($object instanceof \stdClass) {
-            return isset(get_object_vars($object)[$propertyName]);
+        if (isset($object->{$propertyName})) {
+            return true;
         }
 
         return (new \ReflectionClass($object))->hasProperty($propertyName);
@@ -84,13 +84,7 @@ class PropertyAccessor implements PropertyAccessorInterface
      */
     private function isPublic(string $propertyName, $object): bool
     {
-        if ($object instanceof \stdClass) {
-            return true;
-        }
-
-        $reflectionClass = new \ReflectionClass($object);
-        $property = $reflectionClass->getProperty($propertyName);
-
-        return $property->isPublic();
+        // Cheap check to see if the property is public.
+        return isset($object->{$propertyName});
     }
 }
