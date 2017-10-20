@@ -25,6 +25,7 @@ Transfers data from one object to another, allowing custom mapping operations.
         * [For the AutoMapperConfig](#for-the-automapperconfig)
         * [For the mappings](#for-the-mappings)
     * [Mapping with stdClass](#mapping-with-stdclass)
+* [Similar libraries](#similar-libraries)
 * [See also](#see-also)
 * [Roadmap](#roadmap)
 
@@ -508,6 +509,41 @@ echo $result->lastName; // => "Doe"
 ```
 
 Mapping **to** a `stdClass` is not supported (yet).
+
+## Similar libraries
+When picking a library, it's important to see what options are available. No
+library is perfect, and they all have their pro's and con's.
+
+There exist a few other object mappers for PHP. They're listed here with a short
+description. They're definitely worth checking out!
+
+- **[Nylle/PHP-AutoMapper](https://github.com/Nylle/PHP-AutoMapper):**
+    - Only maps public properties
+    - Requires some conventions to be met
+    - Does some interesting stuff with types
+- **[Papper](https://github.com/idr0id/Papper):**
+    - Convention based
+    - High performance
+    - Lacks in documentation
+- **[BCCAutoMapperBundle](https://github.com/michelsalib/BCCAutoMapperBundle):**
+    - Only available as a Symfony bundle (<3.0)
+    - Very similar to this project
+    - Does some cool stuff with graph mapping
+
+Performance benchmarks (credit goes to [idr0id](https://github.com/idr0id/php-mappers-benchmarks)):
+
+Runtime: PHP 7.1.8-1<br>
+Host: Linux 4.13.0-1-amd64 #1 SMP Debian 4.13.4-2 (2017-10-15) x86_64<br>
+Collection size: 10000
+
+| package                       | duration (MS) | MEM (B)  |
+| ----------------------------- | ------------- | -------- |
+| native php                    | 3             | 6291456  |
+| idr0id/papper                 | 39            | 6291456  |
+| trismegiste/alkahest          | 116           | 16777216 |
+| nylle/php-automapper          | 188           | 16777216 |
+| mark-gerarts/auto-mapper-plus | 291           | 16777216 |
+| bcc/auto-mapper-bundle        | 716           | 6291456  |
 
 ## See also
 - [The Symfony bundle](https://github.com/mark-gerarts/automapper-plus-bundle)
