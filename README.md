@@ -514,8 +514,8 @@ Mapping **to** a `stdClass` is not supported (yet).
 When picking a library, it's important to see what options are available. No
 library is perfect, and they all have their pro's and con's.
 
-There exist a few other object mappers for PHP. They're listed here with a short
-description. They're definitely worth checking out!
+A few other object mappers exist for PHP. They're listed here with a short
+description, and are definitely worth checking out!
 
 - **[Nylle/PHP-AutoMapper](https://github.com/Nylle/PHP-AutoMapper):**
     - Only maps public properties
