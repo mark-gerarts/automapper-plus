@@ -25,6 +25,7 @@ Transfers data from one object to another, allowing custom mapping operations.
         * [For the AutoMapperConfig](#for-the-automapperconfig)
         * [For the mappings](#for-the-mappings)
     * [Mapping with stdClass](#mapping-with-stdclass)
+    * [Using a custom mapper](#using-a-custom-mapper)
 * [Similar libraries](#similar-libraries)
 * [See also](#see-also)
 * [Roadmap](#roadmap)
@@ -436,6 +437,7 @@ The available options that can be set are:
 | Property accessor | `PropertyAccessor` | Use this to provide an alternative implementation of the property accessor. |
 | Default mapping operation | `DefaultMappingOperation` | the default operation used when mapping a property. Also see [mapping operations](#operations) |
 | Default name resolver | `NameResolver` | The default class to resolve property names |
+| Custom Mapper | `null` | Grants the ability to use a [custom mapper](#using-a-custom-mapper). |
 
 ### Setting the options
 
@@ -509,6 +511,49 @@ echo $result->lastName; // => "Doe"
 ```
 
 Mapping **to** a `stdClass` is not supported (yet).
+
+### Using a custom mapper
+This library attempts to make registering mappings painless, with as little 
+configuration as possible. However, cases exist where a mapping requires a lot
+of custom code. This code would look a lot cleaner if put in its own class.
+Another reason to resort to a custom mapper would be [performance](#similar-libraries).
+
+It is therefore possible to specify a custom mapper class for a mapping. This
+mapper has to implement the `MapperInterface`. For your convenience, a
+`CustomMapper` class has been provided that implements this interface.
+
+```php
+<?php
+
+// You can either extend the CustomMapper, or just implement the MapperInterface
+// directly.
+class EmployeeMapper extends CustomMapper
+{
+    /**
+     * @param Employee $source
+     * @param EmployeeDto $destination
+     * @return EmployeeDto
+     */
+    public function mapToObject($source, $destination)
+    {
+        $destination->id = $source->getId();
+        $destination->firstName = $source->getFirstName();
+        $destination->lastName = $source->getLastName();
+        $destination->age = date('Y') - $source->getBirthYear();
+
+        return $destination;
+    }
+}
+
+$config->registerMapping(Employee::class, EmployeeDto::class)
+    ->useCustomMapper(new EmployeeMapper());
+$mapper = new AutoMapper($config);
+
+// The AutoMapper can now be used as usual, but your custom mapper class will be
+// called to do the actual mapping.
+$employee = new Employee(10, 'John', 'Doe', 1980);
+$result = $mapper->map($employee, EmployeeDto::class);
+```
 
 ## Similar libraries
 When picking a library, it's important to see what options are available. No

@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\MapperInterface;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
 use AutoMapperPlus\NameResolver\NameResolverInterface;
@@ -101,4 +102,21 @@ interface MappingInterface
      * @return MappingInterface
      */
     public function withNameResolver(NameResolverInterface $nameResolver): MappingInterface;
+
+    /**
+     * Registers a custom mapper to be used for this specific mapping.
+     *
+     * @param MapperInterface $mapper
+     */
+    public function useCustomMapper(MapperInterface $mapper): void;
+
+    /**
+     * @return bool
+     */
+    public function providesCustomMapper(): bool;
+
+    /**
+     * @return MapperInterface|null
+     */
+    public function getCustomMapper(): ?MapperInterface;
 }

@@ -4,11 +4,14 @@ namespace AutoMapperPlus;
 
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
+use AutoMapperPlus\Test\CustomMapper\EmployeeMapper;
 use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
 use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use AutoMapperPlus\NameResolver\CallbackNameResolver;
 use PHPUnit\Framework\TestCase;
+use Test\Models\Employee\Employee;
+use Test\Models\Employee\EmployeeDto;
 use Test\Models\NamingConventions\CamelCaseSource;
 use Test\Models\NamingConventions\SnakeCaseSource;
 use Test\Models\Nested\ChildClass;
@@ -313,5 +316,17 @@ class AutoMapperTest extends TestCase
 
         $this->assertEquals('Hello', $result->getName());
         $this->assertEquals('world!', $result->getPrivateProperty());
+    }
+
+    public function testACustomMapperCanBeUsed()
+    {
+        $this->config->registerMapping(Employee::class, EmployeeDto::class)
+            ->useCustomMapper(new EmployeeMapper());
+        $mapper = new AutoMapper($this->config);
+
+        $employee = new Employee(10, 'John', 'Doe', 1980);
+        $result = $mapper->map($employee, EmployeeDto::class);
+
+        $this->assertEquals('Mapped by EmployeeMapper', $result->notes);
     }
 }

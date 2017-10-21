@@ -3,7 +3,7 @@
 namespace AutoMapperPlus\Configuration;
 
 use AutoMapperPlus\Exception\InvalidPropertyException;
-use AutoMapperPlus\MappingOperation\AlternativePropertyProvider;
+use AutoMapperPlus\MapperInterface;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\MappingOperation\Reversible;
@@ -264,5 +264,29 @@ class Mapping implements MappingInterface
     private function getNameResolver(): NameResolverInterface
     {
         return $this->options->getNameResolver();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function useCustomMapper(MapperInterface $mapper): void
+    {
+        $this->options->setCustomMapper($mapper);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function providesCustomMapper(): bool
+    {
+        return $this->options->providesCustomMapper();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCustomMapper(): ?MapperInterface
+    {
+        return $this->options->getCustomMapper();
     }
 }

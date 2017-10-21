@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\AutoMapper;
 use AutoMapperPlus\Exception\InvalidPropertyException;
 use AutoMapperPlus\MappingOperation\Implementations\Ignore;
 use AutoMapperPlus\MappingOperation\Operation;
@@ -171,5 +172,23 @@ class MappingTest extends TestCase
             CallbackNameResolver::class,
             $mapping->getOptions()->getNameResolver()
         );
+    }
+
+    public function testIfItCanRegisterACustomMapping()
+    {
+        $mapping = new Mapping(
+            Source::class,
+            Destination::class,
+            new AutoMapperConfig()
+        );
+
+        $this->assertFalse($mapping->providesCustomMapper());
+        $this->assertNull($mapping->getCustomMapper());
+
+        $mapper = new AutoMapper();
+        $mapping->useCustomMapper($mapper);
+
+        $this->assertTrue($mapping->providesCustomMapper());
+        $this->assertEquals($mapper, $mapping->getCustomMapper());
     }
 }

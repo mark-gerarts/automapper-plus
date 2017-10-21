@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  */
 class NameConverterTest extends TestCase
 {
-    public function testItResolves()
+    public function testItResolvesConventions()
     {
         $input = 'camelCaseNotation';
         $expectedOutput = 'camel_case_notation';

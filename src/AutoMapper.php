@@ -50,6 +50,10 @@ class AutoMapper implements AutoMapperInterface
         $mapping = $this->autoMapperConfig->getMappingFor($sourceClass, $destinationClass);
         $this->ensureConfigExists($sourceClass, $destinationClass);
 
+        if ($mapping->providesCustomMapper()) {
+            return $mapping->getCustomMapper()->map($source, $destinationClass);
+        }
+
         // Check if we need to skip the constructor.
         if ($mapping->getOptions()->shouldSkipConstructor()) {
             $destinationReflectionClass = new \ReflectionClass($destinationClass);
@@ -77,20 +81,22 @@ class AutoMapper implements AutoMapperInterface
      */
     public function mapToObject($source, $destination)
     {
-        $sourceReflectionClass = new \ReflectionClass($source);
-        $destinationReflectionClass = new \ReflectionClass($destination);
+        $sourceClassName = get_class($source);
+        $destinationClassName = get_class($destination);
 
         // First, check if a mapping exists for the given objects.
-        $this->ensureConfigExists(
-            $sourceReflectionClass->getName(),
-            $destinationReflectionClass->getName()
-        );
+        $this->ensureConfigExists($sourceClassName, $destinationClassName);
 
         $mapping = $this->autoMapperConfig->getMappingFor(
-            $sourceReflectionClass->getName(),
-            $destinationReflectionClass->getName()
+            $sourceClassName,
+            $destinationClassName
         );
 
+        if ($mapping->providesCustomMapper()) {
+            return $mapping->getCustomMapper()->mapToObject($source, $destination);
+        }
+
+        $destinationReflectionClass = new \ReflectionClass($destination);
         foreach ($destinationReflectionClass->getProperties() as $destinationProperty) {
             $mappingOperation = $mapping->getMappingOperationFor($destinationProperty->getName());
 
