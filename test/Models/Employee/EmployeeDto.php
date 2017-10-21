@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Models\Employee;
+namespace AutoMapperPlus\Test\Models\Employee;
 
 class EmployeeDto
 {

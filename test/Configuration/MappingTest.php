@@ -11,11 +11,11 @@ use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use AutoMapperPlus\NameResolver\CallbackNameResolver;
 use AutoMapperPlus\NameResolver\IdentityNameResolver;
 use PHPUnit\Framework\TestCase;
-use Test\Models\NamingConventions\CamelCaseSource;
-use Test\Models\NamingConventions\SnakeCaseSource;
-use Test\Models\SimpleProperties\Destination;
-use Test\Models\SimpleProperties\Source;
-use Test\Models\Visibility\Visibility;
+use AutoMapperPlus\Test\Models\NamingConventions\CamelCaseSource;
+use AutoMapperPlus\Test\Models\NamingConventions\SnakeCaseSource;
+use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
+use AutoMapperPlus\Test\Models\SimpleProperties\Source;
+use AutoMapperPlus\Test\Models\Visibility\Visibility;
 
 /**
  * Class MappingTest

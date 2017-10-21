@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Models\Post;
+namespace AutoMapperPlus\Test\Models\Post;
 
 class Post
 {

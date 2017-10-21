@@ -1,11 +1,11 @@
 <?php
 
-namespace Test\Models\Employee;
+namespace AutoMapperPlus\Test\Models\Employee;
 
 /**
  * Class Employee
  *
- * @package Test\Models\Employee
+ * @package AutoMapperPlus\Test\Models\Employee
  */
 class Employee
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Models\SpecialConstructor;
+namespace AutoMapperPlus\Test\Models\SpecialConstructor;
 
 class Source
 {

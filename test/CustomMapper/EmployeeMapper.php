@@ -3,8 +3,8 @@
 namespace AutoMapperPlus\Test\CustomMapper;
 
 use AutoMapperPlus\CustomMapper\CustomMapper;
-use Test\Models\Employee\Employee;
-use Test\Models\Employee\EmployeeDto;
+use AutoMapperPlus\Test\Models\Employee\Employee;
+use AutoMapperPlus\Test\Models\Employee\EmployeeDto;
 
 /**
  * Class EmployeeMapper

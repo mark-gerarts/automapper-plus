@@ -4,8 +4,8 @@ namespace AutoMapperPlus\MappingOperation\Implementations;
 
 use AutoMapperPlus\Configuration\Options;
 use PHPUnit\Framework\TestCase;
-use Test\Models\SimpleProperties\Destination;
-use Test\Models\SimpleProperties\Source;
+use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
+use AutoMapperPlus\Test\Models\SimpleProperties\Source;
 
 /**
  * Class MapFromTest

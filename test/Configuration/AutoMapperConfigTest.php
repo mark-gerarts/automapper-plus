@@ -5,8 +5,8 @@ namespace AutoMapperPlus\Configuration;
 use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use PHPUnit\Framework\TestCase;
-use Test\Models\SimpleProperties\Destination;
-use Test\Models\SimpleProperties\Source;
+use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
+use AutoMapperPlus\Test\Models\SimpleProperties\Source;
 
 /**
  * Class AutoMapperConfigTest

@@ -6,11 +6,11 @@ use AutoMapperPlus\AutoMapper;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use AutoMapperPlus\Configuration\Options;
 use PHPUnit\Framework\TestCase;
-use Test\Models\Nested\ChildClass;
-use Test\Models\Nested\ParentClass;
-use Test\Models\Nested\ParentClassDto;
-use Test\Models\SimpleProperties\Destination;
-use Test\Models\SimpleProperties\Source;
+use AutoMapperPlus\Test\Models\Nested\ChildClass;
+use AutoMapperPlus\Test\Models\Nested\ParentClass;
+use AutoMapperPlus\Test\Models\Nested\ParentClassDto;
+use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
+use AutoMapperPlus\Test\Models\SimpleProperties\Source;
 
 /**
  * Class MapToTest

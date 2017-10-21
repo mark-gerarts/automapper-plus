@@ -1,11 +1,11 @@
 <?php
 
-namespace Test\Models\NamingConventions;
+namespace AutoMapperPlus\Test\Models\NamingConventions;
 
 /**
  * Class SnakeCaseSource
  *
- * @package Test\Models\NamingConventions
+ * @package AutoMapperPlus\Test\Models\NamingConventions
  */
 class SnakeCaseSource
 {

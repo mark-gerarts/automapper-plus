@@ -1,11 +1,11 @@
 <?php
 
-namespace Test\Models\Visibility;
+namespace AutoMapperPlus\Test\Models\Visibility;
 
 /**
  * Class Visibility
  *
- * @package Test\Models
+ * @package AutoMapperPlus\Test\Models
  */
 class Visibility
 {

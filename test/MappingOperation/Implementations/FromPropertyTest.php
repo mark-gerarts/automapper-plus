@@ -4,8 +4,8 @@ namespace AutoMapperPlus\MappingOperation\Implementations;
 
 use AutoMapperPlus\Configuration\Options;
 use PHPUnit\Framework\TestCase;
-use Test\Models\SimpleProperties\Destination;
-use Test\Models\Visibility\Visibility;
+use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
+use AutoMapperPlus\Test\Models\Visibility\Visibility;
 
 /**
  * Class FromPropertyTest

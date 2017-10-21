@@ -6,10 +6,10 @@ use AutoMapperPlus\Configuration\Options;
 use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
 use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use PHPUnit\Framework\TestCase;
-use Test\Models\NamingConventions\CamelCaseSource;
-use Test\Models\NamingConventions\SnakeCaseSource;
-use Test\Models\SimpleProperties\Destination;
-use Test\Models\SimpleProperties\Source;
+use AutoMapperPlus\Test\Models\NamingConventions\CamelCaseSource;
+use AutoMapperPlus\Test\Models\NamingConventions\SnakeCaseSource;
+use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
+use AutoMapperPlus\Test\Models\SimpleProperties\Source;
 
 /**
  * Class DefaultMappingOperationTest

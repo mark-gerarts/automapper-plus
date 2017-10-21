@@ -3,7 +3,7 @@
 namespace AutoMapperPlus\PropertyAccessor;
 
 use PHPUnit\Framework\TestCase;
-use Test\Models\Visibility\Visibility;
+use AutoMapperPlus\Test\Models\Visibility\Visibility;
 
 class PropertyAccessorTest extends TestCase
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Test\Models\SimpleProperties;
+namespace AutoMapperPlus\Test\Models\SimpleProperties;
 
 /**
  * Class HasPrivatePropertiesDto
  *
- * @package Test\Models\SimpleProperties
+ * @package AutoMapperPlus\Test\Models\SimpleProperties
  */
 class HasPrivatePropertiesDto
 {

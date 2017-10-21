@@ -1,13 +1,13 @@
 <?php
 
-namespace Test\Models\SimpleProperties;
+namespace AutoMapperPlus\Test\Models\SimpleProperties;
 
 /**
  * Class HasPrivateProperties
  *
  * An example class that consists of some private properties.
  *
- * @package Test\Models\SimpleProperties
+ * @package AutoMapperPlus\Test\Models\SimpleProperties
  */
 class HasPrivateProperties
 {

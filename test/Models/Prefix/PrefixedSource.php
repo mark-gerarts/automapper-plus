@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Models\Prefix;
+namespace AutoMapperPlus\Test\Models\Prefix;
 
 class PrefixedSource
 {

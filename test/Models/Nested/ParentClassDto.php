@@ -1,11 +1,11 @@
 <?php
 
-namespace Test\Models\Nested;
+namespace AutoMapperPlus\Test\Models\Nested;
 
 /**
  * Class ParentClassDto
  *
- * @package Test\Models\Nested
+ * @package AutoMapperPlus\Test\Models\Nested
  */
 class ParentClassDto
 {
