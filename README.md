@@ -602,7 +602,7 @@ Collection size: 10000
 - [ ] Allow mapping to `stdClass`
 - [ ] Provide options to copy a mapping
 - [ ] Allow setting of prefix for name resolver (see [automapper](https://github.com/AutoMapper/AutoMapper/wiki/Configuration#recognizing-prepostfixes))
-- [ ] Create operation to copy value from property
+- [x] Create operation to copy value from property
 - [ ] Allow configuring of options in AutoMapperConfig -> error when trying with a registered mapping
 - [ ] Consider: passing of options to a single mapping operation
 - [x] MapTo: allow mapping of collection
