@@ -81,7 +81,7 @@ class Options
     public function setSourceMemberNamingConvention
     (
         NamingConventionInterface $sourceMemberNamingConvention
-    )
+    ): void
     {
         $this->sourceMemberNamingConvention = $sourceMemberNamingConvention;
     }
@@ -100,7 +100,7 @@ class Options
     public function setDestinationMemberNamingConvention
     (
         NamingConventionInterface $destinationMemberNamingConvention
-    )
+    ): void
     {
         $this->destinationMemberNamingConvention = $destinationMemberNamingConvention;
     }
@@ -113,14 +113,22 @@ class Options
         return $this->shouldSkipConstructor;
     }
 
-    public function skipConstructor()
+    public function skipConstructor(): void
     {
         $this->shouldSkipConstructor = true;
     }
 
-    public function dontSkipConstructor()
+    public function dontSkipConstructor(): void
     {
         $this->shouldSkipConstructor = false;
+    }
+
+    /**
+     * @param bool $shouldSkipConstructor
+     */
+    public function setShouldSkipConstructor(bool $shouldSkipConstructor): void
+    {
+        $this->shouldSkipConstructor = $shouldSkipConstructor;
     }
 
     /**
@@ -134,25 +142,12 @@ class Options
     /**
      * @param PropertyAccessorInterface $propertyAccessor
      */
-    public function setPropertyAccessor(PropertyAccessorInterface $propertyAccessor)
+    public function setPropertyAccessor
+    (
+        PropertyAccessorInterface $propertyAccessor
+    ): void
     {
         $this->propertyAccessor = $propertyAccessor;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isShouldSkipConstructor(): bool
-    {
-        return $this->shouldSkipConstructor;
-    }
-
-    /**
-     * @param bool $shouldSkipConstructor
-     */
-    public function setShouldSkipConstructor(bool $shouldSkipConstructor)
-    {
-        $this->shouldSkipConstructor = $shouldSkipConstructor;
     }
 
     /**
@@ -169,7 +164,7 @@ class Options
     public function setDefaultMappingOperation
     (
         MappingOperationInterface $defaultMappingOperation
-    )
+    ): void
     {
         $this->defaultMappingOperation = $defaultMappingOperation;
     }
@@ -185,7 +180,7 @@ class Options
     /**
      * @param NameResolverInterface $nameResolver
      */
-    public function setNameResolver(NameResolverInterface $nameResolver)
+    public function setNameResolver(NameResolverInterface $nameResolver): void
     {
         $this->nameResolver = $nameResolver;
     }
@@ -213,7 +208,7 @@ class Options
     /**
      * @param MapperInterface $customMapper
      */
-    public function setCustomMapper(MapperInterface $customMapper)
+    public function setCustomMapper(MapperInterface $customMapper): void
     {
         $this->customMapper = $customMapper;
     }
