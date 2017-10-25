@@ -590,6 +590,8 @@ Collection size: 10000
 | mark-gerarts/auto-mapper-plus | 291           | 16777216 |
 | bcc/auto-mapper-bundle        | 716           | 6291456  |
 
+*Up-to-date benchmarks can be found [here](https://travis-ci.org/idr0id/php-mappers-benchmarks).*
+
 ## See also
 - [The Symfony bundle](https://github.com/mark-gerarts/automapper-plus-bundle)
 - [The Symfony demo app (WIP)](https://github.com/mark-gerarts/automapper-plus-demo-app)
