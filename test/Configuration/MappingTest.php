@@ -84,18 +84,6 @@ class MappingTest extends TestCase
         $this->assertEquals($initialOptions, $config->getOptions());
     }
 
-    public function testItThrowsAnExcptionWhenRegisteringAnUnknownProperty()
-    {
-        $mapping = new Mapping(
-            Source::class,
-            Destination::class,
-            new AutoMapperConfig()
-        );
-
-        $this->expectException(InvalidPropertyException::class);
-        $mapping->forMember('i_dont_exist', Operation::ignore());
-    }
-
     public function testForMemberWithDifferentNames()
     {
         $mapping = new Mapping(
@@ -211,5 +199,24 @@ class MappingTest extends TestCase
         }
 
         $this->assertFalse($exception);
+    }
+
+    public function testItCanRegisterAStdClassMapping()
+    {
+        $mapping = new Mapping(
+            \stdClass::class,
+            Destination::class,
+            new AutoMapperConfig()
+        );
+        $mapping->forMember('name', Operation::fromProperty('name'));
+
+        $source = new \stdClass();
+        $source->name = 'John';
+        $destination = new Destination();
+
+        $op = $mapping->getMappingOperationFor('name');
+        $op->mapProperty('name', $source, $destination);
+
+        $this->assertEquals('John', $destination->name);
     }
 }
