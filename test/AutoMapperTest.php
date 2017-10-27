@@ -329,4 +329,21 @@ class AutoMapperTest extends TestCase
 
         $this->assertEquals('Mapped by EmployeeMapper', $result->notes);
     }
+
+    public function testItCanMapADifferentlyNamedPropertyWithACallback()
+    {
+        $this->config->registerMapping(
+            SnakeCaseSource::class,
+            CamelCaseSource::class
+        )->forMember('anotherProperty', function () {
+            return 'Test';
+        });
+
+        $mapper = new AutoMapper($this->config);
+
+        $source = new SnakeCaseSource();
+        $result = $mapper->map($source, CamelCaseSource::class);
+
+        $this->assertEquals('Test', $result->anotherProperty);
+    }
 }

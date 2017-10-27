@@ -33,4 +33,14 @@ class MapFrom extends DefaultMappingOperation
     {
         return ($this->valueCallback)($source);
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function canMapProperty(string $propertyName, $source): bool
+    {
+        // Mapping with a callback is always possible, regardless of the source
+        // properties.
+        return true;
+    }
 }
