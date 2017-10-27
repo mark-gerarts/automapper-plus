@@ -4,6 +4,7 @@ namespace AutoMapperPlus\Configuration;
 
 use AutoMapperPlus\Exception\InvalidPropertyException;
 use AutoMapperPlus\MapperInterface;
+use AutoMapperPlus\MappingOperation\Implementations\MapFrom;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\MappingOperation\Reversible;
@@ -104,7 +105,9 @@ class Mapping implements MappingInterface
         );
 
         // Ensure the property exists on the target class before registering it.
-        if (!property_exists($this->getSourceClassName(), $sourcePropertyName)) {
+        if ($this->shouldCheckForSourceProperty($operation)
+            &&!property_exists($this->getSourceClassName(), $sourcePropertyName)
+        ) {
             throw InvalidPropertyException::fromNameAndClass(
                 $sourcePropertyName,
                 $this->getSourceClassName()
@@ -117,6 +120,22 @@ class Mapping implements MappingInterface
         $this->mappingOperations[$targetPropertyName] = $operation;
 
         return $this;
+    }
+
+  /**
+   * @param MappingOperationInterface $operation
+   * @return bool
+   */
+    private function shouldCheckForSourceProperty
+    (
+        MappingOperationInterface $operation
+    ): bool
+    {
+        // @todo:
+        // This is a quick and dirty fix. The cleaner option would be to either
+        // - Create an interface we can check (e.g. NoSourcePropertyInterface)
+        // - Provide a method on the Operation class.
+        return !$operation instanceof MapFrom;
     }
 
     /**

@@ -191,4 +191,25 @@ class MappingTest extends TestCase
         $this->assertTrue($mapping->providesCustomMapper());
         $this->assertEquals($mapper, $mapping->getCustomMapper());
     }
+
+    public function testItCanRegisterACallbackWithADifferentPropertyName()
+    {
+        $mapping = new Mapping(
+            SnakeCaseSource::class,
+            CamelCaseSource::class,
+            new AutoMapperConfig()
+        );
+
+        $exception = false;
+        try {
+            $mapping->forMember('anotherProperty', function () {
+              return 5;
+            });
+        }
+        catch (InvalidPropertyException $e) {
+            $exception = true;
+        }
+
+        $this->assertFalse($exception);
+    }
 }
