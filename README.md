@@ -88,7 +88,7 @@ class EmployeeDto
 ```
 
 The following snippet provides a quick overview on how the mapper can be 
-configured and used.
+configured and used:
 
 ```php
 <?php
@@ -136,7 +136,7 @@ $config->registerMapping(Source::class, Destination::class);
 $mapper = new AutoMapper($config);
 ```
 
-**Using the static constructor**
+**Using the static constructor:**
 ```php
 <?php
 
@@ -257,7 +257,7 @@ $config->createMapping(Parent::class, ParentDto::class)
 ```
 
 #### ReverseMap
-Since it is a common usecase to map in both directions, the `reverseMap()`
+Since it is a common use case to map in both directions, the `reverseMap()`
 method has been provided. This creates a new mapping in the alternate direction.
 
 `reverseMap` will keep the registered naming conventions into account, if there
@@ -282,7 +282,7 @@ direction, using the default options. However, every operation you defined with
 `forMember` that implements the `Reversible` interface, gets defined for the new
 mapping as well. Currently, only `fromProperty` supports being reversed.
 
-To make things more clear, take a look at the following example.
+To make things more clear, take a look at the following example:
 
 ```php
 <?php
