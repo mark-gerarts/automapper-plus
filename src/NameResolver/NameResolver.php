@@ -2,7 +2,6 @@
 
 namespace AutoMapperPlus\NameResolver;
 
-use AutoMapperPlus\Configuration\MappingInterface;
 use AutoMapperPlus\Configuration\Options;
 use AutoMapperPlus\MappingOperation\AlternativePropertyProvider;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;

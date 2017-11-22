@@ -241,14 +241,6 @@ class Mapping implements MappingInterface
     }
 
     /**
-     * @return NameResolverInterface
-     */
-    private function getNameResolver(): NameResolverInterface
-    {
-        return $this->options->getNameResolver();
-    }
-
-    /**
      * @inheritdoc
      */
     public function useCustomMapper(MapperInterface $mapper): void
