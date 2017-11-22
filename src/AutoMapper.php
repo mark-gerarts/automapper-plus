@@ -4,6 +4,7 @@ namespace AutoMapperPlus;
 
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
+use AutoMapperPlus\Configuration\MappingInterface;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\MappingOperation\Implementations\MapTo;
 use function Functional\map;
@@ -47,9 +48,8 @@ class AutoMapper implements AutoMapperInterface
     public function map($source, string $destinationClass)
     {
         $sourceClass = get_class($source);
-        $mapping = $this->autoMapperConfig->getMappingFor($sourceClass, $destinationClass);
-        $this->ensureConfigExists($sourceClass, $destinationClass);
 
+        $mapping = $this->getMapping($sourceClass, $destinationClass);
         if ($mapping->providesCustomMapper()) {
             return $mapping->getCustomMapper()->map($source, $destinationClass);
         }
@@ -63,7 +63,7 @@ class AutoMapper implements AutoMapperInterface
             $destinationObject = new $destinationClass;
         }
 
-        return $this->mapToObject($source, $destinationObject);
+        return $this->doMap($source, $destinationObject, $mapping);
     }
 
     /**
@@ -84,18 +84,25 @@ class AutoMapper implements AutoMapperInterface
         $sourceClassName = get_class($source);
         $destinationClassName = get_class($destination);
 
-        // First, check if a mapping exists for the given objects.
-        $this->ensureConfigExists($sourceClassName, $destinationClassName);
-
-        $mapping = $this->autoMapperConfig->getMappingFor(
-            $sourceClassName,
-            $destinationClassName
-        );
-
+        $mapping = $this->getMapping($sourceClassName, $destinationClassName);
         if ($mapping->providesCustomMapper()) {
             return $mapping->getCustomMapper()->mapToObject($source, $destination);
         }
 
+        return $this->doMap($source, $destination, $mapping);
+    }
+
+    /**
+     * Performs the actual transferring of properties.
+     *
+     * @param $source
+     * @param $destination
+     * @param MappingInterface $mapping
+     * @return mixed
+     *   The destination object with mapped properties.
+     */
+    protected function doMap($source, $destination, MappingInterface $mapping)
+    {
         $destinationReflectionClass = new \ReflectionClass($destination);
         foreach ($destinationReflectionClass->getProperties() as $destinationProperty) {
             $mappingOperation = $mapping->getMappingOperationFor($destinationProperty->getName());
@@ -127,14 +134,26 @@ class AutoMapper implements AutoMapperInterface
     /**
      * @param string $sourceClass
      * @param string $destinationClass
-     * @return void
+     * @return MappingInterface
      * @throws UnregisteredMappingException
      */
-    protected function ensureConfigExists(string $sourceClass, string $destinationClass): void
+    protected function getMapping
+    (
+        string $sourceClass,
+        string $destinationClass
+    ): MappingInterface
     {
-        $configExists = $this->autoMapperConfig->hasMappingFor($sourceClass, $destinationClass);
-        if (!$configExists) {
-            throw UnregisteredMappingException::fromClasses($sourceClass, $destinationClass);
+        $mapping = $this->autoMapperConfig->getMappingFor(
+            $sourceClass,
+            $destinationClass
+        );
+        if ($mapping) {
+            return $mapping;
         }
+
+        throw UnregisteredMappingException::fromClasses(
+            $sourceClass,
+            $destinationClass
+        );
     }
 }
