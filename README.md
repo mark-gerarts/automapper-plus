@@ -16,6 +16,7 @@ Transfers data from one object to another, allowing custom mapping operations.
         * [Operations](#operations)
         * [Dealing with nested mappings](#dealing-with-nested-mappings)
         * [ReverseMap](#reversemap)
+        * [Copying a mapping](#copying-a-mapping)
     * [Resolving property names](#resolving-property-names)
         * [Naming conventions](#naming-conventions)
         * [Explicitly state source property](#explicitly-state-source-property)
@@ -306,6 +307,40 @@ $config->registerMapping(Source::class, Destination::class)
 // - some_property gets mapped, because Ignore is not reversible
 // - some_alternative_property gets mapped because FromProperty is reversible
 // - the_last_property gets mapped as well
+```
+
+#### Copying a mapping
+When defining different view models, it can occur that you have lots of similar
+properties. For example, with a ListViewModel and a DetailViewModel. This means
+that the mapping configuration will be similar as well.
+
+For this reason, it is possible to copy a mapping. In practice this means that
+all the options will be copied, and all the explicitly defined mapping
+operations.
+
+After copying the mapping, you're free to override operations or options on the
+new mapping.
+
+```php
+<?php
+
+$detailMapping = $config->registerMapping(Employee::class, EmployeeDetailView::class)
+    // Define operations and options ...
+    ->forMember('age', function () {
+        return 20;
+    });
+
+// You can copy a mapping by passing source and destination class. This will
+// search the config for the relevant mapping.
+$listMapping = $config->registerMapping(Employee::class, EmployeeListView::class)
+    ->copyFrom(Employee::class, EmployeeDetailView::class)
+    // Alternatively, copy a mapping by passing it directly.
+    // ->copyFromMapping($detailMapping)
+    //
+    // You can now go ahead and define new operations, or override existing
+    // ones.
+    ->forMember('name', Operation::ignore())
+    ->skipConstructor();
 ```
 
 ### Resolving property names
@@ -602,7 +637,7 @@ Collection size: 10000
 - [x] Allow mapping from `stdClass`,
 - [ ] or perhaps even an associative array (could have)
 - [ ] Allow mapping to `stdClass`
-- [ ] Provide options to copy a mapping
+- [x] Provide options to copy a mapping
 - [ ] Allow setting of prefix for name resolver (see [automapper](https://github.com/AutoMapper/AutoMapper/wiki/Configuration#recognizing-prepostfixes))
 - [x] Create operation to copy value from property
 - [ ] Allow configuring of options in AutoMapperConfig -> error when trying with a registered mapping

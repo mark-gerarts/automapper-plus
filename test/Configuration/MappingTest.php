@@ -4,12 +4,13 @@ namespace AutoMapperPlus\Configuration;
 
 use AutoMapperPlus\AutoMapper;
 use AutoMapperPlus\Exception\InvalidPropertyException;
+use AutoMapperPlus\MappingOperation\DefaultMappingOperation;
 use AutoMapperPlus\MappingOperation\Implementations\Ignore;
 use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
 use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use AutoMapperPlus\NameResolver\CallbackNameResolver;
-use AutoMapperPlus\NameResolver\IdentityNameResolver;
+use AutoMapperPlus\Test\Models\SimpleProperties\DestinationAlt;
 use PHPUnit\Framework\TestCase;
 use AutoMapperPlus\Test\Models\NamingConventions\CamelCaseSource;
 use AutoMapperPlus\Test\Models\NamingConventions\SnakeCaseSource;
@@ -218,5 +219,66 @@ class MappingTest extends TestCase
         $op->mapProperty('name', $source, $destination);
 
         $this->assertEquals('John', $destination->name);
+    }
+
+    public function testItCanCopyAMapping()
+    {
+        $config = new AutoMapperConfig();
+        // Determine a default option for both A and B.
+        $config->getOptions()->dontSkipConstructor();
+
+        $mappingA = new Mapping(
+            Source::class,
+            Destination::class,
+            $config
+        );
+        $mappingB = new Mapping(
+            Source::class,
+            DestinationAlt::class,
+            $config
+        );
+
+        $operation = Operation::ignore();
+        // The operation we will copy.
+        $mappingA->forMember('name', $operation);
+        // The operation we will override.
+        $mappingA->forMember('anotherProperty', function () {
+            return 'mappingA';
+        });
+        // The option we will copy.
+        $mappingA->skipConstructor();
+        // The option we will override.
+        $mappingA->withDefaultOperation(Operation::ignore());
+
+        // Copy the mapping from A and override both an operation and an option.
+        $mappingB->copyFromMapping($mappingA);
+        $mappingB->forMember('anotherProperty', function () {
+            return 'mappingB';
+        });
+        $defaultOperation = new DefaultMappingOperation();
+        $mappingB->withDefaultOperation($defaultOperation);
+
+        // Check if the operation is copied successfully.
+        $copiedOperation = $mappingB->getMappingOperationFor('name');
+        $this->assertEquals($operation, $copiedOperation);
+
+        // Check the option is copied successfully.
+        $this->assertEquals(
+            true,
+            $mappingB->getOptions()->shouldSkipConstructor()
+        );
+
+        // Check if the operation is overridden.
+        $source = new Source();
+        $destination = new DestinationAlt();
+        $op = $mappingB->getMappingOperationFor('anotherProperty');
+        $op->mapProperty('anotherProperty', $source, $destination);
+        $this->assertEquals('mappingB', $destination->anotherProperty);
+
+        // Check if the option is overridden.
+        $this->assertEquals(
+            $defaultOperation,
+            $mappingB->getOptions()->getDefaultMappingOperation()
+        );
     }
 }

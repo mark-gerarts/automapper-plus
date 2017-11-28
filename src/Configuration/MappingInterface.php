@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\MapperInterface;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
@@ -36,7 +37,10 @@ interface MappingInterface
      * @return MappingInterface
      *   Return this mapping to allow for chaining.
      */
-    public function forMember(string $targetPropertyName, $operation): MappingInterface;
+    public function forMember(
+        string $targetPropertyName,
+        $operation
+    ): MappingInterface;
 
     /**
      * @param string $propertyName
@@ -45,11 +49,47 @@ interface MappingInterface
     public function getMappingOperationFor(string $propertyName): MappingOperationInterface;
 
     /**
+     * Gets all operations that were explicitly defined for this mapping.
+     *
+     * @return MappingOperationInterface[]
+     */
+    public function getRegisteredMappingOperations(): array;
+
+    /**
      * Creates a new mapping in the reverse direction.
      *
      * @return MappingInterface
      */
     public function reverseMap(): MappingInterface;
+
+    /**
+     * Copies another mapping. This means the config and explicitly defined
+     * mapping operations will be copied. They can then be overridden for the
+     * new mapping if needed.
+     *
+     * Uses the given source and destination classes to search for a defined
+     * mapping to copy from. Use `copyFromMapping` to copy from a provided
+     * mapping.
+     *
+     * @param string $sourceClass
+     * @param string $destinationClass
+     * @return MappingInterface
+     * @throws UnregisteredMappingException
+     */
+    public function copyFrom(
+        string $sourceClass,
+        string $destinationClass
+    ): MappingInterface;
+
+    /**
+     * @see MappingInterface::copyFrom().
+     *
+     * @param MappingInterface $mapping
+     * @return MappingInterface
+     */
+    public function copyFromMapping(
+        MappingInterface $mapping
+    ): MappingInterface;
 
     /**
      * Allows overriding of the configuration. The $configurator will be passed

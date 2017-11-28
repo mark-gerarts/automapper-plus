@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\MapperInterface;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\MappingOperation\Operation;
@@ -140,6 +141,46 @@ class Mapping implements MappingInterface
         }
 
         return $reverseMapping;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function copyFrom
+    (
+        string $sourceClass,
+        string $destinationClass
+    ): MappingInterface
+    {
+        $mapping = $this->autoMapperConfig->getMappingFor(
+            $sourceClass,
+            $destinationClass
+        );
+        if (!$mapping) {
+            $message = "Can't copy a mapping that isn't registered yet.";
+            throw new UnregisteredMappingException($message);
+        }
+
+        return $this->copyFromMapping($mapping);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function copyFromMapping(MappingInterface $mapping): MappingInterface
+    {
+        $this->mappingOperations = $mapping->getRegisteredMappingOperations();
+        $this->options = clone $mapping->getOptions();
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRegisteredMappingOperations(): array
+    {
+        return $this->mappingOperations;
     }
 
     /**
