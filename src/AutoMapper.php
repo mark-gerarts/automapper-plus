@@ -103,9 +103,13 @@ class AutoMapper implements AutoMapperInterface
      */
     protected function doMap($source, $destination, MappingInterface $mapping)
     {
-        $destinationReflectionClass = new \ReflectionClass($destination);
-        foreach ($destinationReflectionClass->getProperties() as $destinationProperty) {
-            $mappingOperation = $mapping->getMappingOperationFor($destinationProperty->getName());
+        $propertyNames = $this->autoMapperConfig
+            ->getOptions()
+            ->getPropertyAccessor()
+            ->getPropertyNames($destination);
+
+        foreach ($propertyNames as $propertyName) {
+            $mappingOperation = $mapping->getMappingOperationFor($propertyName);
 
             // @todo: find another solution to this hacky implementation of
             // recursive mapping.
@@ -114,7 +118,7 @@ class AutoMapper implements AutoMapperInterface
             }
 
             $mappingOperation->mapProperty(
-                $destinationProperty->getName(),
+                $propertyName,
                 $source,
                 $destination
             );

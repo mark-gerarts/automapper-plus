@@ -29,4 +29,12 @@ interface PropertyAccessorInterface
      * @param $value
      */
     public function setProperty($object, string $propertyName, $value): void;
+
+    /**
+     * Returns a list of property names available on the object.
+     *
+     * @param object $object
+     * @return string[]
+     */
+    public function getPropertyNames($object): array;
 }

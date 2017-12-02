@@ -2,6 +2,8 @@
 
 namespace AutoMapperPlus\PropertyAccessor;
 
+use function Functional\map;
+
 /**
  * Class PropertyAccessor
  *
@@ -51,6 +53,16 @@ class PropertyAccessor implements PropertyAccessorInterface
         }
 
         $this->setPrivate($object, $propertyName, $value);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPropertyNames($object): array
+    {
+        return map((array) $object, function ($_, $name) {
+            return $this->getRealName($name);
+        });
     }
 
     /**
