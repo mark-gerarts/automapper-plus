@@ -18,7 +18,14 @@ class PropertyAccessor implements PropertyAccessorInterface
             return true;
         }
 
-        return (new \ReflectionClass($object))->hasProperty($propertyName);
+        $objectArray = (array) $object;
+        foreach ($objectArray as $name => $value) {
+            if ($this->getRealName($name) == $propertyName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -26,7 +33,7 @@ class PropertyAccessor implements PropertyAccessorInterface
      */
     public function getProperty($object, string $propertyName)
     {
-        if ($this->isPublic($propertyName, $object)) {
+        if (isset($object->{$propertyName})) {
             return $object->{$propertyName};
         }
 
@@ -38,7 +45,7 @@ class PropertyAccessor implements PropertyAccessorInterface
      */
     public function setProperty($object, string $propertyName, $value): void
     {
-        if ($this->isPublic($propertyName, $object)) {
+        if (isset($object->{$propertyName})) {
             $object->{$propertyName} = $value;
             return;
         }
@@ -47,7 +54,8 @@ class PropertyAccessor implements PropertyAccessorInterface
     }
 
     /**
-     * Adapted from https://gist.github.com/githubjeka/153e5a0f6d15cf20512e.
+     * Abuses PHP's internal representation of properties when casting an object
+     * to an array.
      *
      * @param $object
      * @param string $propertyName
@@ -55,15 +63,19 @@ class PropertyAccessor implements PropertyAccessorInterface
      */
     protected function getPrivate($object, string $propertyName)
     {
-        $getter = function() use ($propertyName) {
-            return $this->{$propertyName};
-        };
-        $boundGetter = \Closure::bind($getter, $object, get_class($object));
+        $objectArray = (array) $object;
+        foreach ($objectArray as $name => $value) {
+            if ($this->getRealName($name) == $propertyName) {
+                return $value;
+            }
+        }
 
-        return $boundGetter();
+        return null;
     }
 
     /**
+     * Adapted from https://gist.github.com/githubjeka/153e5a0f6d15cf20512e.
+     *
      * @param $object
      * @param string $propertyName
      * @param $value
@@ -79,12 +91,10 @@ class PropertyAccessor implements PropertyAccessorInterface
 
     /**
      * @param string $propertyName
-     * @param $object
-     * @return bool
+     * @return string
      */
-    private function isPublic(string $propertyName, $object): bool
+    private function getRealName(string $propertyName): string
     {
-        // Cheap check to see if the property is public.
-        return isset($object->{$propertyName});
+        return preg_replace('/\x00.*\x00/', '', $propertyName);
     }
 }

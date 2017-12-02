@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\PropertyAccessor;
 
+use AutoMapperPlus\Test\Models\Inheritance\SourceChild;
 use PHPUnit\Framework\TestCase;
 use AutoMapperPlus\Test\Models\Visibility\Visibility;
 
@@ -105,5 +106,17 @@ class PropertyAccessorTest extends TestCase
 
         $this->assertTrue($accessor->hasProperty($obj, 'name'));
         $this->assertFalse($accessor->hasProperty($obj, 'no_name'));
+    }
+
+    /**
+     * Test if it can fetch properties defined on the parent class.
+     */
+    public function testItHandlesInheritance()
+    {
+        $accessor = new PropertyAccessor();
+        $source = new SourceChild('MyName');
+
+        $this->assertTrue($accessor->hasProperty($source, 'name'));
+        $this->assertEquals('MyName', $accessor->getProperty($source, 'name'));
     }
 }

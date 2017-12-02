@@ -9,6 +9,7 @@ use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
 use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use AutoMapperPlus\NameResolver\CallbackNameResolver;
+use AutoMapperPlus\Test\Models\Inheritance\SourceChild;
 use PHPUnit\Framework\TestCase;
 use AutoMapperPlus\Test\Models\Employee\Employee;
 use AutoMapperPlus\Test\Models\Employee\EmployeeDto;
@@ -345,5 +346,19 @@ class AutoMapperTest extends TestCase
         $result = $mapper->map($source, CamelCaseSource::class);
 
         $this->assertEquals('Test', $result->anotherProperty);
+    }
+
+    public function testItMapsInheritedProperties()
+    {
+        $this->config->registerMapping(
+            SourceChild::class,
+            Destination::class
+        );
+        $mapper = new AutoMapper($this->config);
+
+        $source = new SourceChild('Name');
+        $result = $mapper->map($source, Destination::class);
+
+        $this->assertEquals('Name', $result->name);
     }
 }
