@@ -13,11 +13,6 @@ use AutoMapperPlus\PropertyAccessor\PropertyAccessorInterface;
 class DefaultMappingOperation implements MappingOperationInterface
 {
     /**
-     * @var string
-     */
-    private $sourcePropertyName;
-
-    /**
      * @var Options
      */
     protected $options;
@@ -27,7 +22,6 @@ class DefaultMappingOperation implements MappingOperationInterface
      */
     public function mapProperty(string $propertyName, $source, $destination): void
     {
-        $this->sourcePropertyName = '';
         if (!$this->canMapProperty($propertyName, $source)) {
             // Alternatively throw an error here.
             return;
@@ -95,17 +89,10 @@ class DefaultMappingOperation implements MappingOperationInterface
      */
     protected function getSourcePropertyName(string $propertyName): string
     {
-        // Lazy way of caching the source property name.
-        if (!empty($this->sourcePropertyName)) {
-            return $this->sourcePropertyName;
-        }
-
-        $this->sourcePropertyName = $this->options->getNameResolver()->getSourcePropertyName(
+        return $this->options->getNameResolver()->getSourcePropertyName(
             $propertyName,
             $this,
             $this->options
         );
-
-        return $this->sourcePropertyName;
     }
 }
