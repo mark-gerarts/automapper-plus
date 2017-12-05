@@ -47,7 +47,7 @@ class PropertyAccessor implements PropertyAccessorInterface
      */
     public function setProperty($object, string $propertyName, $value): void
     {
-        if (isset($object->{$propertyName})) {
+        if ($this->isPublic($object, $propertyName)) {
             $object->{$propertyName} = $value;
             return;
         }
@@ -99,6 +99,21 @@ class PropertyAccessor implements PropertyAccessorInterface
         };
         $boundSetter = \Closure::bind($setter, $object, get_class($object));
         $boundSetter($value);
+    }
+
+    /**
+     * Checks if the given property is public.
+     *
+     * @param $object
+     * @param string $propertyName
+     * @return bool
+     */
+    private function isPublic($object, string $propertyName) {
+        if (isset($object->{$propertyName})) {
+            return true;
+        }
+
+        return array_key_exists($propertyName, get_object_vars($object));
     }
 
     /**
