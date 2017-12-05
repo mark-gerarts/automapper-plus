@@ -109,11 +109,9 @@ class PropertyAccessor implements PropertyAccessorInterface
      * @return bool
      */
     private function isPublic($object, string $propertyName) {
-        if (isset($object->{$propertyName})) {
-            return true;
-        }
+        $objectArray = (array) $object;
 
-        return array_key_exists($propertyName, get_object_vars($object));
+        return array_key_exists($propertyName, $objectArray);
     }
 
     /**
