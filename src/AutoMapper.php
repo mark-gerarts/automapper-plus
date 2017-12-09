@@ -54,14 +54,9 @@ class AutoMapper implements AutoMapperInterface
             return $mapping->getCustomMapper()->map($source, $destinationClass);
         }
 
-        // Check if we need to skip the constructor.
-        if ($mapping->getOptions()->shouldSkipConstructor()) {
-            $destinationReflectionClass = new \ReflectionClass($destinationClass);
-            $destinationObject = $destinationReflectionClass->newInstanceWithoutConstructor();
-        }
-        else {
-            $destinationObject = new $destinationClass;
-        }
+        $destinationObject = $mapping->hasCustomConstructor()
+            ? $mapping->getCustomConstructor()($source)
+            : new $destinationClass;
 
         return $this->doMap($source, $destinationObject, $mapping);
     }

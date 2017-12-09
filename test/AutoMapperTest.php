@@ -361,4 +361,27 @@ class AutoMapperTest extends TestCase
 
         $this->assertEquals('Name', $result->name);
     }
+
+    public function testACustomConstructorCallbackCanBeProvided()
+    {
+        $this->config->registerMapping(Source::class, Destination::class)
+            ->beConstructedUsing(function (Source $source): Destination {
+                return new Destination('Set during construct');
+            })
+            ->forMember('name', Operation::ignore());
+        $mapper = new AutoMapper($this->config);
+
+        $source = new Source('Initial Name');
+
+        $result = $mapper->map($source, Destination::class);
+        $this->assertEquals('Set during construct', $result->name);
+
+        $mapper->getConfiguration()
+            ->getMappingFor(Source::class, Destination::class)
+            ->skipConstructor()
+            ->forMember('name', Operation::fromProperty('name'));
+
+        $result = $mapper->map($source, Destination::class);
+        $this->assertEquals('Initial Name', $result->name);
+    }
 }

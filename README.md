@@ -257,6 +257,34 @@ $config->createMapping(Parent::class, ParentDto::class)
     ->forMember('child', Operation::mapTo(ChildDto::class));
 ```
 
+#### Dealing with object construction
+You can specify how the new destination object will be constructed (this isn't
+relevant if you use `mapToObject`). You can do this by registering a *factory
+callback*. This callback will be passed the source object.
+
+```php
+<?php
+
+$config->registerMapping(Source::class, Destination::class)
+    ->beConstructedUsing(function (Source $source): Destination {
+        return new Destination($source->getProperty());
+    });
+```
+
+Another option is to skip the constructor all together. This can be set using
+the options.
+
+```php
+<?php
+
+// Either set it in the options:
+$config->getOptions()->skipConstructor();
+$mapper = new AutoMapper($config);
+
+// Or set it on the mapping directly:
+$config->registerMapping(Source::class, Destination::class)->skipConstructor();
+```
+
 #### ReverseMap
 Since it is a common use case to map in both directions, the `reverseMap()`
 method has been provided. This creates a new mapping in the alternate direction.
@@ -640,7 +668,7 @@ Collection size: 10000
 - [x] Provide options to copy a mapping
 - [ ] Allow setting of prefix for name resolver (see [automapper](https://github.com/AutoMapper/AutoMapper/wiki/Configuration#recognizing-prepostfixes))
 - [x] Create operation to copy value from property
-- [ ] Allow passing of contructor function
+- [x] Allow passing of contructor function
 - [ ] Allow configuring of options in AutoMapperConfig -> error when trying with a registered mapping
 - [ ] Consider: passing of options to a single mapping operation
 - [x] MapTo: allow mapping of collection

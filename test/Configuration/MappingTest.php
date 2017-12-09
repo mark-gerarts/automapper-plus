@@ -134,9 +134,6 @@ class MappingTest extends TestCase
             new AutoMapperConfig()
         );
 
-        $mapping->dontSkipConstructor();
-        $this->assertEquals(false, $mapping->getOptions()->shouldSkipConstructor());
-
         $mapping->withNamingConventions(
             new CamelCaseNamingConvention(),
             new SnakeCaseNamingConvention()
@@ -246,7 +243,10 @@ class MappingTest extends TestCase
             return 'mappingA';
         });
         // The option we will copy.
-        $mappingA->skipConstructor();
+        $mappingA->withNamingConventions(
+            new CamelCaseNamingConvention(),
+            new SnakeCaseNamingConvention()
+        );
         // The option we will override.
         $mappingA->withDefaultOperation(Operation::ignore());
 
@@ -263,9 +263,9 @@ class MappingTest extends TestCase
         $this->assertEquals($operation, $copiedOperation);
 
         // Check the option is copied successfully.
-        $this->assertEquals(
-            true,
-            $mappingB->getOptions()->shouldSkipConstructor()
+        $this->assertInstanceOf(
+            CamelCaseNamingConvention::class,
+            $mappingB->getOptions()->getSourceMemberNamingConvention()
         );
 
         // Check if the operation is overridden.
@@ -280,5 +280,21 @@ class MappingTest extends TestCase
             $defaultOperation,
             $mappingB->getOptions()->getDefaultMappingOperation()
         );
+    }
+
+    public function testItCanSetACustomConstructor()
+    {
+        $mapping = new Mapping(
+            Source::class,
+            Destination::class,
+            new AutoMapperConfig()
+        );
+        $factory = function (Source $src): Destination {
+            return new Destination('Set during construction');
+        };
+        $mapping->beConstructedUsing($factory);
+
+        $this->assertTrue($mapping->hasCustomConstructor());
+        $this->assertEquals($factory, $mapping->getCustomConstructor());
     }
 }

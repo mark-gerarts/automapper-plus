@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\Exception\NoConstructorSetException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\MapperInterface;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
@@ -43,6 +44,11 @@ class Mapping implements MappingInterface
     private $autoMapperConfig;
 
     /**
+     * @var callable
+     */
+    private $factoryCallback;
+
+    /**
      * Mapping constructor.
      *
      * @param string $sourceClassName
@@ -62,6 +68,9 @@ class Mapping implements MappingInterface
 
         // Inherit the options from the config.
         $this->options = clone $autoMapperConfig->getOptions();
+        if ($this->options->shouldSkipConstructor()) {
+            $this->skipConstructor();
+        }
     }
 
     /**
@@ -178,6 +187,39 @@ class Mapping implements MappingInterface
     /**
      * @inheritdoc
      */
+    public function beConstructedUsing
+    (
+        callable $factoryCallback
+    ): MappingInterface
+    {
+        $this->factoryCallback = $factoryCallback;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCustomConstructor(): callable
+    {
+        if (empty($this->factoryCallback)) {
+            throw NoConstructorSetException::fromMapping($this);
+        }
+
+        return $this->factoryCallback;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function hasCustomConstructor(): bool
+    {
+        return !empty($this->factoryCallback);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getRegisteredMappingOperations(): array
     {
         return $this->mappingOperations;
@@ -214,9 +256,10 @@ class Mapping implements MappingInterface
      */
     public function skipConstructor(): MappingInterface
     {
-        $this->options->skipConstructor();
-
-        return $this;
+        return $this->beConstructedUsing(function () {
+            $reflectionClass = new \ReflectionClass($this->destinationClassName);
+            return $reflectionClass->newInstanceWithoutConstructor();
+        });
     }
 
     /**
@@ -224,7 +267,7 @@ class Mapping implements MappingInterface
      */
     public function dontSkipConstructor(): MappingInterface
     {
-        $this->options->dontSkipConstructor();
+        $this->factoryCallback = null;
 
         return $this;
     }

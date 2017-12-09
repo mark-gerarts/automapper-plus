@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\Exception\NoConstructorSetException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\MapperInterface;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
@@ -92,6 +93,33 @@ interface MappingInterface
     ): MappingInterface;
 
     /**
+     * Specifies a custom factory callback to instantiate the destination
+     * object. This callback is given the source object as a parameter.
+     *
+     * @param callable $factoryCallback
+     * @return MappingInterface
+     */
+    public function beConstructedUsing(
+        callable $factoryCallback
+    ): MappingInterface;
+
+    /**
+     * Retrieves the custom factory callback as set by beConstructedUsing().
+     *
+     * @return callable
+     * @throws NoConstructorSetException
+     */
+    public function getCustomConstructor(): callable;
+
+    /**
+     * Whether or not a custom constructor callback has been provided using
+     * beConstructedUsing().
+     *
+     * @return bool
+     */
+    public function hasCustomConstructor(): bool;
+
+    /**
      * Allows overriding of the configuration. The $configurator will be passed
      * the options associated with this mapping.
      *
@@ -106,11 +134,17 @@ interface MappingInterface
     public function getOptions(): Options;
 
     /**
+     * Keep in mind that this will override any custom constructor callback set
+     * use beConstructedUsing().
+     *
      * @return MappingInterface
      */
     public function skipConstructor(): MappingInterface;
 
     /**
+     * Keep in mind that this will override any custom constructor callback set
+     * use beConstructedUsing().
+     *
      * @return MappingInterface
      */
     public function dontSkipConstructor(): MappingInterface;

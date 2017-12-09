@@ -55,6 +55,9 @@ class Options
 
     /**
      * @return Options
+     *
+     * Note: the skipConstructor default will be replaced by dontSkipConstructor
+     *       in the next major release.
      */
     public static function default(): Options
     {
