@@ -15,6 +15,7 @@ Transfers data from one object to another, allowing custom mapping operations.
         * [Custom callbacks](#custom-callbacks)
         * [Operations](#operations)
         * [Dealing with nested mappings](#dealing-with-nested-mappings)
+        * [Handling object construction](#handling-object-construction)
         * [ReverseMap](#reversemap)
         * [Copying a mapping](#copying-a-mapping)
     * [Resolving property names](#resolving-property-names)
@@ -257,7 +258,7 @@ $config->createMapping(Parent::class, ParentDto::class)
     ->forMember('child', Operation::mapTo(ChildDto::class));
 ```
 
-#### Dealing with object construction
+#### Handling object construction
 You can specify how the new destination object will be constructed (this isn't
 relevant if you use `mapToObject`). You can do this by registering a *factory
 callback*. This callback will be passed the source object.
