@@ -54,6 +54,11 @@ class Options
     private $customMapper;
 
     /**
+     * @var string
+     */
+    private $objectCrates = [\stdClass::class];
+
+    /**
      * @return Options
      *
      * Note: the skipConstructor default will be replaced by dontSkipConstructor
@@ -222,5 +227,30 @@ class Options
     public function providesCustomMapper(): bool
     {
         return !empty($this->customMapper);
+    }
+
+    /**
+     * @param string $className
+     */
+    public function registerObjectCrate(string $className): void
+    {
+        $this->objectCrates[$className] = true;
+    }
+
+    /**
+     * @param string $className
+     */
+    public function removeObjectCrate(string $className): void
+    {
+        unset($this->objectCrates[$className]);
+    }
+
+    /**
+     * @param string $className
+     * @return bool
+     */
+    public function isObjectCrate(string $className): bool
+    {
+        return isset($this->objectCrates[$className]);
     }
 }

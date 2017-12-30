@@ -98,6 +98,18 @@ interface MappingInterface
     public function getOptions(): Options;
 
     /**
+     * Returns a list of properties on the target class that will have to be
+     * mapped.
+     * Requires both the source and the target object in case it is an object
+     * crate.
+     *
+     * @param object $targetObject
+     * @param object $sourceObject
+     * @return string[]
+     */
+    public function getTargetProperties($targetObject, $sourceObject): array;
+
+    /**
      * =========================================================================
      * The following methods are purely there for convenience, providing a way
      * to directly configure options.

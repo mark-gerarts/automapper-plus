@@ -187,6 +187,21 @@ class Mapping implements MappingInterface
     /**
      * @inheritdoc
      */
+    public function getTargetProperties($targetObject, $sourceObject): array
+    {
+        $propertyAccessor = $this->options->getPropertyAccessor();
+        if (!$this->options->isObjectCrate($this->destinationClassName)) {
+            $properties = $propertyAccessor->getPropertyNames($targetObject);
+            return array_values($properties);
+        }
+
+        // todo.
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function beConstructedUsing
     (
         callable $factoryCallback
