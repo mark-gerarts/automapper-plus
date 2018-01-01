@@ -327,7 +327,7 @@ class MappingTest extends TestCase
             new SnakeCaseNamingConvention()
         );
 
-        $source = new Source();
+        $source = new CamelCaseSource();
         $target = new Destination();
 
         $this->assertEquals(

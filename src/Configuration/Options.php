@@ -56,7 +56,7 @@ class Options
     /**
      * @var string
      */
-    private $objectCrates = [\stdClass::class];
+    private $objectCrates = [];
 
     /**
      * @return Options
@@ -71,6 +71,7 @@ class Options
         $options->setPropertyAccessor(new PropertyAccessor());
         $options->setDefaultMappingOperation(new DefaultMappingOperation());
         $options->setNameResolver(new NameResolver());
+        $options->registerObjectCrate(\stdClass::class);
 
         return $options;
     }

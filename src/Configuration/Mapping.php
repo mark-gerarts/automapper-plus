@@ -8,8 +8,10 @@ use AutoMapperPlus\MapperInterface;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\MappingOperation\Reversible;
+use AutoMapperPlus\NameConverter\NameConverter;
 use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
 use AutoMapperPlus\NameResolver\NameResolverInterface;
+use function Functional\map;
 
 /**
  * Class Mapping
@@ -186,6 +188,8 @@ class Mapping implements MappingInterface
 
     /**
      * @inheritdoc
+     *
+     * @todo: move this logic to a separate class.
      */
     public function getTargetProperties($targetObject, $sourceObject): array
     {
@@ -195,8 +199,26 @@ class Mapping implements MappingInterface
             return array_values($properties);
         }
 
-        // todo.
-        return [];
+        $sourceProperties = $propertyAccessor->getPropertyNames($sourceObject);
+        $sourceProperties = array_values($sourceProperties);
+        if (!$this->options->shouldConvertName()) {
+            return $sourceProperties;
+        }
+
+        $sourceNamingConvention = $this->options->getSourceMemberNamingConvention();
+        $destinationNamingConvention = $this->options->getDestinationMemberNamingConvention();
+        $nameConverter = function (string $sourceProperty) use (
+            $sourceNamingConvention,
+            $destinationNamingConvention
+        ): string {
+            return NameConverter::convert(
+                $this->options->getSourceMemberNamingConvention(),
+                $this->options->getDestinationMemberNamingConvention(),
+                $sourceProperty
+            );
+        };
+
+        return map($sourceProperties, $nameConverter);
     }
 
     /**
