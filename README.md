@@ -674,3 +674,4 @@ Collection size: 10000
 - [ ] Consider: passing of options to a single mapping operation
 - [x] MapTo: allow mapping of collection
 - [ ] Clean up the property checking in the Mapping::forMember() method.
+- [ ] Refactor tests

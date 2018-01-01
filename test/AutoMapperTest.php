@@ -10,6 +10,7 @@ use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
 use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use AutoMapperPlus\NameResolver\CallbackNameResolver;
 use AutoMapperPlus\Test\Models\Inheritance\SourceChild;
+use AutoMapperPlus\Test\Models\SimpleProperties\NoProperties;
 use PHPUnit\Framework\TestCase;
 use AutoMapperPlus\Test\Models\Employee\Employee;
 use AutoMapperPlus\Test\Models\Employee\EmployeeDto;
@@ -383,5 +384,60 @@ class AutoMapperTest extends TestCase
 
         $result = $mapper->map($source, Destination::class);
         $this->assertEquals('Initial Name', $result->name);
+    }
+
+    public function testItCanMapToStdClassInTheMostBasicCase()
+    {
+        $this->config->registerMapping(Source::class, \stdClass::class);
+        $mapper = new AutoMapper($this->config);
+        $source = new Source('Some name');
+
+        $result = $mapper->map($source, \stdClass::class);
+        $this->assertEquals($result->name, 'Some name');
+    }
+
+    public function testItCanMapToStdClassWhileConvertingNames()
+    {
+        $this->config->registerMapping(CamelCaseSource::class, \stdClass::class)
+            ->withNamingConventions(
+                new CamelCaseNamingConvention(),
+                new SnakeCaseNamingConvention()
+            );
+        $mapper = new AutoMapper($this->config);
+        $source = new CamelCaseSource();
+        $source->propertyName = 'Some Name';
+
+        $result = $mapper->map($source, \stdClass::class);
+        $this->assertEquals($result->property_name, 'Some Name');
+    }
+
+    public function testItCanMapToAnyObjectCrate()
+    {
+        $config =  new AutoMapperConfig();
+        $config->getOptions()->registerObjectCrate(NoProperties::class);
+        $config->registerMapping(Source::class, NoProperties::class);
+
+        $mapper = new AutoMapper($config);
+        $source = new Source('Some name');
+
+        $result = $mapper->map($source, NoProperties::class);
+        $this->assertEquals($result->name, 'Some name');
+    }
+
+    public function testObjectCratesStillRespectMappingOperations()
+    {
+        $this->config->registerMapping(CamelCaseSource::class, \stdClass::class)
+            ->forMember('propertyName', Operation::ignore())
+            ->forMember('anotherProperty', function () {
+                return 'a value';
+            });
+        $mapper = new AutoMapper($this->config);
+        $source = new CamelCaseSource();
+        $source->propertyName = 'property name';
+        $source->anotherProperty = 'another one';
+
+        $result = $mapper->map($source, \stdClass::class);
+        $this->assertEquals($result->anotherProperty, 'a value');
+        $this->assertFalse(isset($result->propertyName));
     }
 }
