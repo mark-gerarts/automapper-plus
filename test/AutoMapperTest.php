@@ -390,9 +390,11 @@ class AutoMapperTest extends TestCase
     {
         $this->config->registerMapping(Source::class, \stdClass::class);
         $mapper = new AutoMapper($this->config);
-        $source = new Source('Some name');
 
+        $source = new Source('Some name');
         $result = $mapper->map($source, \stdClass::class);
+
+        $this->assertTrue(isset($result->name));
         $this->assertEquals($result->name, 'Some name');
     }
 
@@ -404,10 +406,12 @@ class AutoMapperTest extends TestCase
                 new SnakeCaseNamingConvention()
             );
         $mapper = new AutoMapper($this->config);
+
         $source = new CamelCaseSource();
         $source->propertyName = 'Some Name';
-
         $result = $mapper->map($source, \stdClass::class);
+
+        $this->assertTrue(isset($result->property_name));
         $this->assertEquals($result->property_name, 'Some Name');
     }
 
@@ -416,11 +420,12 @@ class AutoMapperTest extends TestCase
         $config =  new AutoMapperConfig();
         $config->getOptions()->registerObjectCrate(NoProperties::class);
         $config->registerMapping(Source::class, NoProperties::class);
-
         $mapper = new AutoMapper($config);
-        $source = new Source('Some name');
 
+        $source = new Source('Some name');
         $result = $mapper->map($source, NoProperties::class);
+
+        $this->assertTrue(isset($result->name));
         $this->assertEquals($result->name, 'Some name');
     }
 
@@ -437,6 +442,8 @@ class AutoMapperTest extends TestCase
         $source->anotherProperty = 'another one';
 
         $result = $mapper->map($source, \stdClass::class);
+
+        $this->assertTrue(isset($result->anotherProperty));
         $this->assertEquals($result->anotherProperty, 'a value');
         $this->assertFalse(isset($result->propertyName));
     }
