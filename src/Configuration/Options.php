@@ -31,7 +31,7 @@ class Options
     /**
      * @var bool
      */
-    private $shouldSkipConstructor;
+    private $shouldSkipConstructor = false;
 
     /**
      * @var PropertyAccessorInterface
