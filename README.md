@@ -27,6 +27,7 @@ Transfers data from one object to another, allowing custom mapping operations.
         * [For the AutoMapperConfig](#for-the-automapperconfig)
         * [For the mappings](#for-the-mappings)
     * [Mapping with stdClass](#mapping-with-stdclass)
+    * [The concept of object crates](#the-concept-of-object-crates)
     * [Using a custom mapper](#using-a-custom-mapper)
 * [Similar libraries](#similar-libraries)
 * [See also](#see-also)
@@ -502,6 +503,7 @@ The available options that can be set are:
 | Default mapping operation | `DefaultMappingOperation` | the default operation used when mapping a property. Also see [mapping operations](#operations) |
 | Default name resolver | `NameResolver` | The default class to resolve property names |
 | Custom Mapper | `null` | Grants the ability to use a [custom mapper](#using-a-custom-mapper). |
+| Object crates | [\stdClass::class] | See [the dedicated section](#the-concept-of-object-crates). |
 
 ### Setting the options
 
@@ -555,8 +557,9 @@ $config->registerMapping(Source::class, Destination::class)
 ```
 
 ### Mapping with stdClass
-As a side note it is worth mentioning that it is possible to map from a
-`stdClass`. This is done as you would expect:
+As a side note it is worth mentioning that it is possible to map from and to
+`stdClass`. Mapping *from* `stdClass` happens as you would expect, copying
+properties to the new object.
 
 ```php
 <?php
@@ -574,7 +577,79 @@ echo $result->firstName; // => "John"
 echo $result->lastName; // => "Doe"
 ```
 
-Mapping **to** a `stdClass` is not supported (yet).
+Mapping *to* `\stdClass` requires some explanation. All properties available on
+the provided source object are copied to the `\stdClass` as public properties.
+It's still possible to define operations for individual properties (for example,
+to ignore a property).
+
+```php
+<?php
+
+// Operations can still be registered.
+$config->registerMapping(Employee::class, \stdClass::class)
+    ->forMember('id', Operation::ignore());
+$mapper = new AutoMapper($config);
+
+$employee = new Employee(5, 'John', 'Doe', 1978);
+$result = $mapper->map($employee, \stdClass::class);
+
+echo $result->firstName; // => "John"
+echo $result->lastName; // => "Doe"
+var_dump(isset($result->id)); // => bool(false)
+```
+
+Naming conventions will be taken into account, so keep this in mind when
+defining operations. The property name has to match the naming convention of the
+target.
+
+```php
+<?php
+
+$config->registerMapping(CamelCaseSource::class, \stdClass::class)
+    ->withNamingConventions(
+        new CamelCaseNamingConvention(),
+        new SnakeCaseNamingConvention()
+    )
+    // Operations have to be defined using the target property name.
+    ->forMember('some_property', function () { return 'new value'; });
+$mapper = new AutoMapper($config);
+
+$source = new CamelCaseSource();
+$source->someProperty = 'original value';
+$source->anotherProperty = 'Another value';
+$result = $mapper->map($employee, \stdClass::class);
+
+var_dump(isset($result->someProperty)); // => bool(false)
+echo $result->some_property; // => "new value"
+echo $result->another_property; // => "Another value"
+```
+
+### The concept of object crates
+As suggested and explained in [this issue](https://github.com/mark-gerarts/automapper-plus/issues/3),
+AutoMapper+ uses *object crates* to allow mapping to `\stdClass`. This means you
+can register your own classes as well to be an object crate. This makes the
+mapper handle it exactly as `\stdClass`, writing all source properties to public
+properties on the target.
+
+Registering object crates can be done using the `Options`.
+
+```php
+<?php
+
+class YourObjectCrate { }
+
+$config = new AutoMapperConfig(); // (Or pass a callable to the constructor)
+$config->getOptions()->registerObjectCrate(YourObjectCrate::class);
+$config->registerMapping(Employee::class, YourObjectCrate::class);
+$mapper = new AutoMapper($config);
+
+$employee = new Employee(5, 'John', 'Doe', 1978);
+$result = $mapper->map($employee, YourObjectCrate::class);
+
+echo $result->firstName; // => "John"
+echo $result->lastName; // => "Doe"
+echo get_class($result); // => "YourObjectCrate"
+```
 
 ### Using a custom mapper
 This library attempts to make registering mappings painless, with as little 
@@ -665,7 +740,7 @@ Collection size: 10000
 - [x] Create a sample app demonstrating the automapper
 - [x] Allow mapping from `stdClass`,
 - [ ] or perhaps even an associative array (could have)
-- [ ] Allow mapping to `stdClass`
+- [x] Allow mapping to `stdClass`
 - [x] Provide options to copy a mapping
 - [ ] Allow setting of prefix for name resolver (see [automapper](https://github.com/AutoMapper/AutoMapper/wiki/Configuration#recognizing-prepostfixes))
 - [x] Create operation to copy value from property
