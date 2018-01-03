@@ -93,6 +93,32 @@ interface MappingInterface
     ): MappingInterface;
 
     /**
+     * @return Options
+     */
+    public function getOptions(): Options;
+
+    /**
+     * Returns a list of properties on the target class that will have to be
+     * mapped.
+     * Requires both the source and the target object in case it is an object
+     * crate.
+     *
+     * @param object $targetObject
+     * @param object $sourceObject
+     * @return string[]
+     */
+    public function getTargetProperties($targetObject, $sourceObject): array;
+
+    /**
+     * =========================================================================
+     * The following methods are purely there for convenience, providing a way
+     * to directly configure options.
+     * So instead of using $mapping->getOptions()->changeSomeOption(), you can
+     * call $mapping->changeSomeOption() directly.
+     * =========================================================================
+     */
+
+    /**
      * Specifies a custom factory callback to instantiate the destination
      * object. This callback is given the source object as a parameter.
      *
@@ -127,11 +153,6 @@ interface MappingInterface
      * @return MappingInterface
      */
     public function setDefaults(callable $configurator): MappingInterface;
-
-    /**
-     * @return Options
-     */
-    public function getOptions(): Options;
 
     /**
      * Keep in mind that this will override any custom constructor callback set

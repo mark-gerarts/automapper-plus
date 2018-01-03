@@ -98,11 +98,7 @@ class AutoMapper implements AutoMapperInterface
      */
     protected function doMap($source, $destination, MappingInterface $mapping)
     {
-        $propertyNames = $this->autoMapperConfig
-            ->getOptions()
-            ->getPropertyAccessor()
-            ->getPropertyNames($destination);
-
+        $propertyNames = $mapping->getTargetProperties($destination, $source);
         foreach ($propertyNames as $propertyName) {
             $mappingOperation = $mapping->getMappingOperationFor($propertyName);
 

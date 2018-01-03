@@ -297,4 +297,42 @@ class MappingTest extends TestCase
         $this->assertTrue($mapping->hasCustomConstructor());
         $this->assertEquals($factory, $mapping->getCustomConstructor());
     }
+
+    public function testItCanListTheTargetProperties()
+    {
+        $mapping = new Mapping(
+            Source::class,
+            Destination::class,
+            new AutoMapperConfig()
+        );
+
+        $source = new Source();
+        $target = new Destination();
+
+        $this->assertEquals(
+            ['name', 'anotherProperty'],
+            $mapping->getTargetProperties($target, $source)
+        );
+    }
+
+    public function testItCanListTheTargetPropertiesOfAnObjectCrate()
+    {
+        $mapping = new Mapping(
+            CamelCaseSource::class,
+            \stdClass::class,
+            new AutoMapperConfig()
+        );
+        $mapping->withNamingConventions(
+            new CamelCaseNamingConvention(),
+            new SnakeCaseNamingConvention()
+        );
+
+        $source = new CamelCaseSource();
+        $target = new Destination();
+
+        $this->assertEquals(
+            ['property_name', 'another_property'],
+            $mapping->getTargetProperties($target, $source)
+        );
+    }
 }

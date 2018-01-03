@@ -8,8 +8,11 @@ use AutoMapperPlus\MapperInterface;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\MappingOperation\Reversible;
+use AutoMapperPlus\NameConverter\NameConverter;
 use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
 use AutoMapperPlus\NameResolver\NameResolverInterface;
+use AutoMapperPlus\PropertyAccessor\ObjectCratePropertyAccessor;
+use function Functional\map;
 
 /**
  * Class Mapping
@@ -70,6 +73,12 @@ class Mapping implements MappingInterface
         $this->options = clone $autoMapperConfig->getOptions();
         if ($this->options->shouldSkipConstructor()) {
             $this->skipConstructor();
+        }
+
+        // If this is a mapping that maps to an object crate, overwrite the
+        // property accessor in the options.
+        if ($this->options->isObjectCrate($this->destinationClassName)) {
+            $this->options->setPropertyAccessor(new ObjectCratePropertyAccessor());
         }
     }
 
@@ -182,6 +191,44 @@ class Mapping implements MappingInterface
         $this->options = clone $mapping->getOptions();
 
         return $this;
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @todo: move this logic to a separate class.
+     */
+    public function getTargetProperties($targetObject, $sourceObject): array
+    {
+        // We use the property accessor defined on the config, because the one
+        // in this mapping's Options might have been overridden to be the
+        // object crate implementation.
+        $propertyAccessor = $this->autoMapperConfig->getOptions()->getPropertyAccessor();
+        if (!$this->options->isObjectCrate($this->destinationClassName)) {
+            $properties = $propertyAccessor->getPropertyNames($targetObject);
+            return array_values($properties);
+        }
+
+        $sourceProperties = $propertyAccessor->getPropertyNames($sourceObject);
+        $sourceProperties = array_values($sourceProperties);
+        if (!$this->options->shouldConvertName()) {
+            return $sourceProperties;
+        }
+
+        $sourceNamingConvention = $this->options->getSourceMemberNamingConvention();
+        $destinationNamingConvention = $this->options->getDestinationMemberNamingConvention();
+        $nameConverter = function (string $sourceProperty) use (
+            $sourceNamingConvention,
+            $destinationNamingConvention
+        ): string {
+            return NameConverter::convert(
+                $this->options->getSourceMemberNamingConvention(),
+                $this->options->getDestinationMemberNamingConvention(),
+                $sourceProperty
+            );
+        };
+
+        return map($sourceProperties, $nameConverter);
     }
 
     /**
