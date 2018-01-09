@@ -503,7 +503,7 @@ The available options that can be set are:
 | Default mapping operation | `DefaultMappingOperation` | the default operation used when mapping a property. Also see [mapping operations](#operations) |
 | Default name resolver | `NameResolver` | The default class to resolve property names |
 | Custom Mapper | `null` | Grants the ability to use a [custom mapper](#using-a-custom-mapper). |
-| Object crates | [\stdClass::class] | See [the dedicated section](#the-concept-of-object-crates). |
+| Object crates | `[\stdClass::class]` | See [the dedicated section](#the-concept-of-object-crates). |
 
 ### Setting the options
 
