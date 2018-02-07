@@ -395,7 +395,7 @@ class AutoMapperTest extends TestCase
         $result = $mapper->map($source, \stdClass::class);
 
         $this->assertTrue(isset($result->name));
-        $this->assertEquals($result->name, 'Some name');
+        $this->assertEquals('Some name', $result->name);
     }
 
     public function testItCanMapToStdClassWhileConvertingNames()
@@ -412,7 +412,7 @@ class AutoMapperTest extends TestCase
         $result = $mapper->map($source, \stdClass::class);
 
         $this->assertTrue(isset($result->property_name));
-        $this->assertEquals($result->property_name, 'Some Name');
+        $this->assertEquals('Some Name', $result->property_name);
     }
 
     public function testItCanMapToAnyObjectCrate()
@@ -426,7 +426,7 @@ class AutoMapperTest extends TestCase
         $result = $mapper->map($source, NoProperties::class);
 
         $this->assertTrue(isset($result->name));
-        $this->assertEquals($result->name, 'Some name');
+        $this->assertEquals('Some name', $result->name);
     }
 
     public function testObjectCratesStillRespectMappingOperations()
@@ -444,7 +444,7 @@ class AutoMapperTest extends TestCase
         $result = $mapper->map($source, \stdClass::class);
 
         $this->assertTrue(isset($result->anotherProperty));
-        $this->assertEquals($result->anotherProperty, 'a value');
+        $this->assertEquals('a value', $result->anotherProperty);
         $this->assertFalse(isset($result->propertyName));
     }
 
