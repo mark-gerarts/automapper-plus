@@ -447,4 +447,13 @@ class AutoMapperTest extends TestCase
         $this->assertEquals($result->anotherProperty, 'a value');
         $this->assertFalse(isset($result->propertyName));
     }
+
+    public function testANullObjectReturnsNull()
+    {
+        $mapper = new AutoMapper();
+
+        $source = null;
+        $result = $mapper->map($source, Destination::class);
+        $this->assertEquals(null, $result);
+    }
 }

@@ -47,6 +47,10 @@ class AutoMapper implements AutoMapperInterface
      */
     public function map($source, string $destinationClass)
     {
+        if (is_null($source)) {
+            return null;
+        }
+
         $sourceClass = get_class($source);
 
         $mapping = $this->getMapping($sourceClass, $destinationClass);

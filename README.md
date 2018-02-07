@@ -29,6 +29,7 @@ Transfers data from one object to another, allowing custom mapping operations.
     * [Mapping with stdClass](#mapping-with-stdclass)
     * [The concept of object crates](#the-concept-of-object-crates)
     * [Using a custom mapper](#using-a-custom-mapper)
+    * [Misc](#misc)
 * [Similar libraries](#similar-libraries)
 * [See also](#see-also)
 * [Roadmap](#roadmap)
@@ -693,6 +694,10 @@ $mapper = new AutoMapper($config);
 $employee = new Employee(10, 'John', 'Doe', 1980);
 $result = $mapper->map($employee, EmployeeDto::class);
 ```
+
+### Misc
+
+- Passing `NULL` as an argument for the source object to `map` returns `NULL`.
 
 ## Similar libraries
 When picking a library, it's important to see what options are available. No
