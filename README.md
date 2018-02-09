@@ -755,3 +755,4 @@ Collection size: 10000
 - [x] MapTo: allow mapping of collection
 - [ ] Clean up the property checking in the Mapping::forMember() method.
 - [ ] Refactor tests
+- [ ] Allow setting a maximum depth, see #14
