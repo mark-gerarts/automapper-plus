@@ -456,4 +456,66 @@ class AutoMapperTest extends TestCase
         $result = $mapper->map($source, Destination::class);
         $this->assertEquals(null, $result);
     }
+
+    public function testInvalidWithMappingCallback_ThrowsException()
+    {
+        // Arrange
+        $source = new CamelCaseSource();
+        $error = null;
+
+        // Act
+        try {
+            $this->config->registerMapping(CamelCaseSource::class, \stdClass::class)
+                ->forMember('propertyName', function($mapping, $source){
+                    return 1;
+                });
+            $mapper = new AutoMapper($this->config);
+            $mapper->map($source, \stdClass::class);
+        } catch (\Exception $error){
+        }
+
+        // Assert
+        $this->assertInstanceOf(\InvalidArgumentException::class, $error);
+        $this->assertStringEndsWith('First argument must be of type AutoMapperInterface',$error->getMessage());
+    }
+
+    public function testInstanceWithMappingCallback_InstanceIsCorrect()
+    {
+        // Arrange
+        $this->config->registerMapping(CamelCaseSource::class, \stdClass::class)
+            ->forMember('propertyName', function(AutoMapperInterface $mapping, $source){
+                // if the $mapping isn't a instance of AutoMapperInterface, it wouldn't return anything
+                return 13;
+            });
+        $mapper = new AutoMapper($this->config);
+        $source = new CamelCaseSource();
+
+        // Act
+        $result = $mapper->map($source, \stdClass::class);
+
+        // Assert
+        $this->assertEquals(13, $result->propertyName);
+    }
+
+    public function testCallbackWith3ArgumentsInMapFrom_ThrowsException()
+    {
+        // Arrange
+        $source = new CamelCaseSource();
+        $error = null;
+
+        // Act
+        try {
+            $this->config->registerMapping(CamelCaseSource::class, \stdClass::class)
+                ->forMember('propertyName', function($mapping, $source, $thirdArgument){
+                    return 1;
+                });
+            $mapper = new AutoMapper($this->config);
+            $mapper->map($source, \stdClass::class);
+        } catch (\Exception $error){
+        }
+
+        // Assert
+        $this->assertInstanceOf(\InvalidArgumentException::class, $error);
+        $this->assertStringEndsWith('Callback must contain 1 or 2 arguments',$error->getMessage());
+    }
 }

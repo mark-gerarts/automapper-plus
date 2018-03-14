@@ -409,7 +409,7 @@ class Mapping implements MappingInterface
         /** @var \ReflectionParameter[] $params */
         $params = $f->getParameters();
 
-        if (count($params) === 1) {
+        if (count($params) === 0 || count($params) === 1) {
             $operation = Operation::mapFrom($operation);
         } elseif (count($params) === 2 ) {
             $operation = $this->getOperation_mapFromWithMapper($operation, $params[0]);
