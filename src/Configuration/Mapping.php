@@ -6,7 +6,6 @@ use AutoMapperPlus\AutoMapperInterface;
 use AutoMapperPlus\Exception\NoConstructorSetException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\MapperInterface;
-use AutoMapperPlus\MappingOperation\Implementations\MapFromWithMapper;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\MappingOperation\Reversible;
@@ -427,9 +426,9 @@ class Mapping implements MappingInterface
      *
      * @param $operation
      * @param \ReflectionParameter $firstParam
-     * @return MapFromWithMapper
+     * @return MappingOperationInterface
      */
-    private function getOperation_mapFromWithMapper($operation, \ReflectionParameter $firstParam): MapFromWithMapper
+    private function getOperation_mapFromWithMapper($operation, \ReflectionParameter $firstParam): MappingOperationInterface
     {
         if ($firstParam->hasType() === false ||
             $firstParam->getClass()->name !== AutoMapperInterface::class ) {
