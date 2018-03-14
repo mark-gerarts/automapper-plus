@@ -216,6 +216,7 @@ The following operations are provided:
 | MapTo | Maps the property to another class. Allows for [nested mappings](#dealing-with-nested-mappings). Supports both single values and collections. |
 | FromProperty | Use this to explicitly state the source property name. |
 | DefaultMappingOperation | Simply transfers the property, taking into account the provided naming conventions (if there are any). |
+| MapFromWithMapper | Similar to MapFrom, only in addition to the single parameter, the callback has access to a instance of AutoMapperInterface by specifying the first argument of the callback of AutoMapperInterface type.
 
 You can use them with the same `forMember()` method. The `Operation` class can
 be used for clarity.
@@ -238,6 +239,29 @@ $mapping->forMember('id', Operation::ignore());
 $mapping->forMember('employee', Operation::mapTo(EmployeeDto::class));
 // Explicitly state what the property name is of the source object.
 $mapping->forMember('name', Operation::fromProperty('unconventially_named_property'));
+```
+
+Example of using the MapFromWithMapper:
+```php
+<?php
+
+$getColorPalette = function(AutoMapperInterface $mapper, SimpleXMLElement $XMLElement) { 
+    /** @var SimpleXMLElement $palette */
+    $palette = $XMLElement->xpath('/product/specification/palette/colour');
+
+    return $mapper->mapMultiple($palette, Color::class);
+};
+
+$mapping->forMember('palette', Operation::mapFromWithMapper($getColorPalette));
+
+// or another Example using inline function
+//
+$mapping->forMember('palette', function(AutoMapperInterface $mapper, SimpleXMLElement $XMLElement) { 
+    /** @var SimpleXMLElement $palette */
+    $palette = $XMLElement->xpath('/product/specification/palette/colour');
+
+    return $mapper->mapMultiple($palette, Color::class);
+});
 ```
 
 You can create your own operations by implementing the 

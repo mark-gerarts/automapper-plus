@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\AutoMapperInterface;
 use AutoMapperPlus\Exception\NoConstructorSetException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\MapperInterface;
@@ -109,7 +110,21 @@ class Mapping implements MappingInterface
     {
         // If it's just a regular callback, wrap it in an operation.
         if (!$operation instanceof MappingOperationInterface) {
-            $operation = Operation::mapFrom($operation);
+
+            $f = new \ReflectionFunction($operation);
+            /** @var \ReflectionParameter[] $params */
+            $params = $f->getParameters();
+
+            // If callback has only one argument
+            if (count($params) === 1) {
+                $operation = Operation::mapFrom($operation);
+            }
+            // If callback has 2 arguments and the first one is typed and its type is AutoMapperInterface
+            elseif (count($params) === 2
+                && $params[0]->hasType()
+                && $params[0]->getClass()->name === AutoMapperInterface::class ) {
+                $operation = Operation::mapFromWithMapper($operation);
+            }
         }
 
         // Make the config available to the operation.
