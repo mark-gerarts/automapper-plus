@@ -6,7 +6,6 @@ use AutoMapperPlus\AutoMapperInterface;
 use AutoMapperPlus\Exception\NoConstructorSetException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\MapperInterface;
-use AutoMapperPlus\MappingOperation\DefaultMappingOperation;
 use AutoMapperPlus\MappingOperation\Implementations\MapFromWithMapper;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\MappingOperation\Operation;
@@ -398,7 +397,14 @@ class Mapping implements MappingInterface
         return $this->options->getCustomMapper();
     }
 
-    private function getOperationBasedOnArguments($operation):?DefaultMappingOperation
+    /**
+     * Checks the operation passed and returns a instance of MappingOperationInterface
+     *
+     * @param $operation
+     * @return MappingOperationInterface
+     * @throws \ReflectionException
+     */
+    private function getOperationBasedOnArguments($operation):MappingOperationInterface
     {
         $f = new \ReflectionFunction($operation);
         /** @var \ReflectionParameter[] $params */
@@ -414,7 +420,16 @@ class Mapping implements MappingInterface
 
         return $operation;
     }
-    private function getOperation_mapFromWithMapper($operation, \ReflectionParameter $firstParam):?MapFromWithMapper
+
+
+    /**
+     * Checks if the operation passed is a valid callback for mapFromWithMapper operation
+     *
+     * @param $operation
+     * @param \ReflectionParameter $firstParam
+     * @return MapFromWithMapper
+     */
+    private function getOperation_mapFromWithMapper($operation, \ReflectionParameter $firstParam): MapFromWithMapper
     {
         if ($firstParam->hasType() === false ||
             $firstParam->getClass()->name !== AutoMapperInterface::class ) {
