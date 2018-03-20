@@ -245,7 +245,7 @@ Example of using the MapFromWithMapper:
 ```php
 <?php
 
-$getColorPalette = function(AutoMapperInterface $mapper, SimpleXMLElement $XMLElement) { 
+$getColorPalette = function(SimpleXMLElement $XMLElement, AutoMapperInterface $mapper) { 
     /** @var SimpleXMLElement $palette */
     $palette = $XMLElement->xpath('/product/specification/palette/colour');
 
@@ -256,12 +256,12 @@ $mapping->forMember('palette', Operation::mapFromWithMapper($getColorPalette));
 
 // or another Example using inline function
 //
-$mapping->forMember('palette', function(AutoMapperInterface $mapper, SimpleXMLElement $XMLElement) { 
+$mapping->forMember('palette', new MapFromWithMapper(function(SimpleXMLElement $XMLElement, AutoMapperInterface $mapper) { 
     /** @var SimpleXMLElement $palette */
     $palette = $XMLElement->xpath('/product/specification/palette/colour');
 
     return $mapper->mapMultiple($palette, Color::class);
-});
+}));
 ```
 
 You can create your own operations by implementing the 
