@@ -216,7 +216,7 @@ The following operations are provided:
 | MapTo | Maps the property to another class. Allows for [nested mappings](#dealing-with-nested-mappings). Supports both single values and collections. |
 | FromProperty | Use this to explicitly state the source property name. |
 | DefaultMappingOperation | Simply transfers the property, taking into account the provided naming conventions (if there are any). |
-| MapFromWithMapper | Similar to MapFrom, only in addition to the single parameter, the callback has access to a instance of AutoMapperInterface by specifying the first argument of the callback of AutoMapperInterface type.
+| MapFromWithMapper | Similar to MapFrom.<br>Compared to `mapFrom`, the callback has access to a instance of `AutoMapperInterface`. Define the second callback argument of `AutoMapperInterface` type. Accessible by using <br> - `Operation::mapFromWithMapper(function($source, AutoMapperInterface $mapper){ ... })`<br>- `new mapFromWithMapper(function($source, AutoMapperInterface $mapper){ ... })`
 
 You can use them with the same `forMember()` method. The `Operation` class can
 be used for clarity.
