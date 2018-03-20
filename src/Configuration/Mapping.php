@@ -2,7 +2,6 @@
 
 namespace AutoMapperPlus\Configuration;
 
-use AutoMapperPlus\AutoMapperInterface;
 use AutoMapperPlus\Exception\NoConstructorSetException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\MapperInterface;
@@ -110,7 +109,7 @@ class Mapping implements MappingInterface
     {
         // If it's just a regular callback, wrap it in an operation.
         if (!$operation instanceof MappingOperationInterface) {
-            $operation = $this->getOperationBasedOnArguments($operation);
+            $operation = Operation::mapFrom($operation);
         }
 
         // Make the config available to the operation.
@@ -394,46 +393,5 @@ class Mapping implements MappingInterface
     public function getCustomMapper(): ?MapperInterface
     {
         return $this->options->getCustomMapper();
-    }
-
-    /**
-     * Checks the operation passed and returns a instance of MappingOperationInterface
-     *
-     * @param $operation
-     * @return MappingOperationInterface
-     * @throws \ReflectionException
-     */
-    private function getOperationBasedOnArguments($operation):MappingOperationInterface
-    {
-        $f = new \ReflectionFunction($operation);
-        /** @var \ReflectionParameter[] $params */
-        $params = $f->getParameters();
-
-        if (count($params) === 0 || count($params) === 1) {
-            $operation = Operation::mapFrom($operation);
-        } elseif (count($params) === 2 ) {
-            $operation = $this->getOperation_mapFromWithMapper($operation, $params[0]);
-        } else {
-            throw new \InvalidArgumentException('AutomapperConfiguration error. Callback must contain 1 or 2 arguments');
-        }
-
-        return $operation;
-    }
-
-
-    /**
-     * Checks if the operation passed is a valid callback for mapFromWithMapper operation
-     *
-     * @param $operation
-     * @param \ReflectionParameter $firstParam
-     * @return MappingOperationInterface
-     */
-    private function getOperation_mapFromWithMapper($operation, \ReflectionParameter $firstParam): MappingOperationInterface
-    {
-        if ($firstParam->hasType() === false ||
-            $firstParam->getClass()->name !== AutoMapperInterface::class ) {
-            throw new \InvalidArgumentException('AutomapperConfiguration error. First argument must be of type AutoMapperInterface');
-        }
-        return Operation::mapFromWithMapper($operation);
     }
 }

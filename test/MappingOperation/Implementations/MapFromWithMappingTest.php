@@ -11,7 +11,7 @@ use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
 use AutoMapperPlus\Test\Models\SimpleProperties\Source;
 
 /**
- * Class MapFromTest
+ * Class MapFromWithMapperTest
  *
  * @package AutoMapperPlus\MappingOperation\Implementations
  * @group mappingOperations
@@ -21,7 +21,7 @@ class MapFromWithMapperTest extends TestCase
     public function testItMapsFromACallback()
     {
         // Arrange
-        $mapFromWithMapper = new MapFromWithMapper(function (AutoMapperInterface $mapper, $source) {
+        $mapFromWithMapper = new MapFromWithMapper(function ($source, AutoMapperInterface $mapper) {
             return 42;
         });
         $mapFromWithMapper->setMapper(AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
@@ -42,7 +42,7 @@ class MapFromWithMapperTest extends TestCase
     public function testItReceivesTheSourceObject()
     {
         // Arrange
-        $mapFromWithMapper = new MapFromWithMapper(function (AutoMapperInterface $mapper, $source) {
+        $mapFromWithMapper = new MapFromWithMapper(function ($source, AutoMapperInterface $mapper) {
             return $source;
         });
         $mapFromWithMapper->setMapper(AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
