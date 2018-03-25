@@ -8,25 +8,17 @@
 
 namespace AutoMapperPlus\MappingOperation\Implementations;
 
-use AutoMapperPlus\AutoMapperInterface;
+use AutoMapperPlus\MappingOperation\MapperAwareOperation;
+use AutoMapperPlus\MappingOperation\MapperAwareTrait;
 
 /**
  * Class MapFromWithMapper
  *
  * @package AutoMapperPlus\MappingOperation\Implementations
  */
-class MapFromWithMapper extends MapFrom
+class MapFromWithMapper extends MapFrom implements MapperAwareOperation
 {
-    /** @var AutoMapperInterface */
-    private $mapper;
-
-    /**
-     * @param AutoMapperInterface $mapper
-     */
-    public function setMapper(AutoMapperInterface $mapper)
-    {
-        $this->mapper = $mapper;
-    }
+    use MapperAwareTrait;
 
     /**
      * @inheritdoc
