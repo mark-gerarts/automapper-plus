@@ -242,6 +242,7 @@ $mapping->forMember('name', Operation::fromProperty('unconventially_named_proper
 ```
 
 Example of using the MapFromWithMapper:
+
 ```php
 <?php
 
@@ -254,8 +255,7 @@ $getColorPalette = function(SimpleXMLElement $XMLElement, AutoMapperInterface $m
 
 $mapping->forMember('palette', Operation::mapFromWithMapper($getColorPalette));
 
-// or another Example using inline function
-//
+// Or another Example using inline function
 $mapping->forMember('palette', new MapFromWithMapper(function(SimpleXMLElement $XMLElement, AutoMapperInterface $mapper) { 
     /** @var SimpleXMLElement $palette */
     $palette = $XMLElement->xpath('/product/specification/palette/colour');
@@ -268,6 +268,10 @@ You can create your own operations by implementing the
 `MappingOperationInterface`. Take a look at the
 [provided implementations](https://github.com/mark-gerarts/automapper-plus/tree/master/src/MappingOperation)
 for some inspiration.
+
+If you need to have the automapper available in your operation, you can
+implement the `MapperAwareInterface`, and use the `MapperAwareTrait`. The
+default `MapTo` and `MapFromWithMapper` operations use these.
 
 #### Dealing with nested mappings
 Nested mappings can be registered using the `MapTo` operation. Keep in mind that the mapping for the
