@@ -456,4 +456,53 @@ class AutoMapperTest extends TestCase
         $result = $mapper->map($source, Destination::class);
         $this->assertEquals(null, $result);
     }
+
+    public function testInvalidWithMappingCallback_ThrowsException()
+    {
+        // Arrange
+        $source = new CamelCaseSource();
+        $error = null;
+
+        // Act
+        $this->config->registerMapping(CamelCaseSource::class, \stdClass::class)
+            ->forMember('propertyName', Operation::mapFromWithMapper(function($source, AutoMapperInterface $mapping){
+                return 13;
+            }));
+        $mapper = new AutoMapper($this->config);
+        $result = $mapper->map($source, \stdClass::class);
+
+        // Assert
+        $this->assertEquals($result, $result);
+    }
+
+    public function testInstanceWithMappingCallback_InstanceIsCorrect()
+    {
+        // Arrange
+        $propertyStdClass = new \stdClass();
+        $propertyStdClass->value = "TestValue";
+
+        $testSuffix = "MAPPED";
+        $expectedResult = $propertyStdClass->value . $testSuffix;
+
+        $this->config->registerMapping(\stdClass::class, Destination::class)
+            ->forMember('name', function($source) use ($testSuffix){
+                return $source->value . $testSuffix;
+            });
+
+        $this->config->registerMapping(CamelCaseSource::class, \stdClass::class)
+            ->forMember('propertyName', Operation::mapFromWithMapper(function($source, AutoMapperInterface $mapping){
+                // if the $mapping isn't a instance of AutoMapperInterface, it wouldn't return anything
+
+                return $mapping->map($source->propertyName, Destination::class);
+            }));
+        $mapper = new AutoMapper($this->config);
+        $source = new CamelCaseSource();
+        $source->propertyName = $propertyStdClass;
+
+        // Act
+        $result = $mapper->map($source, \stdClass::class);
+
+        // Assert
+        $this->assertEquals($expectedResult, $result->propertyName->name);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\MappingOperation\Implementations;
 
+use AutoMapperPlus\AutoMapperInterface;
 use AutoMapperPlus\MappingOperation\DefaultMappingOperation;
 
 /**
@@ -14,7 +15,7 @@ class MapFrom extends DefaultMappingOperation
     /**
      * @var callable
      */
-    private $valueCallback;
+    protected $valueCallback;
 
     /**
      * MapFrom constructor.

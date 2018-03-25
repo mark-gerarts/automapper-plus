@@ -216,6 +216,7 @@ The following operations are provided:
 | MapTo | Maps the property to another class. Allows for [nested mappings](#dealing-with-nested-mappings). Supports both single values and collections. |
 | FromProperty | Use this to explicitly state the source property name. |
 | DefaultMappingOperation | Simply transfers the property, taking into account the provided naming conventions (if there are any). |
+| MapFromWithMapper | Similar to MapFrom.<br>Compared to `mapFrom`, the callback has access to a instance of `AutoMapperInterface`. Define the second callback argument of `AutoMapperInterface` type. Accessible by using <br> - `Operation::mapFromWithMapper(function($source, AutoMapperInterface $mapper){ ... })`<br>- `new mapFromWithMapper(function($source, AutoMapperInterface $mapper){ ... })`
 
 You can use them with the same `forMember()` method. The `Operation` class can
 be used for clarity.
@@ -238,6 +239,29 @@ $mapping->forMember('id', Operation::ignore());
 $mapping->forMember('employee', Operation::mapTo(EmployeeDto::class));
 // Explicitly state what the property name is of the source object.
 $mapping->forMember('name', Operation::fromProperty('unconventially_named_property'));
+```
+
+Example of using the MapFromWithMapper:
+```php
+<?php
+
+$getColorPalette = function(SimpleXMLElement $XMLElement, AutoMapperInterface $mapper) { 
+    /** @var SimpleXMLElement $palette */
+    $palette = $XMLElement->xpath('/product/specification/palette/colour');
+
+    return $mapper->mapMultiple($palette, Color::class);
+};
+
+$mapping->forMember('palette', Operation::mapFromWithMapper($getColorPalette));
+
+// or another Example using inline function
+//
+$mapping->forMember('palette', new MapFromWithMapper(function(SimpleXMLElement $XMLElement, AutoMapperInterface $mapper) { 
+    /** @var SimpleXMLElement $palette */
+    $palette = $XMLElement->xpath('/product/specification/palette/colour');
+
+    return $mapper->mapMultiple($palette, Color::class);
+}));
 ```
 
 You can create your own operations by implementing the 
