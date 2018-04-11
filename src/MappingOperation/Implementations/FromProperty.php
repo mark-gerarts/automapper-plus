@@ -35,14 +35,6 @@ class FromProperty extends DefaultMappingOperation implements
     /**
      * @inheritdoc
      */
-    public function getSourcePropertyName(string $propertyName): string
-    {
-        return $this->propertyName;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function getAlternativePropertyName(): string
     {
         return $this->propertyName;
