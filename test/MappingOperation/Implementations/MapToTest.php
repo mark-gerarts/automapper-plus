@@ -5,8 +5,8 @@ namespace AutoMapperPlus\MappingOperation\Implementations;
 use AutoMapperPlus\AutoMapper;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use AutoMapperPlus\Configuration\Options;
+use AutoMapperPlus\NameResolver\CallbackNameResolver;
 use PHPUnit\Framework\TestCase;
-use AutoMapperPlus\Test\Models\Nested\ChildClass;
 use AutoMapperPlus\Test\Models\Nested\ParentClass;
 use AutoMapperPlus\Test\Models\Nested\ParentClassDto;
 use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
@@ -68,5 +68,34 @@ class MapToTest extends TestCase
         $this->assertEquals(count($children), count($parentDestination->child));
         $this->assertEquals('SourceName1', $parentDestination->child[0]->name);
         $this->assertInstanceOf(Destination::class, $parentDestination->child[1]);
+    }
+
+    /**
+     * Ensure the operation uses the assigned name resolver. See #17.
+     */
+    public function testItUsesTheNameResolver()
+    {
+        $mapTo = new MapTo(Destination::class);
+        $options = Options::default();
+        // Set a name resolver to always use the property 'child' of the source.
+        $options->setNameResolver(new CallbackNameResolver(function () {
+            return 'child';
+        }));
+        $mapTo->setOptions($options);
+        $mapTo->setMapper(AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
+            $config->registerMapping(Source::class, Destination::class);
+        }));
+
+        $parent = new ParentClass();
+        $child = new Source('SourceName');
+        $parent->child = $child;
+        $parentDestination = new ParentClassDto();
+
+        $mapTo->mapProperty('anotherProperty', $parent, $parentDestination);
+
+        // Because of the name resolver, we expect the value to be set
+        // correctly.
+        $this->assertInstanceOf(Destination::class, $parentDestination->anotherProperty);
+        $this->assertEquals('SourceName', $parentDestination->anotherProperty->name);
     }
 }

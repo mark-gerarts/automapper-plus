@@ -10,4 +10,6 @@ namespace AutoMapperPlus\Test\Models\Nested;
 class ParentClassDto
 {
     public $child;
+
+    public $anotherProperty;
 }
