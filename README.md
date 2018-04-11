@@ -784,3 +784,4 @@ Collection size: 10000
 - [ ] Clean up the property checking in the Mapping::forMember() method.
 - [ ] Refactor tests
 - [ ] Allow setting a maximum depth, see #14
+- [ ] Provide a NameResolver that accepts an array mapping, as an alternative to multiple `FromProperty`s
