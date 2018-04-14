@@ -23,9 +23,8 @@ class FromProperty extends DefaultMappingOperation implements
     // operation.
     MapperAwareOperation
 {
-
     /**
-     * @var MappingOperationInterface
+     * @var MappingOperationInterface|null
      */
     private $nextOperation;
 
@@ -69,8 +68,7 @@ class FromProperty extends DefaultMappingOperation implements
             return;
         }
 
-        $this->prepareNextOperation();
-        $this->nextOperation->mapProperty(
+        $this->mapPropertyWithNextOperation(
             $propertyName,
             $source,
             $destination
@@ -102,10 +100,16 @@ class FromProperty extends DefaultMappingOperation implements
     }
 
     /**
-     * @todo:
-     * Instead of creating a method for every possible operation, see if we can
-     * use __call in a decent way.
+     * Chain a MapTo operation, making the MapTo use this operation's property
+     * name instead.
      *
+     * Note: because MapTo is not reversible, the MapTo part gets lost when
+     * reversing the mapping.
+     *
+     * @todo: extend to other operations, or maybe a __call?
+     *
+     * @param string $class
+     * @return FromProperty
      */
     public function mapTo(string $class): FromProperty
     {
@@ -113,7 +117,16 @@ class FromProperty extends DefaultMappingOperation implements
         return $this;
     }
 
-    protected function prepareNextOperation(): void
+    /**
+     * @param string $propertyName
+     * @param $source
+     * @param $destination
+     */
+    protected function mapPropertyWithNextOperation(
+        string $propertyName,
+        $source,
+        $destination
+    ): void
     {
         // We have to make the overridden property available to the next
         // operation. To do this, we create a "one-time use" name resolver
@@ -123,6 +136,10 @@ class FromProperty extends DefaultMappingOperation implements
             return $this->propertyName;
         }));
         $this->nextOperation->setOptions($options);
+
+        // The chained operation will now use the property name assigned to
+        // FromProperty, so we can go ahead and call it.
+        $this->nextOperation->mapProperty($propertyName, $source, $destination);
     }
 
     /**
