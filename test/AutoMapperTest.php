@@ -10,6 +10,10 @@ use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
 use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use AutoMapperPlus\NameResolver\CallbackNameResolver;
 use AutoMapperPlus\Test\Models\Inheritance\SourceChild;
+use AutoMapperPlus\Test\Models\Nested\Address;
+use AutoMapperPlus\Test\Models\Nested\AddressDto;
+use AutoMapperPlus\Test\Models\Nested\Person;
+use AutoMapperPlus\Test\Models\Nested\PersonDto;
 use AutoMapperPlus\Test\Models\SimpleProperties\NoProperties;
 use PHPUnit\Framework\TestCase;
 use AutoMapperPlus\Test\Models\Employee\Employee;
@@ -504,5 +508,31 @@ class AutoMapperTest extends TestCase
 
         // Assert
         $this->assertEquals($expectedResult, $result->propertyName->name);
+    }
+
+    /**
+     * @todo: move this to fromPropertyTest.
+     */
+    public function testFromPropertyCanBeChained()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(Address::class, AddressDto::class)
+            ->forMember('streetAndNumber', function (Address $source) {
+                return $source->street . ' ' . $source->number;
+            });
+        $config->registerMapping(Person::class, PersonDto::class)
+            ->forMember('address', Operation::fromProperty('adres')->mapTo(AddressDto::class))
+        ;
+        $mapper = new AutoMapper($config);
+
+        $address = new Address;
+        $address->street = "Main Street";
+        $address->number = 12;
+        $person = new Person;
+        $person->adres = $address;
+
+        $result = $mapper->map($person, PersonDto::class);
+
+        $this->assertEquals("Main Street 12", $result->address->streetAndNumber);
     }
 }

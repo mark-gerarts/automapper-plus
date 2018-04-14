@@ -239,9 +239,15 @@ $mapping->forMember('id', Operation::ignore());
 $mapping->forMember('employee', Operation::mapTo(EmployeeDto::class));
 // Explicitly state what the property name is of the source object.
 $mapping->forMember('name', Operation::fromProperty('unconventially_named_property'));
+// The `FromProperty` operation can be chained with `MapTo`, allowing a
+// differently named property to be mapped to a class.
+$mapping->forMember(
+    'address',
+    Operation::fromProperty('adres')->mapTo(Address::class)
+);
 ```
 
-Example of using the MapFromWithMapper:
+Example of using `MapFromWithMapper`:
 
 ```php
 <?php
