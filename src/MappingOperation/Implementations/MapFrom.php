@@ -14,7 +14,7 @@ class MapFrom extends DefaultMappingOperation
     /**
      * @var callable
      */
-    private $valueCallback;
+    protected $valueCallback;
 
     /**
      * MapFrom constructor.

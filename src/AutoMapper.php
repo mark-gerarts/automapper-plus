@@ -6,7 +6,7 @@ use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use AutoMapperPlus\Configuration\MappingInterface;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
-use AutoMapperPlus\MappingOperation\Implementations\MapTo;
+use AutoMapperPlus\MappingOperation\MapperAwareOperation;
 use function Functional\map;
 
 /**
@@ -106,9 +106,7 @@ class AutoMapper implements AutoMapperInterface
         foreach ($propertyNames as $propertyName) {
             $mappingOperation = $mapping->getMappingOperationFor($propertyName);
 
-            // @todo: find another solution to this hacky implementation of
-            // recursive mapping.
-            if ($mappingOperation instanceof MapTo) {
+            if ($mappingOperation instanceof MapperAwareOperation) {
                 $mappingOperation->setMapper($this);
             }
 

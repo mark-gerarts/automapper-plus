@@ -2,8 +2,9 @@
 
 namespace AutoMapperPlus\MappingOperation\Implementations;
 
-use AutoMapperPlus\AutoMapperInterface;
 use AutoMapperPlus\MappingOperation\DefaultMappingOperation;
+use AutoMapperPlus\MappingOperation\MapperAwareOperation;
+use AutoMapperPlus\MappingOperation\MapperAwareTrait;
 
 /**
  * Class MapTo.
@@ -12,17 +13,14 @@ use AutoMapperPlus\MappingOperation\DefaultMappingOperation;
  *
  * @package AutoMapperPlus\MappingOperation\Implementations
  */
-class MapTo extends DefaultMappingOperation
+class MapTo extends DefaultMappingOperation implements MapperAwareOperation
 {
+    use MapperAwareTrait;
+
     /**
      * @var string
      */
     private $destinationClass;
-
-    /**
-     * @var AutoMapperInterface
-     */
-    private $mapper;
 
     /**
      * MapTo constructor.
@@ -43,19 +41,14 @@ class MapTo extends DefaultMappingOperation
     }
 
     /**
-     * @param AutoMapperInterface $mapper
-     */
-    public function setMapper(AutoMapperInterface $mapper)
-    {
-        $this->mapper = $mapper;
-    }
-
-    /**
      * @inheritdoc
      */
     protected function getSourceValue($source, string $propertyName)
     {
-        $value = $this->getPropertyAccessor()->getProperty($source, $propertyName);
+        $value = $this->getPropertyAccessor()->getProperty(
+            $source,
+            $this->getSourcePropertyName($propertyName)
+        );
 
         return $this->isCollection($value)
             ? $this->mapper->mapMultiple($value, $this->destinationClass)

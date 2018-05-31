@@ -5,6 +5,7 @@ namespace AutoMapperPlus\MappingOperation;
 use AutoMapperPlus\MappingOperation\Implementations\FromProperty;
 use AutoMapperPlus\MappingOperation\Implementations\Ignore;
 use AutoMapperPlus\MappingOperation\Implementations\MapFrom;
+use AutoMapperPlus\MappingOperation\Implementations\MapFromWithMapper;
 use AutoMapperPlus\MappingOperation\Implementations\MapTo;
 
 /**
@@ -26,6 +27,22 @@ class Operation
     public static function mapFrom(callable $valueCallback): MapFrom
     {
         return new MapFrom($valueCallback);
+    }
+
+    /**
+     * Set a property's value from callback, callback should contain 2 parameters
+     *
+     * @param callable $valueCallback
+     *      Callback definition:
+     *
+     *      function(AutoMapperInterface, mixed){
+
+     *      }
+     * @return MapFromWithMapper
+     */
+    public static function mapFromWithMapper(callable $valueCallback): MapFromWithMapper
+    {
+        return new MapFromWithMapper($valueCallback);
     }
 
     /**
