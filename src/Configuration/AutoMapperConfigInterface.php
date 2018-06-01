@@ -9,6 +9,7 @@ namespace AutoMapperPlus\Configuration;
  */
 interface AutoMapperConfigInterface
 {
+    const ARRAY_TYPE_NAME = 'array';
     /**
      * Checks if a mapping exists between the given classes.
      *
@@ -44,6 +45,18 @@ interface AutoMapperConfigInterface
      */
     public function registerMapping(
         string $sourceClassName,
+        string $destinationClassName
+    ): MappingInterface;
+
+    /**
+     * Register array mapping to destination class. Without any additional
+     * configuration, this will perform the default operation for every array element
+     *
+     * @param string $destinationClassName
+     *
+     * @return MappingInterface
+     */
+    public function registerArrayMapping(
         string $destinationClassName
     ): MappingInterface;
 

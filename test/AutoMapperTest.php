@@ -535,4 +535,47 @@ class AutoMapperTest extends TestCase
 
         $this->assertEquals("Main Street 12", $result->address->streetAndNumber);
     }
+
+    public function testArrayMapping_AutoMapKeys_Success()
+    {
+        $addressValue = 'Main Street, nr 10';
+        $addressKeyName = 'streetAndNumber';
+
+        $config = new AutoMapperConfig();
+        $config->registerArrayMapping(AddressDto::class);
+
+        $mapper = new AutoMapper($config);
+
+        $address = [
+            $addressKeyName => $addressValue
+        ];
+
+        /** @var AddressDto $result */
+        $result = $mapper->map($address, AddressDto::class);
+
+        $this->assertInstanceOf(AddressDto::class, $result);
+        $this->assertEquals($result->streetAndNumber, $addressValue);
+    }
+
+    public function testArrayMapping_WithSpecificKeyName_Success()
+    {
+        $addressValue = 'Main Street, nr 10';
+        $addressKeyName = 'address1';
+
+        $config = new AutoMapperConfig();
+        $config->registerArrayMapping(AddressDto::class)
+               ->forMember('streetAndNumber', Operation::fromKey($addressKeyName));
+
+        $mapper = new AutoMapper($config);
+
+        $address = [
+            $addressKeyName => $addressValue
+        ];
+
+        /** @var AddressDto $result */
+        $result = $mapper->map($address, AddressDto::class);
+
+        $this->assertInstanceOf(AddressDto::class, $result);
+        $this->assertEquals($result->streetAndNumber, $addressValue);
+    }
 }

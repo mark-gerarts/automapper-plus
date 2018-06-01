@@ -86,6 +86,16 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     /**
      * @inheritdoc
      */
+    public function registerArrayMapping(
+        string $destinationClassName
+    ): MappingInterface
+    {
+        return $this->registerMapping(self::ARRAY_TYPE_NAME, $destinationClassName);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getOptions(): Options
     {
         return $this->options;

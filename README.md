@@ -110,11 +110,49 @@ $config
         return date('Y') - $source->getBirthYear();
     })
     ->reverseMap(); // Register the reverse mapping as well.
+    
+$config->registerArrayMapping(EmployeeDto::class);
                             
 $mapper = new AutoMapper($config);
 
 // With this configuration we can start converting our objects.
 $john = new Employee(10, "John", "Doe", 1980);
+$dto = $mapper->map($john, EmployeeDto::class);
+
+echo $dto->firstName; // => "John"
+echo $dto->lastName; // => "Doe"
+echo $dto->age; // => 37
+
+$employeeArray = [
+    'firstName' => 'John',
+    'lastName' = 'Doe',
+    'age' => 37
+];
+
+```
+
+Example with array mapping
+
+```php
+<?php
+
+use AutoMapperPlus\Configuration\AutoMapperConfig;
+use AutoMapperPlus\AutoMapper;
+
+$config = new AutoMapperConfig();
+
+// Simply registering the mapping is enough to convert array to object. Values are assigned only when key name matches
+// property name. Custom actions or different source key name can be registered for each individual property.
+$config->registerArrayMapping(EmployeeDto::class);
+                            
+$mapper = new AutoMapper($config);
+
+$john = [
+    'firstName' => 'John',
+    'lastName' => 'Doe',
+    'age' => 37
+];
+
 $dto = $mapper->map($john, EmployeeDto::class);
 
 echo $dto->firstName; // => "John"
@@ -217,6 +255,7 @@ The following operations are provided:
 | FromProperty | Use this to explicitly state the source property name. |
 | DefaultMappingOperation | Simply transfers the property, taking into account the provided naming conventions (if there are any). |
 | MapFromWithMapper | Similar to MapFrom.<br>Compared to `mapFrom`, the callback has access to a instance of `AutoMapperInterface`. Define the second callback argument of `AutoMapperInterface` type. Accessible by using <br> - `Operation::mapFromWithMapper(function($source, AutoMapperInterface $mapper){ ... })`<br>- `new mapFromWithMapper(function($source, AutoMapperInterface $mapper){ ... })`
+| FromKey | Use this to explicitly state the source array key name |
 
 You can use them with the same `forMember()` method. The `Operation` class can
 be used for clarity.
@@ -245,6 +284,8 @@ $mapping->forMember(
     'address',
     Operation::fromProperty('adres')->mapTo(Address::class)
 );
+
+$mapping->forMember('address', Operation::fromKey('address1'));
 ```
 
 Example of using `MapFromWithMapper`:
@@ -726,6 +767,62 @@ $mapper = new AutoMapper($config);
 // The AutoMapper can now be used as usual, but your custom mapper class will be
 // called to do the actual mapping.
 $employee = new Employee(10, 'John', 'Doe', 1980);
+$result = $mapper->map($employee, EmployeeDto::class);
+```
+
+Custom mapper for arrays
+
+```php
+<?php
+
+// You can either extend the CustomMapper, or just implement the MapperInterface
+// directly.
+class EmployeeMapper extends CustomMapper
+{
+    public $autoMapper;
+    
+    function __construct(AutoMapperInterface $autoMapper) 
+    {
+        $this->autoMapper = $autoMapper;
+    }
+    /**
+     * @param Employee $source
+     * @param EmployeeDto $destination
+     * @return EmployeeDto
+     */
+    public function mapToObject($source, $destination)
+    {
+        $destination->id = $source['id'];
+        $destination->firstName = $source['first_name'];
+        $destination->lastName = $source['last_name'];
+        $destination->age = date('Y') - (int)$source['birth_year'];
+        $destination->address = $this->autoMapper->map($source['address'], AddressDto::class);
+
+        return $destination;
+    }
+}
+
+$config = new AutoMapperConfig();
+
+$mapper = new AutoMapper($config);
+
+$config->registerArrayMapping(EmployeeDto::class)
+    ->useCustomMapper(new EmployeeMapper($mapper));
+
+$config->registerArrayMapping(AddressDto::class);
+
+
+// The AutoMapper can now be used as usual, but your custom mapper class will be
+// called to do the actual mapping.
+$employee = [
+    'id' => 10, 
+    'first_name'=>'John', 
+    'last_name' => 'Doe', 
+    'birth_year' => '1980',
+    'address' => [
+        'streetAndNumber' => 'main road, 10'
+    ]
+];
 $result = $mapper->map($employee, EmployeeDto::class);
 ```
 

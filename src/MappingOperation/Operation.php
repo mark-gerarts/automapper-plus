@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\MappingOperation;
 
+use AutoMapperPlus\MappingOperation\Implementations\FromKey;
 use AutoMapperPlus\MappingOperation\Implementations\FromProperty;
 use AutoMapperPlus\MappingOperation\Implementations\Ignore;
 use AutoMapperPlus\MappingOperation\Implementations\MapFrom;
@@ -75,5 +76,14 @@ class Operation
     public static function fromProperty(string $propertyName): FromProperty
     {
         return new FromProperty($propertyName);
+    }
+
+    /**
+     * Allows the sources key name to pe specified
+     * @param string $keyName
+     * @return FromKey
+     */
+    public static function fromKey(string $keyName){
+        return new FromKey($keyName);
     }
 }

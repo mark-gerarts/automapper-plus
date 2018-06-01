@@ -51,9 +51,13 @@ class AutoMapper implements AutoMapperInterface
             return null;
         }
 
-        $sourceClass = get_class($source);
+        $sourceTypeName = is_object($source) ? get_class($source) : gettype($source);
 
-        $mapping = $this->getMapping($sourceClass, $destinationClass);
+        if (!is_object($source) && !is_array($source)){
+            throw new \Exception('Invalid mapping source');
+        }
+
+        $mapping = $this->getMapping($sourceTypeName, $destinationClass);
         if ($mapping->providesCustomMapper()) {
             return $mapping->getCustomMapper()->map($source, $destinationClass);
         }
@@ -94,7 +98,7 @@ class AutoMapper implements AutoMapperInterface
     /**
      * Performs the actual transferring of properties.
      *
-     * @param $source
+     * @param object|array $source
      * @param $destination
      * @param MappingInterface $mapping
      * @return mixed
