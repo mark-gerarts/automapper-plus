@@ -7,7 +7,7 @@ namespace AutoMapperPlus\Exception;
  *
  * @package AutoMapperPlus\Exception
  */
-class UnregisteredMappingException extends \Exception
+class UnregisteredMappingException extends AutoMapperPlusException
 {
     /**
      * @param $from

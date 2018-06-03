@@ -7,7 +7,7 @@ namespace AutoMapperPlus\Exception;
  *
  * @package AutoMapperPlus\Exception
  */
-class InvalidPropertyException extends \Exception
+class InvalidPropertyException extends AutoMapperPlusException
 {
     /**
      * @param $name

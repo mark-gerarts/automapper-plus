@@ -9,7 +9,7 @@ use AutoMapperPlus\Configuration\MappingInterface;
  *
  * @package AutoMapperPlus\Exception
  */
-class NoConstructorSetException extends \Exception
+class NoConstructorSetException extends AutoMapperPlusException
 {
     /**
      * @param MappingInterface $mapping
