@@ -5,6 +5,7 @@ namespace AutoMapperPlus;
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use AutoMapperPlus\Configuration\MappingInterface;
+use AutoMapperPlus\Exception\InvalidMappingSourceException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\MappingOperation\MapperAwareOperation;
 use function Functional\map;
@@ -53,8 +54,8 @@ class AutoMapper implements AutoMapperInterface
 
         $sourceTypeName = is_object($source) ? get_class($source) : gettype($source);
 
-        if (!is_object($source) && !is_array($source)){
-            throw new \Exception('Invalid mapping source');
+        if (!is_object($source) && !is_array($source)) {
+            throw new InvalidMappingSourceException($source);
         }
 
         $mapping = $this->getMapping($sourceTypeName, $destinationClass);
