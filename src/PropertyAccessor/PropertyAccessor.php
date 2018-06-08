@@ -22,7 +22,7 @@ class PropertyAccessor implements PropertyAccessorInterface
 
         $objectArray = (array) $object;
         foreach ($objectArray as $name => $value) {
-            if ($this->getRealName($name) == $propertyName) {
+            if (substr($name, - strlen($propertyName)) === $propertyName) {
                 return true;
             }
         }
@@ -77,7 +77,7 @@ class PropertyAccessor implements PropertyAccessorInterface
     {
         $objectArray = (array) $object;
         foreach ($objectArray as $name => $value) {
-            if ($this->getRealName($name) == $propertyName) {
+            if (substr($name, - strlen($propertyName)) === $propertyName) {
                 return $value;
             }
         }
