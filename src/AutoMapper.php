@@ -55,7 +55,7 @@ class AutoMapper implements AutoMapperInterface
 
         $mapping = $this->getMapping($sourceClass, $destinationClass);
         if ($mapping->providesCustomMapper()) {
-            return $mapping->getCustomMapper()->map($source, $destinationClass);
+            return $this->getCustomMapper($mapping)->map($source, $destinationClass);
         }
 
         $destinationObject = $mapping->hasCustomConstructor()
@@ -85,7 +85,7 @@ class AutoMapper implements AutoMapperInterface
 
         $mapping = $this->getMapping($sourceClassName, $destinationClassName);
         if ($mapping->providesCustomMapper()) {
-            return $mapping->getCustomMapper()->mapToObject($source, $destination);
+            return $this->getCustomMapper($mapping)->mapToObject($source, $destination);
         }
 
         return $this->doMap($source, $destination, $mapping);
@@ -152,5 +152,22 @@ class AutoMapper implements AutoMapperInterface
             $sourceClass,
             $destinationClass
         );
+    }
+
+    /**
+     * Gets the custom
+     * @param MappingInterface $mapping
+     *
+     * @return MapperInterface|null
+     */
+    private function getCustomMapper(MappingInterface $mapping)
+    {
+        $customMapper = $mapping->getCustomMapper();
+
+        if ($customMapper instanceof MapperAwareOperation) {
+            $customMapper->setMapper($this);
+        }
+
+        return $customMapper;
     }
 }

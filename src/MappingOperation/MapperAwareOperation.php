@@ -2,16 +2,13 @@
 
 namespace AutoMapperPlus\MappingOperation;
 
-use AutoMapperPlus\AutoMapperInterface;
+use AutoMapperPlus\MapperAware;
 
 /**
  * Interface MapperAwareOperation
  *
  * @package AutoMapperPlus\MappingOperation
  */
-interface MapperAwareOperation {
-    /**
-     * @param AutoMapperInterface $mapper
-     */
-    public function setMapper(AutoMapperInterface $mapper): void;
+interface MapperAwareOperation extends MapperAware
+{
 }

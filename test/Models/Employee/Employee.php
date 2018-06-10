@@ -13,13 +13,15 @@ class Employee
     private $firstName;
     private $lastName;
     private $birthYear;
+    private $address;
 
-    function __construct(int $id, string $firstName, string $lastName, int $birthYear)
+    function __construct(int $id, string $firstName, string $lastName, int $birthYear, $address = null)
     {
         $this->id = $id;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->birthYear = $birthYear;
+        $this->address = $address;
     }
 
     /**
@@ -84,5 +86,21 @@ class Employee
     public function setBirthYear($birthYear)
     {
         $this->birthYear = $birthYear;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param mixed $address
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
     }
 }

@@ -9,6 +9,7 @@ use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
 use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use AutoMapperPlus\NameResolver\CallbackNameResolver;
+use AutoMapperPlus\Test\CustomMapper\EmployeeMapperWithMapperAware;
 use AutoMapperPlus\Test\Models\Inheritance\SourceChild;
 use AutoMapperPlus\Test\Models\Nested\Address;
 use AutoMapperPlus\Test\Models\Nested\AddressDto;
@@ -334,6 +335,32 @@ class AutoMapperTest extends TestCase
         $result = $mapper->map($employee, EmployeeDto::class);
 
         $this->assertEquals('Mapped by EmployeeMapper', $result->notes);
+    }
+
+    public function testACustomMapperWithMapperAwareCanBeUsed()
+    {
+        $this->config->registerMapping(Address::class, AddressDto::class)
+            ->forMember('streetAndNumber', function($item){
+                /** @var Address $item */
+                return $item->street . '-' . $item->number;
+            });
+        $this->config->registerMapping(Employee::class, EmployeeDto::class)
+                     ->useCustomMapper(new EmployeeMapperWithMapperAware());
+        $mapper = new AutoMapper($this->config);
+
+        $address = new Address();
+        $address->street = 'main street';
+        $address->number = 120;
+        $expectedStreetAndNumber = $address->street . '-' . $address->number;
+
+        $employee = new Employee(10, 'John', 'Doe', 1980, $address);
+
+        /** @var EmployeeDto $result */
+        $result = $mapper->map($employee, EmployeeDto::class);
+
+        $this->assertEquals('Mapped by EmployeeMapperWithMapperAware', $result->notes);
+        $this->assertInstanceOf(AddressDto::class, $result->address);
+        $this->assertEquals($expectedStreetAndNumber, $result->address->streetAndNumber);
     }
 
     public function testItCanMapADifferentlyNamedPropertyWithACallback()

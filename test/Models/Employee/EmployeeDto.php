@@ -9,4 +9,5 @@ class EmployeeDto
     public $lastName;
     public $age;
     public $notes;
+    public $address;
 }
