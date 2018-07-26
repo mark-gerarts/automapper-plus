@@ -54,6 +54,11 @@ class Options
     private $customMapper;
 
     /**
+     * @var bool
+     */
+    private $useSubstitution = true;
+
+    /**
      * @var string
      */
     private $objectCrates = [];
@@ -253,5 +258,23 @@ class Options
     public function isObjectCrate(string $className): bool
     {
         return isset($this->objectCrates[$className]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldUseSubstitution(): bool
+    {
+        return $this->useSubstitution;
+    }
+
+    public function allowSubstitution(): void
+    {
+        $this->useSubstitution = true;
+    }
+
+    public function disallowSubstitution(): void
+    {
+        $this->useSubstitution = false;
     }
 }

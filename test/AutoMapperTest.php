@@ -10,7 +10,10 @@ use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
 use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use AutoMapperPlus\NameResolver\CallbackNameResolver;
 use AutoMapperPlus\Test\CustomMapper\EmployeeMapperWithMapperAware;
+use AutoMapperPlus\Test\Models\Inheritance\DestinationChild;
+use AutoMapperPlus\Test\Models\Inheritance\DestinationParent;
 use AutoMapperPlus\Test\Models\Inheritance\SourceChild;
+use AutoMapperPlus\Test\Models\Inheritance\SourceParent;
 use AutoMapperPlus\Test\Models\Nested\Address;
 use AutoMapperPlus\Test\Models\Nested\AddressDto;
 use AutoMapperPlus\Test\Models\Nested\Person;
@@ -561,5 +564,29 @@ class AutoMapperTest extends TestCase
         $result = $mapper->map($person, PersonDto::class);
 
         $this->assertEquals("Main Street 12", $result->address->streetAndNumber);
+    }
+
+    public function testSubstitutionPrincipleSource()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(SourceParent::class, DestinationParent::class);
+        $mapper = new AutoMapper($config);
+
+        $source = new SourceChild('Some name');
+        $result = $mapper->map($source, DestinationParent::class);
+
+        $this->assertEquals('Some name', $result->name);
+    }
+
+    public function testSubstitutionPrincipleDestination()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(SourceParent::class, DestinationChild::class);
+        $mapper = new AutoMapper($config);
+
+        $source = new SourceParent('Some name');
+        $result = $mapper->map($source, DestinationChild::class);
+
+        $this->assertEquals('Some name', $result->name);
     }
 }
