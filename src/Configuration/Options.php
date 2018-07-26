@@ -54,6 +54,11 @@ class Options
     private $customMapper;
 
     /**
+     * @var bool
+     */
+    private $useMappingOfParentClasses = false;
+
+    /**
      * @var string
      */
     private $objectCrates = [];
@@ -253,5 +258,21 @@ class Options
     public function isObjectCrate(string $className): bool
     {
         return isset($this->objectCrates[$className]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUseMappingOfParentClasses(): bool
+    {
+        return $this->useMappingOfParentClasses;
+    }
+
+    /**
+     * @param bool $useMappingOfParentClasses
+     */
+    public function setUseMappingOfParentClasses(bool $useMappingOfParentClasses): void
+    {
+        $this->useMappingOfParentClasses = $useMappingOfParentClasses;
     }
 }

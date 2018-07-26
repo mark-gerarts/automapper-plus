@@ -55,12 +55,59 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         string $destinationClassName
     ): ?MappingInterface
     {
-        return first(
+        $candidates = array_filter(
             $this->mappings,
+            function (MappingInterface $mapping) use ($sourceClassName, $destinationClassName) {
+                return is_a($sourceClassName, $mapping->getSourceClassName(), true)
+                    && is_a($destinationClassName, $mapping->getDestinationClassName(), true);
+            }
+        );
+        $specific = first(
+            $candidates,
             function (MappingInterface $mapping) use ($sourceClassName, $destinationClassName) {
                 return $mapping->getSourceClassName() == $sourceClassName
                     && $mapping->getDestinationClassName() == $destinationClassName;
             }
+        );
+        if ($this->options->isUseMappingOfParentClasses()) {
+            return $specific ?? $this->getMostSpecificCandidate($candidates, $sourceClassName, $destinationClassName);
+        } else {
+            return $specific;
+        }
+    }
+
+    protected function getMostSpecificCandidate(array $candidates, string $sourceClassName, string $destinationClassName)
+    {
+        $lowestDistance = PHP_INT_MAX;
+        $selectedCandidate = null;
+        /** @var MappingInterface $candidate */
+        foreach($candidates as $candidate) {
+            $distance = $this->getClassDistance($sourceClassName, $candidate->getSourceClassName())
+                + $this->getClassDistance($destinationClassName, $candidate->getDestinationClassName());
+            if ($distance < $lowestDistance) {
+                $lowestDistance = $distance;
+                $selectedCandidate = $candidate;
+            }
+        }
+        return $selectedCandidate;
+    }
+
+    protected function getClassDistance($childClass, $parentClass)
+    {
+        if ($childClass === $parentClass) {
+            return 0;
+        }
+        $result = 0;
+        $childParents = class_parents($childClass, true);
+        foreach($childParents as $childParent) {
+            $result++;
+            if ($childParent === $parentClass) {
+                return $result;
+            }
+        }
+        throw new \Exception("
+            This error should have never be thrown.
+            This could only happen, if given childClass is not a child of the given parentClass"
         );
     }
 
