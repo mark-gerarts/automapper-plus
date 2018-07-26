@@ -56,7 +56,7 @@ class Options
     /**
      * @var bool
      */
-    private $useMappingOfParentClasses = false;
+    private $useSubstitution = true;
 
     /**
      * @var string
@@ -263,16 +263,18 @@ class Options
     /**
      * @return bool
      */
-    public function isUseMappingOfParentClasses(): bool
+    public function shouldUseSubstitution(): bool
     {
-        return $this->useMappingOfParentClasses;
+        return $this->useSubstitution;
     }
 
-    /**
-     * @param bool $useMappingOfParentClasses
-     */
-    public function setUseMappingOfParentClasses(bool $useMappingOfParentClasses): void
+    public function allowSubstitution(): void
     {
-        $this->useMappingOfParentClasses = $useMappingOfParentClasses;
+        $this->useSubstitution = true;
+    }
+
+    public function disallowSubstitution(): void
+    {
+        $this->useSubstitution = false;
     }
 }

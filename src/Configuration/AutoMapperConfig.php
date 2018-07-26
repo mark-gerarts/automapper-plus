@@ -55,6 +55,23 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         string $destinationClassName
     ): ?MappingInterface
     {
+        $exact_match = first(
+            $this->mappings,
+            function (MappingInterface $mapping) use ($sourceClassName, $destinationClassName) {
+                return $mapping->getSourceClassName() == $sourceClassName
+                    && $mapping->getDestinationClassName() == $destinationClassName;
+            }
+        );
+        if ($exact_match) {
+            return $exact_match;
+        }
+        if (!$this->options->shouldUseSubstitution()) {
+            return null;
+        }
+
+        // We didn't find an exact match, and substitution is allowed. We'll
+        // build a list of potential candidates and retrieve the most specific
+        // mapping from it.
         $candidates = array_filter(
             $this->mappings,
             function (MappingInterface $mapping) use ($sourceClassName, $destinationClassName) {
@@ -63,28 +80,36 @@ class AutoMapperConfig implements AutoMapperConfigInterface
             }
         );
 
-        $specific = first(
+        return $this->getMostSpecificCandidate(
             $candidates,
-            function (MappingInterface $mapping) use ($sourceClassName, $destinationClassName) {
-                return $mapping->getSourceClassName() == $sourceClassName
-                    && $mapping->getDestinationClassName() == $destinationClassName;
-            }
+            $sourceClassName,
+            $destinationClassName
         );
-        if ($this->options->isUseMappingOfParentClasses()) {
-            return $specific ?? $this->getMostSpecificCandidate($candidates, $sourceClassName, $destinationClassName);
-        } else {
-            return $specific;
-        }
     }
 
-    protected function getMostSpecificCandidate(array $candidates, string $sourceClassName, string $destinationClassName)
-    {
+    /**
+     * Searches the most specific candidate in the list. This means the mapping
+     * that is closest to the given source and destination in the inheritance
+     * chain.
+     *
+     * @param array $candidates
+     * @param string $sourceClassName
+     * @param string $destinationClassName
+     * @return MappingInterface|null
+     */
+    protected function getMostSpecificCandidate(
+        array $candidates,
+        string $sourceClassName,
+        string $destinationClassName
+    ): ?MappingInterface {
         $lowestDistance = PHP_INT_MAX;
         $selectedCandidate = null;
         /** @var MappingInterface $candidate */
         foreach($candidates as $candidate) {
-            $distance = $this->getClassDistance($sourceClassName, $candidate->getSourceClassName())
-                + $this->getClassDistance($destinationClassName, $candidate->getDestinationClassName());
+            $sourceDistance = $this->getClassDistance($sourceClassName, $candidate->getSourceClassName());
+            $destinationDistance = $this->getClassDistance($destinationClassName, $candidate->getDestinationClassName());
+            $distance = $sourceDistance + $destinationDistance;
+
             if ($distance < $lowestDistance) {
                 $lowestDistance = $distance;
                 $selectedCandidate = $candidate;
@@ -93,11 +118,23 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         return $selectedCandidate;
     }
 
-    protected function getClassDistance($childClass, $parentClass)
-    {
+    /**
+     * Returns the distance in the inheritance chain between 2 classes.
+     *
+     * @param string $childClass
+     * @param string $parentClass
+     * @return int
+     * @throws \Exception
+     */
+    protected function getClassDistance(
+        string $childClass,
+        string
+        $parentClass
+    ): int {
         if ($childClass === $parentClass) {
             return 0;
         }
+
         $result = 0;
         $childParents = class_parents($childClass, true);
         foreach($childParents as $childParent) {
@@ -106,6 +143,8 @@ class AutoMapperConfig implements AutoMapperConfigInterface
                 return $result;
             }
         }
+
+        // @todo: use a domain specific exception.
         throw new \Exception("
             This error should have never be thrown.
             This could only happen, if given childClass is not a child of the given parentClass"
