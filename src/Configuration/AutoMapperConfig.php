@@ -62,6 +62,7 @@ class AutoMapperConfig implements AutoMapperConfigInterface
                     && is_a($destinationClassName, $mapping->getDestinationClassName(), true);
             }
         );
+
         $specific = first(
             $candidates,
             function (MappingInterface $mapping) use ($sourceClassName, $destinationClassName) {

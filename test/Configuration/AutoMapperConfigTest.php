@@ -4,6 +4,10 @@ namespace AutoMapperPlus\Configuration;
 
 use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
+use AutoMapperPlus\Test\Models\Inheritance\DestinationChild;
+use AutoMapperPlus\Test\Models\Inheritance\DestinationParent;
+use AutoMapperPlus\Test\Models\Inheritance\SourceChild;
+use AutoMapperPlus\Test\Models\Inheritance\SourceParent;
 use PHPUnit\Framework\TestCase;
 use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
 use AutoMapperPlus\Test\Models\SimpleProperties\Source;
@@ -44,5 +48,27 @@ class AutoMapperConfigTest extends TestCase
             Operation::ignore(),
             $config->getOptions()->getDefaultMappingOperation()
         );
+    }
+
+    public function testSubstitutionPrincipleSource()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(SourceParent::class, DestinationParent::class);
+
+        $this->assertTrue($config->hasMappingFor(
+            SourceChild::class,
+            DestinationParent::class
+        ));
+    }
+
+    public function testSubstitutionPrincipleDestination()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(SourceParent::class, DestinationParent::class);
+
+        $this->assertTrue($config->hasMappingFor(
+            SourceParent::class,
+            DestinationChild::class
+        ));
     }
 }
