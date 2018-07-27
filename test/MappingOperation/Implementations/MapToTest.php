@@ -5,7 +5,12 @@ namespace AutoMapperPlus\MappingOperation\Implementations;
 use AutoMapperPlus\AutoMapper;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use AutoMapperPlus\Configuration\Options;
+use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\NameResolver\CallbackNameResolver;
+use AutoMapperPlus\Test\Models\Nested\Order\Item;
+use AutoMapperPlus\Test\Models\Nested\Order\ItemDto;
+use AutoMapperPlus\Test\Models\Nested\Order\Order;
+use AutoMapperPlus\Test\Models\Nested\Order\OrderDto;
 use PHPUnit\Framework\TestCase;
 use AutoMapperPlus\Test\Models\Nested\ParentClass;
 use AutoMapperPlus\Test\Models\Nested\ParentClassDto;
@@ -97,5 +102,38 @@ class MapToTest extends TestCase
         // correctly.
         $this->assertInstanceOf(Destination::class, $parentDestination->anotherProperty);
         $this->assertEquals('SourceName', $parentDestination->anotherProperty->name);
+    }
+
+    public function testItCanMapNestedObjects()
+    {
+        $mapper = AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
+            $config
+                ->registerMapping(OrderDto::class, Order::class)
+                ->forMember('items', Operation::mapTo(Item::class))
+            ;
+            $config
+                ->registerMapping(ItemDto::class, Item::class)
+            ;
+        });
+
+        $item = new Item();
+        $item->name = 'Item Name';
+        $item->price = 1000;
+        $order = new Order();
+        $order->price = 1000;
+        $order->items = [$item];
+
+        $itemDto = new ItemDto();
+        $itemDto->name = 'New Item Name';
+        $orderDto = new OrderDto();
+        $orderDto->items = [$itemDto];
+
+        $result = $mapper->mapToObject($orderDto, $order);
+
+        $this->assertEquals(spl_object_id($order), spl_object_id($result));
+        $this->assertEquals(1000, $result->price);
+        $this->assertEquals(spl_object_id($item), spl_object_id($result->items[0]));
+        $this->assertEquals('New Item Name', $result->items[0]->name);
+        $this->assertEquals(1000, $result->items[0]->price);
     }
 }

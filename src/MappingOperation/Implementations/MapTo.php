@@ -43,16 +43,43 @@ class MapTo extends DefaultMappingOperation implements MapperAwareOperation
     /**
      * @inheritdoc
      */
-    protected function getSourceValue($source, string $propertyName)
+    public function mapProperty(string $propertyName, $source, $destination): void
     {
-        $value = $this->getPropertyAccessor()->getProperty(
-            $source,
+        if (!$this->canMapProperty($propertyName, $source)) {
+            // Alternatively throw an error here.
+            return;
+        }
+
+        $destinationValue = $this->getPropertyAccessor()->getProperty(
+            $destination,
             $this->getSourcePropertyName($propertyName)
         );
 
-        return $this->isCollection($value)
-            ? $this->mapper->mapMultiple($value, $this->destinationClass)
-            : $this->mapper->map($value, $this->destinationClass);
+        $sourceValue = $this->getSourceValue($source, $propertyName);
+
+        if (!$this->isCollection($sourceValue)) {
+            if ($destinationValue instanceof $this->destinationClass) {
+                $result = $this->mapper->mapToObject($sourceValue, $destinationValue);
+            } else {
+                $result = $this->mapper->map($sourceValue, $this->destinationClass);
+            }
+        } else {
+            if ($this->isCollection($destinationValue)) {
+                $result = [];
+                foreach ($sourceValue as $index => $value) {
+                    if (isset($destinationValue[$index])) {
+                        $result[] = $this->mapper->mapToObject($value, $destinationValue[$index]);
+                    } else {
+                        $result[] = $this->mapper->map($value, $this->destinationClass);
+                    }
+
+                }
+            } else {
+                $result = $this->mapper->mapMultiple($sourceValue, $this->destinationClass);
+            }
+        }
+
+        $this->setDestinationValue($destination, $propertyName, $result);
     }
 
     /**
