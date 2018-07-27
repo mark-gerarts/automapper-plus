@@ -130,9 +130,9 @@ class MapToTest extends TestCase
 
         $result = $mapper->mapToObject($orderDto, $order);
 
-        $this->assertEquals(spl_object_id($order), spl_object_id($result));
+        $this->assertEquals(\spl_object_id($order), \spl_object_id($result));
         $this->assertEquals(1000, $result->price);
-        $this->assertEquals(spl_object_id($item), spl_object_id($result->items[0]));
+        $this->assertEquals(\spl_object_id($item), \spl_object_id($result->items[0]));
         $this->assertEquals('New Item Name', $result->items[0]->name);
         $this->assertEquals(1000, $result->items[0]->price);
     }
