@@ -50,11 +50,7 @@ class MapTo extends DefaultMappingOperation implements MapperAwareOperation
             return;
         }
 
-        $destinationValue = $this->getPropertyAccessor()->getProperty(
-            $destination,
-            $this->getSourcePropertyName($propertyName)
-        );
-
+        $destinationValue = $this->getSourceValue($destination, $propertyName);
         $sourceValue = $this->getSourceValue($source, $propertyName);
 
         if (!$this->isCollection($sourceValue)) {
