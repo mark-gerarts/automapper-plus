@@ -297,13 +297,14 @@ $config->createMapping(Parent::class, ParentDto::class)
 #### Handling object construction
 You can specify how the new destination object will be constructed (this isn't
 relevant if you use `mapToObject`). You can do this by registering a *factory
-callback*. This callback will be passed the source object.
+callback*. This callback will be passed both the source object and an instance
+of the AutoMapper.
 
 ```php
 <?php
 
 $config->registerMapping(Source::class, Destination::class)
-    ->beConstructedUsing(function (Source $source): Destination {
+    ->beConstructedUsing(function (Source $source, AutoMapperInterface $mapper): Destination {
         return new Destination($source->getProperty());
     });
 ```
