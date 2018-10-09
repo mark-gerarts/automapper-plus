@@ -37,6 +37,8 @@ use AutoMapperPlus\Test\Models\SimpleProperties\Source;
 use AutoMapperPlus\Test\Models\SpecialConstructor\Source as ConstructorSource;
 use AutoMapperPlus\Test\Models\SpecialConstructor\Destination as ConstructorDestination;
 use AutoMapperPlus\Test\Models\Visibility\Visibility;
+use AutoMapperPlus\Test\Models\SimilarPropertyNames\Source as SimilarSource;
+use AutoMapperPlus\Test\Models\SimilarPropertyNames\Destination as SimilarDestination;
 
 /**
  * Class AutoMapperTest
@@ -400,7 +402,7 @@ class AutoMapperTest extends TestCase
     public function testACustomConstructorCallbackCanBeProvided()
     {
         $this->config->registerMapping(Source::class, Destination::class)
-            ->beConstructedUsing(function (Source $source): Destination {
+            ->beConstructedUsing(function (Source $source, AutoMapperInterface $mapper): Destination {
                 return new Destination('Set during construct');
             })
             ->forMember('name', Operation::ignore());
@@ -588,5 +590,21 @@ class AutoMapperTest extends TestCase
         $result = $mapper->map($source, DestinationChild::class);
 
         $this->assertEquals('Some name', $result->name);
+    }
+
+    /**
+     * https://github.com/mark-gerarts/automapper-plus/issues/25
+     */
+    public function testItMapsPrivatePropertiesWithTheSameSuffix()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(SimilarSource::class, SimilarDestination::class);
+        $mapper = new AutoMapper($config);
+
+        $source = new SimilarSource('id_1', 'id_2');
+        $result = $mapper->map($source, SimilarDestination::class);
+
+        $this->assertEquals('id_1', $result->id);
+        $this->assertEquals('id_2', $result->second_id);
     }
 }
