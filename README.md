@@ -792,3 +792,5 @@ Collection size: 10000
 - [ ] Refactor tests
 - [ ] Allow setting a maximum depth, see #14
 - [ ] Provide a NameResolver that accepts an array mapping, as an alternative to multiple `FromProperty`s
+- [ ] Make use of a decorated Symfony's `PropertyAccessor` (see [#16](https://github.com/mark-gerarts/automapper-plus/issues/16))
+- [ ] Allow adding of middleware to the mapper
