@@ -11,7 +11,7 @@ use AutoMapperPlus\MappingOperation\Reversible;
 use AutoMapperPlus\NameConverter\NameConverter;
 use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
 use AutoMapperPlus\NameResolver\NameResolverInterface;
-use AutoMapperPlus\PropertyAccessor\ObjectCratePropertyAccessor;
+use AutoMapperPlus\PropertyAccessor\ObjectCratePropertyWriter;
 use function Functional\map;
 
 /**
@@ -78,7 +78,7 @@ class Mapping implements MappingInterface
         // If this is a mapping that maps to an object crate, overwrite the
         // property accessor in the options.
         if ($this->options->isObjectCrate($this->destinationClassName)) {
-            $this->options->setPropertyAccessor(new ObjectCratePropertyAccessor());
+            $this->options->setPropertyWriter(new ObjectCratePropertyWriter());
         }
     }
 

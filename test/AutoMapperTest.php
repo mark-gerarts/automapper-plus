@@ -18,6 +18,7 @@ use AutoMapperPlus\Test\Models\Nested\Address;
 use AutoMapperPlus\Test\Models\Nested\AddressDto;
 use AutoMapperPlus\Test\Models\Nested\Person;
 use AutoMapperPlus\Test\Models\Nested\PersonDto;
+use AutoMapperPlus\Test\Models\SimpleProperties\HasPrivateProperties;
 use AutoMapperPlus\Test\Models\SimpleProperties\NoProperties;
 use PHPUnit\Framework\TestCase;
 use AutoMapperPlus\Test\Models\Employee\Employee;
@@ -606,5 +607,21 @@ class AutoMapperTest extends TestCase
 
         $this->assertEquals('id_1', $result->id);
         $this->assertEquals('id_2', $result->second_id);
+    }
+
+    /**
+     * https://github.com/mark-gerarts/automapper-plus/issues/25
+     */
+    public function testitMapsPrivatePropertiesToStdClass()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(HasPrivateProperties::class, \stdClass::class);
+        $mapper = new AutoMapper($config);
+
+        $source = new HasPrivateProperties('AzureDiamond', 'hunter2');
+        $result = $mapper->map($source, \stdClass::class);
+
+        $this->assertEquals($result->username, 'AzureDiamond');
+        $this->assertEquals($result->password, 'hunter2');
     }
 }

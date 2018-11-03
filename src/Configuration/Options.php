@@ -10,6 +10,8 @@ use AutoMapperPlus\NameResolver\NameResolver;
 use AutoMapperPlus\NameResolver\NameResolverInterface;
 use AutoMapperPlus\PropertyAccessor\PropertyAccessor;
 use AutoMapperPlus\PropertyAccessor\PropertyAccessorInterface;
+use AutoMapperPlus\PropertyAccessor\PropertyReaderInterface;
+use AutoMapperPlus\PropertyAccessor\PropertyWriterInterface;
 
 /**
  * Class Options
@@ -37,6 +39,16 @@ class Options
      * @var PropertyAccessorInterface
      */
     private $propertyAccessor;
+
+    /**
+     * @var PropertyWriterInterface
+     */
+    private $propertyWriter;
+
+    /**
+     * @var PropertyReaderInterface
+     */
+    private $propertyReader;
 
     /**
      * @var NameResolverInterface
@@ -156,12 +168,43 @@ class Options
     /**
      * @param PropertyAccessorInterface $propertyAccessor
      */
-    public function setPropertyAccessor
-    (
-        PropertyAccessorInterface $propertyAccessor
-    ): void
+    public function setPropertyAccessor(PropertyAccessorInterface $propertyAccessor): void
     {
+        $this->propertyReader = $propertyAccessor;
+        $this->propertyWriter = $propertyAccessor;
         $this->propertyAccessor = $propertyAccessor;
+    }
+
+    /**
+     * @return PropertyWriterInterface
+     */
+    public function getPropertyWriter(): PropertyWriterInterface
+    {
+        return $this->propertyWriter ?: $this->propertyAccessor;
+    }
+
+    /**
+     * @param PropertyWriterInterface $propertyWriter
+     */
+    public function setPropertyWriter(PropertyWriterInterface $propertyWriter): void
+    {
+        $this->propertyWriter = $propertyWriter;
+    }
+
+    /**
+     * @return PropertyReaderInterface
+     */
+    public function getPropertyReader(): PropertyReaderInterface
+    {
+        return $this->propertyReader ?: $this->propertyAccessor;
+    }
+
+    /**
+     * @param PropertyReaderInterface $propertyReader
+     */
+    public function setPropertyReader(PropertyReaderInterface $propertyReader): void
+    {
+        $this->propertyReader = $propertyReader;
     }
 
     /**

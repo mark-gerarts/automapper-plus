@@ -45,7 +45,7 @@ class MapTo extends DefaultMappingOperation implements MapperAwareOperation
      */
     protected function getSourceValue($source, string $propertyName)
     {
-        $value = $this->getPropertyAccessor()->getProperty(
+        $value = $this->getPropertyReader()->getProperty(
             $source,
             $this->getSourcePropertyName($propertyName)
         );
