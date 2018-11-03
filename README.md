@@ -537,7 +537,7 @@ The available options that can be set are:
 | Skip constructor | `true` | whether or not the constructor should be skipped when instantiating a new class. Use `$options->skipConstructor()` and `$options->dontSkipConstructor()` to change. |
 | Property accessor | `PropertyAccessor` | Use this to provide an alternative implementation of the property accessor. A property accessor combines the reading and writing of properties |
 | Property reader | `PropertyAccessor` | Use this to provide an alternative implementation of the property reader. |
-| Property accessor | `PropertyAccessor` | Use this to provide an alternative implementation of the property writer. |
+| Property writer | `PropertyAccessor` | Use this to provide an alternative implementation of the property writer. |
 | Default mapping operation | `DefaultMappingOperation` | the default operation used when mapping a property. Also see [mapping operations](#operations) |
 | Default name resolver | `NameResolver` | The default class to resolve property names |
 | Custom Mapper | `null` | Grants the ability to use a [custom mapper](#using-a-custom-mapper). |
