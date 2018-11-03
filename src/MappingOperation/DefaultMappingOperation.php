@@ -4,6 +4,8 @@ namespace AutoMapperPlus\MappingOperation;
 
 use AutoMapperPlus\Configuration\Options;
 use AutoMapperPlus\PropertyAccessor\PropertyAccessorInterface;
+use AutoMapperPlus\PropertyAccessor\PropertyReaderInterface;
+use AutoMapperPlus\PropertyAccessor\PropertyWriterInterface;
 
 /**
  * Class DefaultMappingOperation
@@ -47,7 +49,7 @@ class DefaultMappingOperation implements MappingOperationInterface
     {
         $sourcePropertyName = $this->getSourcePropertyName($propertyName);
 
-        return $this->getPropertyAccessor()->hasProperty($source, $sourcePropertyName);
+        return $this->getPropertyReader()->hasProperty($source, $sourcePropertyName);
     }
 
     /**
@@ -57,7 +59,7 @@ class DefaultMappingOperation implements MappingOperationInterface
      */
     protected function getSourceValue($source, string $propertyName)
     {
-        return $this->getPropertyAccessor()->getProperty(
+        return $this->getPropertyReader()->getProperty(
             $source,
             $this->getSourcePropertyName($propertyName)
         );
@@ -68,17 +70,41 @@ class DefaultMappingOperation implements MappingOperationInterface
      * @param string $propertyName
      * @param $value
      */
-    protected function setDestinationValue($destination, string $propertyName, $value): void
-    {
-        $this->getPropertyAccessor()->setProperty($destination, $propertyName, $value);
+    protected function setDestinationValue(
+        $destination,
+        string $propertyName,
+        $value
+    ): void {
+        $this->getPropertyWriter()->setProperty(
+            $destination,
+            $propertyName,
+            $value
+        );
     }
 
     /**
      * @return PropertyAccessorInterface
+     * @deprecated The PropertyAccessorInterface has been split up in reading and writing. Use these instead.
      */
     protected function getPropertyAccessor(): PropertyAccessorInterface
     {
         return $this->options->getPropertyAccessor();
+    }
+
+    /**
+     * @return PropertyReaderInterface
+     */
+    protected function getPropertyReader(): PropertyReaderInterface
+    {
+        return $this->options->getPropertyReader();
+    }
+
+    /**
+     * @return PropertyWriterInterface
+     */
+    protected function getPropertyWriter(): PropertyWriterInterface
+    {
+        return $this->options->getPropertyWriter();
     }
 
     /**
