@@ -2,8 +2,6 @@
 
 namespace AutoMapperPlus\PropertyAccessor;
 
-use function Functional\map;
-
 /**
  * Class PropertyAccessor
  *
@@ -61,9 +59,12 @@ class PropertyAccessor implements PropertyAccessorInterface
      */
     public function getPropertyNames($object): array
     {
-        return map((array) $object, function ($_, $name) {
-            return $this->getRealName($name);
-        });
+        $propertyNames = [];
+        foreach ((array) $object as $propertyPath => $value) {
+            $propertyNames[] = $this->getRealName($propertyPath);
+        }
+
+        return $propertyNames;
     }
 
     /**
@@ -117,11 +118,18 @@ class PropertyAccessor implements PropertyAccessorInterface
     }
 
     /**
-     * @param string $propertyName
+     * @param string $propertyPath
      * @return string
      */
-    private function getRealName(string $propertyName): string
+    private function getRealName(string $propertyPath): string
     {
-        return preg_replace('/\x00.*\x00/', '', $propertyName);
+        $currChar = \strlen($propertyPath) - 1;
+        $realName = '';
+        while ($currChar >= 0 && $propertyPath[$currChar] !== "\x00") {
+            $realName = $propertyPath[$currChar] . $realName;
+            $currChar--;
+        }
+
+        return $realName;
     }
 }
