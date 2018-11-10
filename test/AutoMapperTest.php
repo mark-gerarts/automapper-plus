@@ -639,33 +639,4 @@ class AutoMapperTest extends TestCase
         $this->assertEquals($result->username, 'AzureDiamond');
         $this->assertEquals($result->password, 'hunter2');
     }
-
-    public function testItMapsToNullIfSourceIsNull()
-    {
-        $config = new AutoMapperConfig();
-        $config->registerMapping(Source::class, Destination::class);
-        $mapper = new AutoMapper($config);
-
-        $source = new Source(null);
-        $destination = new Destination();
-        $destination->name = 'Hello, world';
-        $mapper->mapToObject($source, $destination);
-
-        $this->assertNull($destination->name);
-    }
-
-    public function testItDoesntMapToNullIfOptionIsSet()
-    {
-        $config = new AutoMapperConfig();
-        $config->getOptions()->ignoreNullProperties();
-        $config->registerMapping(Source::class, Destination::class);
-        $mapper = new AutoMapper($config);
-
-        $source = new Source(null);
-        $destination = new Destination();
-        $destination->name = 'Hello, world';
-        $mapper->mapToObject($source, $destination);
-
-        $this->assertEquals('Hello, world', $destination->name);
-    }
 }

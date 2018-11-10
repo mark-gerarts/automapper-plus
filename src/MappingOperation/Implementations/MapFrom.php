@@ -43,4 +43,19 @@ class MapFrom extends DefaultMappingOperation
         // properties.
         return true;
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function setDestinationValue(
+        $destination,
+        string $propertyName,
+        $value
+    ): void {
+        $this->getPropertyWriter()->setProperty(
+            $destination,
+            $propertyName,
+            $value
+        );
+    }
 }
