@@ -542,6 +542,7 @@ The available options that can be set are:
 | Default name resolver | `NameResolver` | The default class to resolve property names |
 | Custom Mapper | `null` | Grants the ability to use a [custom mapper](#using-a-custom-mapper). |
 | Object crates | `[\stdClass::class]` | See [the dedicated section](#the-concept-of-object-crates). |
+| Ignore null properties | false | Sets whether or not a source property should be mapped to the destination object if the source value is null |
 
 ### Setting the options
 

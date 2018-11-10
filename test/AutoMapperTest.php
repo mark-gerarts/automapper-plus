@@ -386,7 +386,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('Test', $result->anotherProperty);
     }
 
-    public function testItMapsInheritedProperties()
+    public function testItMapsInheritedProperty()
     {
         $this->config->registerMapping(
             SourceChild::class,
@@ -398,6 +398,21 @@ class AutoMapperTest extends TestCase
         $result = $mapper->map($source, Destination::class);
 
         $this->assertEquals('Name', $result->name);
+    }
+
+    public function testItMapsInheritedPublicProperty()
+    {
+        $this->config->registerMapping(
+            SourceChild::class,
+            Destination::class
+        );
+        $mapper = new AutoMapper($this->config);
+
+        $source = new SourceChild('Name');
+        $source->anotherProperty = 'other';
+        $result = $mapper->map($source, Destination::class);
+
+        $this->assertEquals('other', $result->anotherProperty);
     }
 
     public function testACustomConstructorCallbackCanBeProvided()
@@ -623,5 +638,34 @@ class AutoMapperTest extends TestCase
 
         $this->assertEquals($result->username, 'AzureDiamond');
         $this->assertEquals($result->password, 'hunter2');
+    }
+
+    public function testItMapsToNullIfSourceIsNull()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(Source::class, Destination::class);
+        $mapper = new AutoMapper($config);
+
+        $source = new Source(null);
+        $destination = new Destination();
+        $destination->name = 'Hello, world';
+        $mapper->mapToObject($source, $destination);
+
+        $this->assertNull($destination->name);
+    }
+
+    public function testItDoesntMapToNullIfOptionIsSet()
+    {
+        $config = new AutoMapperConfig();
+        $config->getOptions()->ignoreNullProperties();
+        $config->registerMapping(Source::class, Destination::class);
+        $mapper = new AutoMapper($config);
+
+        $source = new Source(null);
+        $destination = new Destination();
+        $destination->name = 'Hello, world';
+        $mapper->mapToObject($source, $destination);
+
+        $this->assertEquals('Hello, world', $destination->name);
     }
 }
