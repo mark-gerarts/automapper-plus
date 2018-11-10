@@ -16,10 +16,11 @@ class PropertyAccessor implements PropertyAccessorInterface
      */
     public function hasProperty($object, string $propertyName): bool
     {
-        if (isset($object->{$propertyName})) {
+        if (property_exists($object, $propertyName)) {
             return true;
         }
 
+        // property_exists doesn't return true for inherited properties.
         $objectArray = (array) $object;
         foreach ($objectArray as $name => $value) {
             if (substr($name, - strlen($propertyName) - 1) === "\x00" . $propertyName) {
