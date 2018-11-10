@@ -76,6 +76,11 @@ class Options
     private $objectCrates = [];
 
     /**
+     * @var bool
+     */
+    private $ignoreNullProperties = false;
+
+    /**
      * @return Options
      *
      * Note: the skipConstructor default will be replaced by dontSkipConstructor
@@ -319,5 +324,26 @@ class Options
     public function disallowSubstitution(): void
     {
         $this->useSubstitution = false;
+    }
+
+    /**
+     * If a source property is NULL, don't map it to the destination.
+     */
+    public function ignoreNullProperties(): void
+    {
+        $this->ignoreNullProperties = true;
+    }
+
+    /**
+     * If a source property is NULL, map it to the destination.
+     */
+    public function dontIgnoreNullProperties(): void
+    {
+        $this->ignoreNullProperties = false;
+    }
+
+    public function shouldIgnoreNullProperties(): bool
+    {
+        return $this->ignoreNullProperties;
     }
 }

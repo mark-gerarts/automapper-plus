@@ -75,6 +75,10 @@ class DefaultMappingOperation implements MappingOperationInterface
         string $propertyName,
         $value
     ): void {
+        if ($value === null && $this->options->shouldIgnoreNullProperties()) {
+            return;
+        }
+
         $this->getPropertyWriter()->setProperty(
             $destination,
             $propertyName,
