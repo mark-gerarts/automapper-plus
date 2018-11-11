@@ -2,8 +2,6 @@
 
 namespace AutoMapperPlus\NameConverter\NamingConvention;
 
-use function Functional\map;
-
 /**
  * Class CamelCaseNamingConvention
  *
@@ -26,9 +24,7 @@ class CamelCaseNamingConvention extends BaseNamingConvention
      */
     public function fromParts(array $parts): string
     {
-        $parts = map($parts, function (string $part) {
-            return ucfirst($part);
-        });
+        $parts = array_map('ucfirst', $parts);
 
         return lcfirst(implode('', $parts));
     }

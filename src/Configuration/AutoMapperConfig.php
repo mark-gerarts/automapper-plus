@@ -2,8 +2,6 @@
 
 namespace AutoMapperPlus\Configuration;
 
-use function Functional\first;
-
 /**
  * Class AutoMapperConfig
  *
@@ -55,16 +53,15 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         string $destinationClassName
     ): ?MappingInterface
     {
-        $exact_match = first(
-            $this->mappings,
-            function (MappingInterface $mapping) use ($sourceClassName, $destinationClassName) {
-                return $mapping->getSourceClassName() == $sourceClassName
-                    && $mapping->getDestinationClassName() == $destinationClassName;
+        // Check for an exact match before we try parent classes.
+        foreach ($this->mappings as $mapping) {
+            $isExactMatch = $mapping->getSourceClassName() === $sourceClassName
+                && $mapping->getDestinationClassName() === $destinationClassName;
+            if ($isExactMatch) {
+                return $mapping;
             }
-        );
-        if ($exact_match) {
-            return $exact_match;
         }
+
         if (!$this->options->shouldUseSubstitution()) {
             return null;
         }

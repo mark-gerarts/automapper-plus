@@ -12,7 +12,6 @@ use AutoMapperPlus\NameConverter\NameConverter;
 use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
 use AutoMapperPlus\NameResolver\NameResolverInterface;
 use AutoMapperPlus\PropertyAccessor\ObjectCratePropertyWriter;
-use function Functional\map;
 
 /**
  * Class Mapping
@@ -215,12 +214,7 @@ class Mapping implements MappingInterface
             return $sourceProperties;
         }
 
-        $sourceNamingConvention = $this->options->getSourceMemberNamingConvention();
-        $destinationNamingConvention = $this->options->getDestinationMemberNamingConvention();
-        $nameConverter = function (string $sourceProperty) use (
-            $sourceNamingConvention,
-            $destinationNamingConvention
-        ): string {
+        $nameConverter = function (string $sourceProperty): string {
             return NameConverter::convert(
                 $this->options->getSourceMemberNamingConvention(),
                 $this->options->getDestinationMemberNamingConvention(),
@@ -228,7 +222,7 @@ class Mapping implements MappingInterface
             );
         };
 
-        return map($sourceProperties, $nameConverter);
+        return array_map($nameConverter, $sourceProperties);
     }
 
     /**

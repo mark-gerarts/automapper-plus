@@ -2,8 +2,6 @@
 
 namespace AutoMapperPlus\NameConverter\NamingConvention;
 
-use function Functional\map;
-
 /**
  * Class BaseNamingConvention
  *
@@ -17,8 +15,6 @@ abstract class BaseNamingConvention implements NamingConventionInterface
      */
     public function normalize(array $parts): array
     {
-        return map($parts, function (string $part) {
-            return strtolower($part);
-        });
+        return array_map('strtolower', $parts);
     }
 }

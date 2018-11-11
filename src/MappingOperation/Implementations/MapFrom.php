@@ -52,7 +52,7 @@ class MapFrom extends DefaultMappingOperation
         string $propertyName,
         $value
     ): void {
-        $this->getPropertyWriter()->setProperty(
+        $this->propertyWriter->setProperty(
             $destination,
             $propertyName,
             $value
