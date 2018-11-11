@@ -73,7 +73,7 @@ class DefaultMappingOperation implements MappingOperationInterface
     {
         $sourcePropertyName = $this->getSourcePropertyName($propertyName);
 
-        return $this->getPropertyReader()->hasProperty($source, $sourcePropertyName);
+        return $this->propertyReader->hasProperty($source, $sourcePropertyName);
     }
 
     /**
@@ -83,7 +83,7 @@ class DefaultMappingOperation implements MappingOperationInterface
      */
     protected function getSourceValue($source, string $propertyName)
     {
-        return $this->getPropertyReader()->getProperty(
+        return $this->propertyReader->getProperty(
             $source,
             $this->getSourcePropertyName($propertyName)
         );
@@ -103,7 +103,7 @@ class DefaultMappingOperation implements MappingOperationInterface
             return;
         }
 
-        $this->getPropertyWriter()->setProperty(
+        $this->propertyWriter->setProperty(
             $destination,
             $propertyName,
             $value
