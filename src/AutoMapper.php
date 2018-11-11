@@ -7,7 +7,6 @@ use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use AutoMapperPlus\Configuration\MappingInterface;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\MappingOperation\MapperAwareOperation;
-use function Functional\map;
 
 /**
  * Class AutoMapper
@@ -70,9 +69,12 @@ class AutoMapper implements AutoMapperInterface
      */
     public function mapMultiple($sourceCollection, string $destinationClass): array
     {
-        return map($sourceCollection, function ($source) use ($destinationClass) {
-            return $this->map($source, $destinationClass);
-        });
+        $mappedResults = [];
+        foreach ($sourceCollection as $source) {
+            $mappedResults[] = $this->map($source, $destinationClass);
+        }
+
+        return $mappedResults;
     }
 
     /**
