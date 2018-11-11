@@ -17,13 +17,11 @@ class NameResolver implements NameResolverInterface
     /**
      * @inheritdoc
      */
-    public function getSourcePropertyName
-    (
+    public function getSourcePropertyName(
         string $targetPropertyName,
         MappingOperationInterface $operation,
         Options $options
-    ): string
-    {
+    ): string {
         if ($operation instanceof AlternativePropertyProvider) {
             return $operation->getAlternativePropertyName();
         }
