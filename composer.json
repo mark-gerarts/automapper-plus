@@ -12,14 +12,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "AutoMapperPlus\\":  ["src/"]
+            "AutoMapperPlus\\":  "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "AutoMapperPlus\\Test\\Models\\": ["test/Models"],
-            "AutoMapperPlus\\Test\\CustomMapper\\": ["test/CustomMapper"],
-            "AutoMapperPlus\\Test\\CustomMappingOperations\\": "test/CustomMappingOperations"
+            "AutoMapperPlus\\Test\\": "test/"
         }
     },
     "require": {
