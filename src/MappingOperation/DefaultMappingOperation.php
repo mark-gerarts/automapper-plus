@@ -3,6 +3,7 @@
 namespace AutoMapperPlus\MappingOperation;
 
 use AutoMapperPlus\Configuration\Options;
+use AutoMapperPlus\NameResolver\NameResolverInterface;
 use AutoMapperPlus\PropertyAccessor\PropertyAccessorInterface;
 use AutoMapperPlus\PropertyAccessor\PropertyReaderInterface;
 use AutoMapperPlus\PropertyAccessor\PropertyWriterInterface;
@@ -18,6 +19,26 @@ class DefaultMappingOperation implements MappingOperationInterface
      * @var Options
      */
     protected $options;
+
+    /**
+     * Options that are used will be stored for performance reasons, because
+     * each property being mapped incurs a method call.
+     */
+
+    /**
+     * @var NameResolverInterface
+     */
+    protected $nameResolver;
+
+    /**
+     * @var PropertyReaderInterface
+     */
+    protected $propertyReader;
+
+    /**
+     * @var PropertyWriterInterface
+     */
+    protected $propertyWriter;
 
     /**
      * @inheritdoc
@@ -38,6 +59,9 @@ class DefaultMappingOperation implements MappingOperationInterface
     public function setOptions(Options $options): void
     {
         $this->options = $options;
+        $this->nameResolver = $options->getNameResolver();
+        $this->propertyReader = $options->getPropertyReader();
+        $this->propertyWriter = $options->getPropertyWriter();
     }
 
     /**
@@ -100,7 +124,7 @@ class DefaultMappingOperation implements MappingOperationInterface
      */
     protected function getPropertyReader(): PropertyReaderInterface
     {
-        return $this->options->getPropertyReader();
+        return $this->propertyReader;
     }
 
     /**
@@ -108,7 +132,7 @@ class DefaultMappingOperation implements MappingOperationInterface
      */
     protected function getPropertyWriter(): PropertyWriterInterface
     {
-        return $this->options->getPropertyWriter();
+        return $this->propertyWriter;
     }
 
     /**
@@ -119,7 +143,7 @@ class DefaultMappingOperation implements MappingOperationInterface
      */
     protected function getSourcePropertyName(string $propertyName): string
     {
-        return $this->options->getNameResolver()->getSourcePropertyName(
+        return $this->nameResolver->getSourcePropertyName(
             $propertyName,
             $this,
             $this->options
