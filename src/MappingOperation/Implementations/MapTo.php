@@ -45,7 +45,7 @@ class MapTo extends DefaultMappingOperation implements MapperAwareOperation
      */
     protected function getSourceValue($source, string $propertyName)
     {
-        $value = $this->getPropertyReader()->getProperty(
+        $value = $this->propertyReader->getProperty(
             $source,
             $this->getSourcePropertyName($propertyName)
         );
@@ -64,6 +64,6 @@ class MapTo extends DefaultMappingOperation implements MapperAwareOperation
      */
     private function isCollection($variable): bool
     {
-        return is_array($variable) || $variable instanceof \Traversable;
+        return \is_array($variable) || $variable instanceof \Traversable;
     }
 }
