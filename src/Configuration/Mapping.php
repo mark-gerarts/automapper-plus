@@ -51,6 +51,11 @@ class Mapping implements MappingInterface
     private $factoryCallback;
 
     /**
+     * @var MappingOperationInterface
+     */
+    private $defaultMappingOperation;
+
+    /**
      * Mapping constructor.
      *
      * @param string $sourceClassName
@@ -359,10 +364,13 @@ class Mapping implements MappingInterface
      */
     protected function getDefaultMappingOperation(): MappingOperationInterface
     {
-        $operation = $this->options->getDefaultMappingOperation();
-        $operation->setOptions($this->options);
+        if ($this->defaultMappingOperation === null) {
+            $operation = $this->options->getDefaultMappingOperation();
+            $operation->setOptions($this->options);
+            $this->defaultMappingOperation = $operation;
+        }
 
-        return $operation;
+        return $this->defaultMappingOperation;
     }
 
     /**
