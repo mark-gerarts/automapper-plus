@@ -694,7 +694,7 @@ echo get_class($result); // => "YourObjectCrate"
 This library attempts to make registering mappings painless, with as little 
 configuration as possible. However, cases exist where a mapping requires a lot
 of custom code. This code would look a lot cleaner if put in its own class.
-Another reason to resort to a custom mapper would be [performance](#similar-libraries).
+Another reason to resort to a custom mapper would be [performance](#performance).
 
 It is therefore possible to specify a custom mapper class for a mapping. This
 mapper has to implement the `MapperInterface`. For your convenience, a
@@ -744,6 +744,9 @@ library is perfect, and they all have their pro's and con's.
 A few other object mappers exist for PHP. They're listed here with a short
 description, and are definitely worth checking out!
 
+- **[Jane automapper](https://github.com/janephp/automapper):**
+    - Similar API
+    - Compiles mappings, resulting in near-native performance
 - **[Nylle/PHP-AutoMapper](https://github.com/Nylle/PHP-AutoMapper):**
     - Only maps public properties
     - Requires some conventions to be met
@@ -757,22 +760,30 @@ description, and are definitely worth checking out!
     - Very similar to this project
     - Does some cool stuff with graph mapping
 
+<a name="performance"></a>
 Performance benchmarks (credit goes to [idr0id](https://github.com/idr0id/php-mappers-benchmarks)):
 
-Runtime: PHP 7.1.8-1<br>
-Host: Linux 4.13.0-1-amd64 #1 SMP Debian 4.13.4-2 (2017-10-15) x86_64<br>
-Collection size: 10000
+Runtime: PHP 7.2.9-1<br>
+Host: Linux 4.18.0-2-amd64 #1 SMP Debian 4.18.10-2 (2018-11-02) x86_64<br>
+Collection size: 100000
 
-| package                       | duration (MS) | MEM (B)  |
-| ----------------------------- | ------------- | -------- |
-| native php                    | 3             | 6291456  |
-| idr0id/papper                 | 39            | 6291456  |
-| trismegiste/alkahest          | 116           | 16777216 |
-| nylle/php-automapper          | 188           | 16777216 |
-| mark-gerarts/auto-mapper-plus | 291           | 16777216 |
-| bcc/auto-mapper-bundle        | 716           | 6291456  |
+| package                                           | duration (MS) | MEM (B)   |
+| ------------------------------------------------- | ------------- | --------- |
+| native php                                        | 32            | 123736064 |
+| **mark-gerarts/auto-mapper-plus (custom mapper)** | **92**        | 123736064 |
+| jane-php/automapper (optimized)                   | 100           | 123736064 |
+| jane-php/automapper                               | 136           | 123736064 |
+| idr0id/papper                                     | 310           | 123736064 |
+| trismegiste/alkahest                              | 424           | 113250304 |
+| **mark-gerarts/auto-mapper-plus**                 | **623**       | 123736064 |
+| nylle/php-automapper                              | 642           | 123736064 |
+| bcc/auto-mapper-bundle                            | 2874          | 123736064 |
 
 *Up-to-date benchmarks can be found [here](https://travis-ci.org/idr0id/php-mappers-benchmarks).*
+
+Note that using a custom mapper is very fast. So when performance really starts
+to matter in your application, you can easily [implement a custom mapper](#using-a-custom-mapper)
+where needed, without needing to change the code that uses the mapper.
 
 ## See also
 - [The Symfony bundle](https://github.com/mark-gerarts/automapper-plus-bundle)
