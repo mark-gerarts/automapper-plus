@@ -7,6 +7,7 @@ use AutoMapperPlus\MappingOperation\Implementations\Ignore;
 use AutoMapperPlus\MappingOperation\Implementations\MapFrom;
 use AutoMapperPlus\MappingOperation\Implementations\MapFromWithMapper;
 use AutoMapperPlus\MappingOperation\Implementations\MapTo;
+use AutoMapperPlus\MappingOperation\Implementations\SetTo;
 
 /**
  * Class Operation
@@ -75,5 +76,14 @@ class Operation
     public static function fromProperty(string $propertyName): FromProperty
     {
         return new FromProperty($propertyName);
+    }
+
+    /**
+     * @param mixed $value
+     * @return SetTo
+     */
+    public static function setTo($value): SetTo
+    {
+        return new SetTo($value);
     }
 }

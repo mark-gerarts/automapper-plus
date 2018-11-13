@@ -1,6 +1,6 @@
 <?php
 
-namespace AutoMapperPlus\Test\Scearios;
+namespace AutoMapperPlus\Test\Scenarios;
 
 use AutoMapperPlus\AutoMapper;
 use AutoMapperPlus\Configuration\AutoMapperConfig;
