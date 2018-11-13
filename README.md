@@ -216,7 +216,8 @@ The following operations are provided:
 | MapTo | Maps the property to another class. Allows for [nested mappings](#dealing-with-nested-mappings). Supports both single values and collections. |
 | FromProperty | Use this to explicitly state the source property name. |
 | DefaultMappingOperation | Simply transfers the property, taking into account the provided naming conventions (if there are any). |
-| MapFromWithMapper | Similar to MapFrom.<br>Compared to `mapFrom`, the callback has access to a instance of `AutoMapperInterface`. Define the second callback argument of `AutoMapperInterface` type. Accessible by using <br> - `Operation::mapFromWithMapper(function($source, AutoMapperInterface $mapper){ ... })`<br>- `new mapFromWithMapper(function($source, AutoMapperInterface $mapper){ ... })`
+| MapFromWithMapper | Similar to MapFrom.<br>Compared to `mapFrom`, the callback has access to a instance of `AutoMapperInterface`. Define the second callback argument of `AutoMapperInterface` type. Accessible by using <br> - `Operation::mapFromWithMapper(function($source, AutoMapperInterface $mapper){ ... })`<br>- `new mapFromWithMapper(function($source, AutoMapperInterface $mapper){ ... })` |
+| SetTo | Always sets the property to the given value |
 
 You can use them with the same `forMember()` method. The `Operation` class can
 be used for clarity.
@@ -245,6 +246,8 @@ $mapping->forMember(
     'address',
     Operation::fromProperty('adres')->mapTo(Address::class)
 );
+// SetTo sets the property to the given value.
+$mapping->forMember('type', Operation::setTo('employee'));
 ```
 
 Example of using `MapFromWithMapper`:
