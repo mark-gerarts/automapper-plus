@@ -25,7 +25,7 @@ class AutoMapper implements AutoMapperInterface
      *
      * @param AutoMapperConfigInterface $autoMapperConfig
      */
-    function __construct(AutoMapperConfigInterface $autoMapperConfig = null)
+    public function __construct(AutoMapperConfigInterface $autoMapperConfig = null)
     {
         $this->autoMapperConfig = $autoMapperConfig ?: new AutoMapperConfig();
     }
@@ -82,8 +82,8 @@ class AutoMapper implements AutoMapperInterface
      */
     public function mapToObject($source, $destination)
     {
-        $sourceClassName = get_class($source);
-        $destinationClassName = get_class($destination);
+        $sourceClassName = \get_class($source);
+        $destinationClassName = \get_class($destination);
 
         $mapping = $this->getMapping($sourceClassName, $destinationClassName);
         if ($mapping->providesCustomMapper()) {
@@ -157,12 +157,11 @@ class AutoMapper implements AutoMapperInterface
     }
 
     /**
-     * Gets the custom
      * @param MappingInterface $mapping
      *
      * @return MapperInterface|null
      */
-    private function getCustomMapper(MappingInterface $mapping)
+    private function getCustomMapper(MappingInterface $mapping): ?MapperInterface
     {
         $customMapper = $mapping->getCustomMapper();
 

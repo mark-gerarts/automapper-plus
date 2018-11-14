@@ -71,7 +71,7 @@ class Options
     private $useSubstitution = true;
 
     /**
-     * @var string
+     * @var string[]
      */
     private $objectCrates = [];
 
@@ -109,10 +109,7 @@ class Options
     /**
      * @param NamingConventionInterface $sourceMemberNamingConvention
      */
-    public function setSourceMemberNamingConvention
-    (
-        NamingConventionInterface $sourceMemberNamingConvention
-    ): void
+    public function setSourceMemberNamingConvention(NamingConventionInterface $sourceMemberNamingConvention): void
     {
         $this->sourceMemberNamingConvention = $sourceMemberNamingConvention;
     }
@@ -128,10 +125,7 @@ class Options
     /**
      * @param NamingConventionInterface $destinationMemberNamingConvention
      */
-    public function setDestinationMemberNamingConvention
-    (
-        NamingConventionInterface $destinationMemberNamingConvention
-    ): void
+    public function setDestinationMemberNamingConvention(NamingConventionInterface $destinationMemberNamingConvention): void
     {
         $this->destinationMemberNamingConvention = $destinationMemberNamingConvention;
     }
@@ -223,10 +217,7 @@ class Options
     /**
      * @param MappingOperationInterface $defaultMappingOperation
      */
-    public function setDefaultMappingOperation
-    (
-        MappingOperationInterface $defaultMappingOperation
-    ): void
+    public function setDefaultMappingOperation(MappingOperationInterface $defaultMappingOperation): void
     {
         $this->defaultMappingOperation = $defaultMappingOperation;
     }
@@ -255,8 +246,8 @@ class Options
      */
     public function shouldConvertName(): bool
     {
-        return !empty($this->sourceMemberNamingConvention)
-            && !empty($this->destinationMemberNamingConvention);
+        return $this->sourceMemberNamingConvention !== null
+            && $this->destinationMemberNamingConvention !== null;
     }
 
     /**
@@ -280,7 +271,7 @@ class Options
      */
     public function providesCustomMapper(): bool
     {
-        return !empty($this->customMapper);
+        return $this->customMapper !== null;
     }
 
     /**

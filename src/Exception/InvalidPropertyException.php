@@ -14,7 +14,7 @@ class InvalidPropertyException extends AutoMapperPlusException
      * @param $class
      * @return InvalidPropertyException
      */
-    public static function fromNameAndClass($name, $class)
+    public static function fromNameAndClass($name, $class): InvalidPropertyException
     {
         return new static("Property {$name} does not exist for class {$class}");
     }

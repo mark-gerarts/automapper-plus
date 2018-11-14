@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Veaceslav Vasilache <veaceslav.vasilache@gmail.com>
- * Date: 3/14/18
- * Time: 1:16 PM
- */
 
 namespace AutoMapperPlus\MappingOperation\Implementations;
 

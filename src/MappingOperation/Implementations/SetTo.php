@@ -2,7 +2,6 @@
 
 namespace AutoMapperPlus\MappingOperation\Implementations;
 
-use AutoMapperPlus\Configuration\Options;
 use AutoMapperPlus\MappingOperation\DefaultMappingOperation;
 
 /**

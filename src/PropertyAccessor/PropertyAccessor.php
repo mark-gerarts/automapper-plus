@@ -21,7 +21,7 @@ class PropertyAccessor implements PropertyAccessorInterface
         // property_exists doesn't return true for inherited properties.
         $objectArray = (array) $object;
         foreach ($objectArray as $name => $value) {
-            if (substr($name, - strlen($propertyName) - 1) === "\x00" . $propertyName) {
+            if (substr($name, - \strlen($propertyName) - 1) === "\x00" . $propertyName) {
                 return true;
             }
         }
@@ -79,7 +79,7 @@ class PropertyAccessor implements PropertyAccessorInterface
     {
         $objectArray = (array) $object;
         foreach ($objectArray as $name => $value) {
-            if (substr($name, - strlen($propertyName) - 1) === "\x00" . $propertyName) {
+            if (substr($name, - \strlen($propertyName) - 1) === "\x00" . $propertyName) {
                 return $value;
             }
         }
@@ -99,7 +99,7 @@ class PropertyAccessor implements PropertyAccessorInterface
         $setter = function($value) use ($propertyName) {
             $this->{$propertyName} = $value;
         };
-        $boundSetter = \Closure::bind($setter, $object, get_class($object));
+        $boundSetter = \Closure::bind($setter, $object, \get_class($object));
         $boundSetter($value);
     }
 

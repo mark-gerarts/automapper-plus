@@ -78,12 +78,10 @@ class FromProperty extends DefaultMappingOperation implements
     /**
      * @inheritdoc
      */
-    public function getReverseOperation
-    (
+    public function getReverseOperation(
         string $originalProperty,
         Options $options
-    ): MappingOperationInterface
-    {
+    ): MappingOperationInterface {
         return new static($originalProperty);
     }
 
@@ -126,8 +124,7 @@ class FromProperty extends DefaultMappingOperation implements
         string $propertyName,
         $source,
         $destination
-    ): void
-    {
+    ): void {
         // We have to make the overridden property available to the next
         // operation. To do this, we create a "one-time use" name resolver
         // to pass to the operation.

@@ -3,7 +3,6 @@
 namespace AutoMapperPlus\Configuration;
 
 use AutoMapperPlus\MappingOperation\Operation;
-use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use AutoMapperPlus\Test\Models\Inheritance\DestinationChild;
 use AutoMapperPlus\Test\Models\Inheritance\DestinationParent;
 use AutoMapperPlus\Test\Models\Inheritance\SourceChild;

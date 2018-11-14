@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: slava
- * Date: 6/10/18
- * Time: 3:27 PM
- */
 
 namespace AutoMapperPlus;
 

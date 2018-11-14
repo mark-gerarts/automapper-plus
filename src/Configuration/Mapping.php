@@ -62,13 +62,11 @@ class Mapping implements MappingInterface
      * @param string $destinationClassName
      * @param AutoMapperConfigInterface $autoMapperConfig
      */
-    public function __construct
-    (
+    public function __construct(
         string $sourceClassName,
         string $destinationClassName,
         AutoMapperConfigInterface $autoMapperConfig
-    )
-    {
+    ) {
         $this->sourceClassName = $sourceClassName;
         $this->destinationClassName = $destinationClassName;
         $this->autoMapperConfig = $autoMapperConfig;
@@ -105,12 +103,10 @@ class Mapping implements MappingInterface
     /**
      * @inheritdoc
      */
-    public function forMember
-    (
+    public function forMember(
         string $targetPropertyName,
         $operation
-    ): MappingInterface
-    {
+    ): MappingInterface {
         // If it's just a regular callback, wrap it in an operation.
         if (!$operation instanceof MappingOperationInterface) {
             $operation = Operation::mapFrom($operation);
@@ -168,12 +164,10 @@ class Mapping implements MappingInterface
     /**
      * @inheritdoc
      */
-    public function copyFrom
-    (
+    public function copyFrom(
         string $sourceClass,
         string $destinationClass
-    ): MappingInterface
-    {
+    ): MappingInterface {
         $mapping = $this->autoMapperConfig->getMappingFor(
             $sourceClass,
             $destinationClass
@@ -233,10 +227,7 @@ class Mapping implements MappingInterface
     /**
      * @inheritdoc
      */
-    public function beConstructedUsing
-    (
-        callable $factoryCallback
-    ): MappingInterface
+    public function beConstructedUsing(callable $factoryCallback): MappingInterface
     {
         $this->factoryCallback = $factoryCallback;
 
@@ -248,7 +239,7 @@ class Mapping implements MappingInterface
      */
     public function getCustomConstructor(): callable
     {
-        if (empty($this->factoryCallback)) {
+        if ($this->factoryCallback === null) {
             throw NoConstructorSetException::fromMapping($this);
         }
 
@@ -260,7 +251,7 @@ class Mapping implements MappingInterface
      */
     public function hasCustomConstructor(): bool
     {
-        return !empty($this->factoryCallback);
+        return $this->factoryCallback !== null;
     }
 
     /**
@@ -321,12 +312,10 @@ class Mapping implements MappingInterface
     /**
      * @inheritdoc
      */
-    public function withNamingConventions
-    (
+    public function withNamingConventions(
         NamingConventionInterface $sourceNamingConvention,
         NamingConventionInterface $destinationNamingConvention
-    ): MappingInterface
-    {
+    ): MappingInterface {
         $this->options->setSourceMemberNamingConvention($sourceNamingConvention);
         $this->options->setDestinationMemberNamingConvention($destinationNamingConvention);
 
@@ -336,10 +325,7 @@ class Mapping implements MappingInterface
     /**
      * @inheritdoc
      */
-    public function withDefaultOperation
-    (
-        MappingOperationInterface $mappingOperation
-    ): MappingInterface
+    public function withDefaultOperation(MappingOperationInterface $mappingOperation): MappingInterface
     {
         $this->options->setDefaultMappingOperation($mappingOperation);
 
@@ -349,10 +335,7 @@ class Mapping implements MappingInterface
     /**
      * @inheritdoc
      */
-    public function withNameResolver
-    (
-        NameResolverInterface $nameResolver
-    ): MappingInterface
+    public function withNameResolver(NameResolverInterface $nameResolver): MappingInterface
     {
         $this->options->setNameResolver($nameResolver);
 

@@ -14,13 +14,11 @@ class NameConverter implements NameConverterInterface
     /**
      * @inheritdoc
      */
-    public static function convert
-    (
+    public static function convert(
         NamingConventionInterface $sourceNamingConvention,
         NamingConventionInterface $targetNamingConvention,
         string $source
-    ): string
-    {
+    ): string {
         $parts = $sourceNamingConvention->toParts($source);
 
         return $targetNamingConvention->fromParts($parts);

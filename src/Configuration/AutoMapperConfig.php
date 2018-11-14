@@ -24,10 +24,10 @@ class AutoMapperConfig implements AutoMapperConfigInterface
      *
      * @param callable $configurator
      */
-    function __construct(callable $configurator = null)
+    public function __construct(callable $configurator = null)
     {
         $this->options = Options::default();
-        if ($configurator) {
+        if ($configurator !== null) {
             $configurator($this->options);
         }
     }
@@ -35,24 +35,25 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     /**
      * @inheritdoc
      */
-    public function hasMappingFor
-    (
+    public function hasMappingFor(
         string $sourceClassName,
         string $destinationClassName
-    ): bool
-    {
-        return !empty($this->getMappingFor($sourceClassName, $destinationClassName));
+    ): bool {
+        $mapping = $this->getMappingFor(
+            $sourceClassName,
+            $destinationClassName
+        );
+
+        return $mapping !== null;
     }
 
     /**
      * @inheritdoc
      */
-    public function getMappingFor
-    (
+    public function getMappingFor(
         string $sourceClassName,
         string $destinationClassName
-    ): ?MappingInterface
-    {
+    ): ?MappingInterface {
         // Check for an exact match before we try parent classes.
         foreach ($this->mappings as $mapping) {
             $isExactMatch = $mapping->getSourceClassName() === $sourceClassName
@@ -103,8 +104,14 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         $selectedCandidate = null;
         /** @var MappingInterface $candidate */
         foreach($candidates as $candidate) {
-            $sourceDistance = $this->getClassDistance($sourceClassName, $candidate->getSourceClassName());
-            $destinationDistance = $this->getClassDistance($destinationClassName, $candidate->getDestinationClassName());
+            $sourceDistance = $this->getClassDistance(
+                $sourceClassName,
+                $candidate->getSourceClassName()
+            );
+            $destinationDistance = $this->getClassDistance(
+                $destinationClassName,
+                $candidate->getDestinationClassName()
+            );
             $distance = $sourceDistance + $destinationDistance;
 
             if ($distance < $lowestDistance) {
@@ -112,6 +119,7 @@ class AutoMapperConfig implements AutoMapperConfigInterface
                 $selectedCandidate = $candidate;
             }
         }
+
         return $selectedCandidate;
     }
 
@@ -121,7 +129,6 @@ class AutoMapperConfig implements AutoMapperConfigInterface
      * @param string $childClass
      * @param string $parentClass
      * @return int
-     * @throws \Exception
      */
     protected function getClassDistance(
         string $childClass,
@@ -151,12 +158,10 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     /**
      * @inheritdoc
      */
-    public function registerMapping
-    (
+    public function registerMapping(
         string $sourceClassName,
         string $destinationClassName
-    ): MappingInterface
-    {
+    ): MappingInterface {
         $mapping = new Mapping(
             $sourceClassName,
             $destinationClassName,
