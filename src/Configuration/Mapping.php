@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\DataType;
 use AutoMapperPlus\Exception\NoConstructorSetException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\MapperInterface;
@@ -11,6 +12,7 @@ use AutoMapperPlus\MappingOperation\Reversible;
 use AutoMapperPlus\NameConverter\NameConverter;
 use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
 use AutoMapperPlus\NameResolver\NameResolverInterface;
+use AutoMapperPlus\PropertyAccessor\ArrayPropertyReader;
 use AutoMapperPlus\PropertyAccessor\ObjectCratePropertyWriter;
 
 /**
@@ -81,6 +83,9 @@ class Mapping implements MappingInterface
         // property accessor in the options.
         if ($this->options->isObjectCrate($this->destinationClassName)) {
             $this->options->setPropertyWriter(new ObjectCratePropertyWriter());
+        }
+        if ($sourceClassName === DataType::ARRAY) {
+            $this->options->setPropertyReader(new ArrayPropertyReader());
         }
     }
 
