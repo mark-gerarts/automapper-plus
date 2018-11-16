@@ -60,16 +60,16 @@ class Operation
      * Map a property to a class.
      *
      * @param string $destinationClass
-     * @param bool $assumeCollection
+     * @param bool $sourceIsObjectArray
      *   Indicates whether or not an array as source value should be treated as
      *   a collection of elements, or as an array representing an object.
      * @return MapTo
      */
     public static function mapTo(
         string $destinationClass,
-        bool $assumeCollection = true
+        bool $sourceIsObjectArray = false
     ): MapTo {
-        return new MapTo($destinationClass, $assumeCollection);
+        return new MapTo($destinationClass, $sourceIsObjectArray);
     }
 
     /**
@@ -81,7 +81,7 @@ class Operation
      */
     public static function mapCollectionTo(string $destinationClass): MapTo
     {
-        return new MapTo($destinationClass, true);
+        return new MapTo($destinationClass, false);
     }
 
     /**
@@ -91,9 +91,9 @@ class Operation
      * @param string $destinationClass
      * @return MapTo
      */
-    public static function mapArrayTo(string $destinationClass): MapTo
+    public static function mapObjectArrayTo(string $destinationClass): MapTo
     {
-        return new MapTo($destinationClass, false);
+        return new MapTo($destinationClass, true);
     }
 
     /**

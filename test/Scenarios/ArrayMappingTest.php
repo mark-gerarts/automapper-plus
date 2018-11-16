@@ -90,7 +90,7 @@ class ArrayMappingTest extends TestCase
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(DataType::ARRAY, ParentClass::class)
-            ->forMember('child', Operation::mapTo(ChildClass::class, false));
+            ->forMember('child', Operation::mapTo(ChildClass::class, true));
         $config->registerMapping(DataType::ARRAY, ChildClass::class);
         $mapper = new AutoMapper($config);
 

@@ -25,22 +25,22 @@ class MapTo extends DefaultMappingOperation implements MapperAwareOperation
     /**
      * @var bool
      */
-    private $assumeCollection;
+    private $sourceIsObjectArray;
 
     /**
      * MapTo constructor.
      *
      * @param string $destinationClass
-     * @param bool $assumeCollection
+     * @param bool $sourceIsObjectArray
      *   Indicates whether or not an array as source value should be treated as
      *   a collection of elements, or as an array representing an object.
      */
     public function __construct(
         string $destinationClass,
-        bool $assumeCollection = true
+        bool $sourceIsObjectArray = false
     ) {
         $this->destinationClass = $destinationClass;
-        $this->assumeCollection = $assumeCollection;
+        $this->sourceIsObjectArray = $sourceIsObjectArray;
     }
 
     /**
@@ -61,13 +61,9 @@ class MapTo extends DefaultMappingOperation implements MapperAwareOperation
             $this->getSourcePropertyName($propertyName)
         );
 
-        if (!$this->assumeCollection) {
-            return $this->mapper->map($value, $this->destinationClass);
-        }
-
-        return $this->isCollection($value)
-            ? $this->mapper->mapMultiple($value, $this->destinationClass)
-            : $this->mapper->map($value, $this->destinationClass);
+        return $this->sourceIsObjectArray || !$this->isCollection($value)
+            ? $this->mapper->map($value, $this->destinationClass)
+            :$this->mapper->mapMultiple($value, $this->destinationClass);
     }
 
     /**
