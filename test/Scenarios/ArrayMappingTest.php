@@ -86,17 +86,11 @@ class ArrayMappingTest extends TestCase
         $this->assertEquals('John Doe', $result->child->name);
     }
 
-    /**
-     * @todo:
-     * we should be able to pass a parameter to `MapTo` to decide if we treat
-     * the source as a collection or an array.
-     *
-     */
     public function testMapToHandlesAnArrayMapping()
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(DataType::ARRAY, ParentClass::class)
-            ->forMember('child', Operation::mapTo(ChildClass::class));
+            ->forMember('child', Operation::mapTo(ChildClass::class, false));
         $config->registerMapping(DataType::ARRAY, ChildClass::class);
         $mapper = new AutoMapper($config);
 
@@ -105,5 +99,22 @@ class ArrayMappingTest extends TestCase
         $result = $mapper->map($source, ParentClass::class);
 
         $this->assertEquals('John Doe', $result->child->name);
+    }
+
+    public function testMapToDefaultsToAssumingACollection()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(DataType::ARRAY, ParentClass::class)
+            ->forMember('child', Operation::mapTo(ChildClass::class));
+        $config->registerMapping(ChildClassDto::class, ChildClass::class);
+        $mapper = new AutoMapper($config);
+
+        $childDto = new ChildClassDto();
+        $childDto->name = 'John Doe';
+        $source = ['child' => [$childDto]];
+        $result = $mapper->map($source, ParentClass::class);
+
+        $this->assertInternalType('array', $result->child);
+        $this->assertEquals('John Doe', $result->child[0]->name);
     }
 }
