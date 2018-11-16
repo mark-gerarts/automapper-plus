@@ -91,7 +91,7 @@ class Operation
      * @param string $destinationClass
      * @return MapTo
      */
-    public static function mapObjectArrayTo(string $destinationClass): MapTo
+    public static function mapArrayTo(string $destinationClass): MapTo
     {
         return new MapTo($destinationClass, true);
     }
