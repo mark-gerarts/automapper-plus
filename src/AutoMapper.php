@@ -5,6 +5,7 @@ namespace AutoMapperPlus;
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use AutoMapperPlus\Configuration\MappingInterface;
+use AutoMapperPlus\Exception\AutoMapperPlusException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\MappingOperation\MapperAwareOperation;
 
@@ -50,7 +51,17 @@ class AutoMapper implements AutoMapperInterface
             return null;
         }
 
-        $sourceClass = \get_class($source);
+        if (\is_object($source)) {
+            $sourceClass = \get_class($source);
+        }
+        else {
+            $sourceClass= \gettype($source);
+            if ($sourceClass !== DataType::ARRAY) {
+                throw new AutoMapperPlusException(
+                    'Mapping from something else than an object or array is not supported yet.'
+                );
+            }
+        }
 
         $mapping = $this->getMapping($sourceClass, $destinationClass);
         if ($mapping->providesCustomMapper()) {

@@ -28,6 +28,7 @@ Transfers data from one object to another, allowing custom mapping operations.
         * [For the mappings](#for-the-mappings)
     * [Mapping with stdClass](#mapping-with-stdclass)
     * [The concept of object crates](#the-concept-of-object-crates)
+    * [Mapping with arrays](#mapping-with-arrays)
     * [Using a custom mapper](#using-a-custom-mapper)
     * [Misc](#misc)
 * [Similar libraries](#similar-libraries)
@@ -248,6 +249,33 @@ $mapping->forMember(
 );
 // SetTo sets the property to the given value.
 $mapping->forMember('type', Operation::setTo('employee'));
+```
+
+`MapTo` requires some extra explanation. Since lists and maps are the same data
+structure in PHP (arrays), we can't reliably distinct between the two. `MapTo`
+therefore accepts a second parameter, `$sourceIsObjectArray`, a boolean value
+that indicates whether the source value should be interpreted as a collection,
+or as an associative array representing an object. By default we assume a
+collection or a single non-array value.
+
+```php
+<?php
+
+// This assumes address is an object, or a collection of mappable
+// objects if the source is an array/iterable.
+$mapping->forMember('address', Operation::mapTo(Address::class));
+// This is equivalent to:
+$mapping->forMember('address', Operation::mapTo(Address::class, false));
+// If you want to be very specific about the source being a collection, you
+// can use `mapCollectionTo`. This is purely syntactic sugar; it is equivalent
+// to the declarations above as well.
+$mapping->forMember('addresses', Operation::mapCollectionTo(Address::class));
+
+// On the other hand, if the source is an array that represents an object, you
+// can use the following:
+$mapping->forMember('address', Operation::mapTo(Address::class, true));
+// Or nicer
+$mapping->forMember('address', Operation::mapArrayTo(Address::class));
 ```
 
 Example of using `MapFromWithMapper`:
@@ -694,6 +722,43 @@ echo $result->lastName; // => "Doe"
 echo get_class($result); // => "YourObjectCrate"
 ```
 
+### Mapping with arrays
+It is possible to map associative arrays into objects (shout-out to @slava-v).
+This can be done just like you would declare a regular mapping:
+
+```php
+<?php
+
+$config->registerMapping('array', Employee::class); // Alternatively, use the enum DataType::ARRAY
+// Adding operations works just as you would expect.
+$config->registerMapping(DataType::ARRAY, Employee::class)
+    ->forMember('id', Operation::ignore())
+    ->forMember('type', Operation::setTo('employee'))
+    // Since arrays are oftentimes snake_case'd.
+    ->withNamingConventions(
+        new SnakeCaseNamingConvention(),
+        new CamelCaseNamingConvention()
+    );
+
+// It is now possible to map an array to an employee:
+$employee = [
+    'id' => 5,
+    'first_name' => 'John',
+    'last_name' => 'Doe'
+];
+$result = $mapper->map($employee, Employee::class);
+echo $result->firstName; // => "John"
+echo $result->id; // => null
+echo $result->type; // => "employee"
+```
+
+See the `MapTo` section under [Operations](#operations) for some more details
+about the intricacies involving this operation in combination with arrays.
+
+As for now, it is not possible to map *to* an array. While this is relatively
+easy to implement, it would introduce a breaking change. It is therefore delayed
+until the next major release.
+
 ### Using a custom mapper
 This library attempts to make registering mappings painless, with as little 
 configuration as possible. However, cases exist where a mapping requires a lot
@@ -797,7 +862,7 @@ where needed, without needing to change the code that uses the mapper.
 - [x] Provide a more detailed tutorial
 - [x] Create a sample app demonstrating the automapper
 - [x] Allow mapping from `stdClass`,
-- [ ] or perhaps even an associative array (could have)
+- [x] or perhaps even an associative array (could have)
 - [x] Allow mapping to `stdClass`
 - [x] Provide options to copy a mapping
 - [ ] Allow setting of prefix for name resolver (see [automapper](https://github.com/AutoMapper/AutoMapper/wiki/Configuration#recognizing-prepostfixes))
@@ -812,3 +877,4 @@ where needed, without needing to change the code that uses the mapper.
 - [ ] Provide a NameResolver that accepts an array mapping, as an alternative to multiple `FromProperty`s
 - [ ] Make use of a decorated Symfony's `PropertyAccessor` (see [#16](https://github.com/mark-gerarts/automapper-plus/issues/16))
 - [ ] Allow adding of middleware to the mapper
+- [ ] Allow mapping *to* array

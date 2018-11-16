@@ -60,11 +60,40 @@ class Operation
      * Map a property to a class.
      *
      * @param string $destinationClass
+     * @param bool $sourceIsObjectArray
+     *   Indicates whether or not an array as source value should be treated as
+     *   a collection of elements, or as an array representing an object.
      * @return MapTo
      */
-    public static function mapTo(string $destinationClass): MapTo
+    public static function mapTo(
+        string $destinationClass,
+        bool $sourceIsObjectArray = false
+    ): MapTo {
+        return new MapTo($destinationClass, $sourceIsObjectArray);
+    }
+
+    /**
+     * Maps a collection (array, iterator, ...) of mappable objects to a
+     * collection of destination objects.
+     *
+     * @param string $destinationClass
+     * @return MapTo
+     */
+    public static function mapCollectionTo(string $destinationClass): MapTo
     {
-        return new MapTo($destinationClass);
+        return new MapTo($destinationClass, false);
+    }
+
+    /**
+     * Maps an array representing an object to the destination class. If you're
+     * looking to map a list of objects, use `mapCollectionTo`.
+     *
+     * @param string $destinationClass
+     * @return MapTo
+     */
+    public static function mapArrayTo(string $destinationClass): MapTo
+    {
+        return new MapTo($destinationClass, true);
     }
 
     /**
