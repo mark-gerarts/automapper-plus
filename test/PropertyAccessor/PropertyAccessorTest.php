@@ -3,6 +3,7 @@
 namespace AutoMapperPlus\PropertyAccessor;
 
 use AutoMapperPlus\Test\Models\Inheritance\SourceChild;
+use AutoMapperPlus\Test\Models\Visibility\InheritedVisibility;
 use PHPUnit\Framework\TestCase;
 use AutoMapperPlus\Test\Models\Visibility\Visibility;
 
@@ -118,5 +119,15 @@ class PropertyAccessorTest extends TestCase
 
         $this->assertTrue($accessor->hasProperty($source, 'name'));
         $this->assertEquals('MyName', $accessor->getProperty($source, 'name'));
+    }
+
+    public function testItWritesToAParentsPrivateProperty()
+    {
+        $accessor = new PropertyAccessor();
+        $source = new InheritedVisibility();
+
+        $accessor->setProperty($source, 'privateProperty', 'new value');
+
+        $this->assertEquals('new value', $source->getPrivateProperty());
     }
 }

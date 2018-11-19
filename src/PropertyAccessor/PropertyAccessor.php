@@ -96,11 +96,24 @@ class PropertyAccessor implements PropertyAccessorInterface
      */
     protected function setPrivate($object, string $propertyName, $value): void
     {
-        $setter = function($value) use ($propertyName) {
-            $this->{$propertyName} = $value;
-        };
-        $boundSetter = \Closure::bind($setter, $object, \get_class($object));
-        $boundSetter($value);
+        $propertyNameLength = \strlen($propertyName);
+
+        array_walk(
+            $object,
+            function (&$objectValue, $objectPropertyName) use ($value, $propertyName, $propertyNameLength): void {
+                // Since breaking out of `array_walk` isn't possible, we'll
+                // keep track of the fact whether or not we have successfully
+                // set the property using a static variable. This to prevent
+                // doing lots of `substr` calls
+                static $setComplete = false;
+                if ($setComplete) {
+                    return;
+                }
+                if (substr($objectPropertyName, - $propertyNameLength) === $propertyName) {
+                    $objectValue = $value;
+                    $setComplete = true;
+                }
+        });
     }
 
     /**
