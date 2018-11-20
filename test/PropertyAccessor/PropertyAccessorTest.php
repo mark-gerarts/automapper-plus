@@ -130,4 +130,24 @@ class PropertyAccessorTest extends TestCase
 
         $this->assertEquals('new value', $source->getPrivateProperty());
     }
+
+    public function testItWritesToAParentsProtectedProperty()
+    {
+        $accessor = new PropertyAccessor();
+        $source = new InheritedVisibility();
+
+        $accessor->setProperty($source, 'protectedProperty', 'new value');
+
+        $this->assertEquals('new value', $source->getProtectedProperty());
+    }
+
+    public function testItWritesToAParentsPublicProperty()
+    {
+        $accessor = new PropertyAccessor();
+        $source = new InheritedVisibility();
+
+        $accessor->setProperty($source, 'publicProperty', 'new value');
+
+        $this->assertEquals('new value', $source->getPublicProperty());
+    }
 }
