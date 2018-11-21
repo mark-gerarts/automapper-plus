@@ -2,7 +2,10 @@
 
 namespace AutoMapperPlus\MappingOperation\Implementations;
 
+use AutoMapperPlus\AutoMapper;
+use AutoMapperPlus\AutoMapperInterface;
 use AutoMapperPlus\Configuration\Options;
+use AutoMapperPlus\MappingOperation\MapperAwareOperation;
 use PHPUnit\Framework\TestCase;
 use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
 use AutoMapperPlus\Test\Models\SimpleProperties\Source;
@@ -43,5 +46,26 @@ class MapFromTest extends TestCase
         $operation->mapProperty('name', $source, $destination);
 
         $this->assertInstanceOf(Source::class, $destination->name);
+    }
+
+    public function testItImplementsMapperAwareOperation()
+    {
+        $operation = new MapFrom(function() {});
+
+        $this->assertInstanceOf(MapperAwareOperation::class, $operation);
+    }
+
+    public function testItPassesTheMapperAsSecondParameter()
+    {
+        $operation = new MapFrom(function ($source = null, $mapper = null) {
+            $this->assertInstanceOf(AutoMapperInterface::class, $mapper);
+            return 'arbitrary value';
+        });
+        $mapper = AutoMapper::initialize(function() {});
+        $options = $mapper->getConfiguration()->getOptions();
+        $operation->setOptions($options);
+        $operation->setMapper(AutoMapper::initialize(function () {}));
+
+        $operation->mapProperty('name', new Source(), new Destination());
     }
 }

@@ -2,18 +2,16 @@
 
 namespace AutoMapperPlus\MappingOperation\Implementations;
 
-use AutoMapperPlus\MappingOperation\MapperAwareOperation;
-use AutoMapperPlus\MappingOperation\MapperAwareTrait;
-
 /**
  * Class MapFromWithMapper
  *
  * @package AutoMapperPlus\MappingOperation\Implementations
+ *
+ * @deprecated `MapFrom` now has the same behaviour as `mapFromWithMapper`.
+ *   Consider using it instead.
  */
-class MapFromWithMapper extends MapFrom implements MapperAwareOperation
+class MapFromWithMapper extends MapFrom
 {
-    use MapperAwareTrait;
-
     /**
      * @inheritdoc
      */
