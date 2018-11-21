@@ -3,14 +3,18 @@
 namespace AutoMapperPlus\MappingOperation\Implementations;
 
 use AutoMapperPlus\MappingOperation\DefaultMappingOperation;
+use AutoMapperPlus\MappingOperation\MapperAwareOperation;
+use AutoMapperPlus\MappingOperation\MapperAwareTrait;
 
 /**
  * Class MapFrom
  *
  * @package AutoMapperPlus\MappingOperation\Implementations
  */
-class MapFrom extends DefaultMappingOperation
+class MapFrom extends DefaultMappingOperation implements MapperAwareOperation
 {
+    use MapperAwareTrait;
+
     /**
      * @var callable
      */
@@ -31,7 +35,7 @@ class MapFrom extends DefaultMappingOperation
      */
     protected function getSourceValue($source, string $propertyName)
     {
-        return ($this->valueCallback)($source);
+        return ($this->valueCallback)($source, $this->mapper);
     }
 
     /**
