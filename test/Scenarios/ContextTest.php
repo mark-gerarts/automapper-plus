@@ -17,7 +17,7 @@ class ContextTest extends TestCase
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(Source::class, Destination::class)
-            ->forMember('name', function ($source, $mapper, $context) {
+            ->forMember('name', function ($source, $mapper, $context = []) {
                 $this->assertArrayHasKey('context_key', $context);
                 $this->assertEquals('context-value', $context['context_key']);
 
@@ -42,7 +42,7 @@ class ContextTest extends TestCase
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(Source::class, Destination::class)
-            ->forMember('name', function ($source, $mapper, $context) {
+            ->forMember('name', function ($source, $mapper, $context= []) {
                 $this->assertArrayHasKey('context_key', $context);
                 $this->assertEquals('context-value', $context['context_key']);
 
