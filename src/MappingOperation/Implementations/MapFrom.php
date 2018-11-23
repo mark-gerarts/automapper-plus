@@ -2,6 +2,8 @@
 
 namespace AutoMapperPlus\MappingOperation\Implementations;
 
+use AutoMapperPlus\MappingOperation\ContextAwareOperation;
+use AutoMapperPlus\MappingOperation\ContextAwareTrait;
 use AutoMapperPlus\MappingOperation\DefaultMappingOperation;
 use AutoMapperPlus\MappingOperation\MapperAwareOperation;
 use AutoMapperPlus\MappingOperation\MapperAwareTrait;
@@ -11,9 +13,12 @@ use AutoMapperPlus\MappingOperation\MapperAwareTrait;
  *
  * @package AutoMapperPlus\MappingOperation\Implementations
  */
-class MapFrom extends DefaultMappingOperation implements MapperAwareOperation
+class MapFrom extends DefaultMappingOperation implements
+    MapperAwareOperation,
+    ContextAwareOperation
 {
     use MapperAwareTrait;
+    use ContextAwareTrait;
 
     /**
      * @var callable
@@ -35,7 +40,7 @@ class MapFrom extends DefaultMappingOperation implements MapperAwareOperation
      */
     protected function getSourceValue($source, string $propertyName)
     {
-        return ($this->valueCallback)($source, $this->mapper);
+        return ($this->valueCallback)($source, $this->mapper, $this->context);
     }
 
     /**

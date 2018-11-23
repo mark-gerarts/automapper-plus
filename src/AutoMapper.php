@@ -7,6 +7,7 @@ use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use AutoMapperPlus\Configuration\MappingInterface;
 use AutoMapperPlus\Exception\AutoMapperPlusException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
+use AutoMapperPlus\MappingOperation\ContextAwareOperation;
 use AutoMapperPlus\MappingOperation\MapperAwareOperation;
 
 /**
@@ -45,7 +46,7 @@ class AutoMapper implements AutoMapperInterface
     /**
      * @inheritdoc
      */
-    public function map($source, string $destinationClass)
+    public function map($source, string $destinationClass, array $context = [])
     {
         if ($source === null) {
             return null;
@@ -72,17 +73,20 @@ class AutoMapper implements AutoMapperInterface
             ? $mapping->getCustomConstructor()($source, $this)
             : new $destinationClass;
 
-        return $this->doMap($source, $destinationObject, $mapping);
+        return $this->doMap($source, $destinationObject, $mapping, $context);
     }
 
     /**
      * @inheritdoc
      */
-    public function mapMultiple($sourceCollection, string $destinationClass): array
-    {
+    public function mapMultiple(
+        $sourceCollection,
+        string $destinationClass,
+        array $context = []
+    ): array {
         $mappedResults = [];
         foreach ($sourceCollection as $source) {
-            $mappedResults[] = $this->map($source, $destinationClass);
+            $mappedResults[] = $this->map($source, $destinationClass, $context);
         }
 
         return $mappedResults;
@@ -91,7 +95,7 @@ class AutoMapper implements AutoMapperInterface
     /**
      * @inheritdoc
      */
-    public function mapToObject($source, $destination)
+    public function mapToObject($source, $destination, array $context = [])
     {
         $sourceClassName = \get_class($source);
         $destinationClassName = \get_class($destination);
@@ -101,7 +105,7 @@ class AutoMapper implements AutoMapperInterface
             return $this->getCustomMapper($mapping)->mapToObject($source, $destination);
         }
 
-        return $this->doMap($source, $destination, $mapping);
+        return $this->doMap($source, $destination, $mapping, $context);
     }
 
     /**
@@ -110,17 +114,25 @@ class AutoMapper implements AutoMapperInterface
      * @param $source
      * @param $destination
      * @param MappingInterface $mapping
+     * @param array $context
      * @return mixed
      *   The destination object with mapped properties.
      */
-    protected function doMap($source, $destination, MappingInterface $mapping)
-    {
+    protected function doMap(
+        $source,
+        $destination,
+        MappingInterface $mapping,
+        array $context = []
+    ) {
         $propertyNames = $mapping->getTargetProperties($destination, $source);
         foreach ($propertyNames as $propertyName) {
             $mappingOperation = $mapping->getMappingOperationFor($propertyName);
 
             if ($mappingOperation instanceof MapperAwareOperation) {
                 $mappingOperation->setMapper($this);
+            }
+            if ($mappingOperation instanceof ContextAwareOperation) {
+                $mappingOperation->setContext($context);
             }
 
             $mappingOperation->mapProperty(

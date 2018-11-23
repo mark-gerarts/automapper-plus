@@ -10,9 +10,6 @@ use PHPUnit\Framework\TestCase;
 
 class ContextTest extends TestCase
 {
-    /**
-     * @group context
-     */
     public function testContextCanBePassedToMap()
     {
         $config = new AutoMapperConfig();
@@ -35,9 +32,28 @@ class ContextTest extends TestCase
         $this->assertEquals('context-value', $result->name);
     }
 
-    /**
-     * @group context
-     */
+    public function testContextCanBePassedToMapToObject()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(Source::class, Destination::class)
+            ->forMember('name', function ($source, $mapper, $context = []) {
+                $this->assertArrayHasKey('context_key', $context);
+                $this->assertEquals('context-value', $context['context_key']);
+
+                return $context['context_key'];
+            });
+        $mapper = new AutoMapper($config);
+        $source = new Source('a name');
+
+        $result = $mapper->mapToObject(
+            $source,
+            new Destination(),
+            ['context_key' => 'context-value']
+        );
+
+        $this->assertEquals('context-value', $result->name);
+    }
+
     public function testContextCanBePassedToMapMultiple()
     {
         $config = new AutoMapperConfig();

@@ -16,10 +16,16 @@ interface AutoMapperInterface extends MapperInterface
      *   The source collection containing objects.
      * @param string $targetClass
      *   The target classname.
+     * @param array $context
+     *   See MapperInterface::map()
      * @return array
      *   An array of mapped objects. Keys are not preserved.
      */
-    public function mapMultiple($sourceCollection, string $targetClass): array;
+    public function mapMultiple(
+        $sourceCollection,
+        string $targetClass
+        /**, array $context = [] */
+    ): array;
 
     /**
      * Instantiate the mapper with a given configuration callback. The callback
