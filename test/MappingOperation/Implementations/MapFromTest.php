@@ -5,6 +5,7 @@ namespace AutoMapperPlus\MappingOperation\Implementations;
 use AutoMapperPlus\AutoMapper;
 use AutoMapperPlus\AutoMapperInterface;
 use AutoMapperPlus\Configuration\Options;
+use AutoMapperPlus\MappingOperation\ContextAwareOperation;
 use AutoMapperPlus\MappingOperation\MapperAwareOperation;
 use PHPUnit\Framework\TestCase;
 use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
@@ -67,5 +68,12 @@ class MapFromTest extends TestCase
         $operation->setMapper(AutoMapper::initialize(function () {}));
 
         $operation->mapProperty('name', new Source(), new Destination());
+    }
+
+    public function testMapFromIsContextAware()
+    {
+        $operation = new MapFrom(function () {});
+
+        $this->assertInstanceOf(ContextAwareOperation::class, $operation);
     }
 }

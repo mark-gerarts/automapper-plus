@@ -2,6 +2,8 @@
 
 namespace AutoMapperPlus\MappingOperation\Implementations;
 
+use AutoMapperPlus\MappingOperation\ContextAwareOperation;
+use AutoMapperPlus\MappingOperation\ContextAwareTrait;
 use AutoMapperPlus\MappingOperation\DefaultMappingOperation;
 use AutoMapperPlus\MappingOperation\MapperAwareOperation;
 use AutoMapperPlus\MappingOperation\MapperAwareTrait;
@@ -13,9 +15,12 @@ use AutoMapperPlus\MappingOperation\MapperAwareTrait;
  *
  * @package AutoMapperPlus\MappingOperation\Implementations
  */
-class MapTo extends DefaultMappingOperation implements MapperAwareOperation
+class MapTo extends DefaultMappingOperation implements
+    MapperAwareOperation,
+    ContextAwareOperation
 {
     use MapperAwareTrait;
+    use ContextAwareTrait;
 
     /**
      * @var string
@@ -28,19 +33,29 @@ class MapTo extends DefaultMappingOperation implements MapperAwareOperation
     private $sourceIsObjectArray;
 
     /**
+     * @var array
+     */
+    private $ownContext = [];
+
+    /**
      * MapTo constructor.
      *
      * @param string $destinationClass
      * @param bool $sourceIsObjectArray
      *   Indicates whether or not an array as source value should be treated as
      *   a collection of elements, or as an array representing an object.
+     * @param array
+     *   $context Optional context that will be merged with the parent's
+     *   context.
      */
     public function __construct(
         string $destinationClass,
-        bool $sourceIsObjectArray = false
+        bool $sourceIsObjectArray = false,
+        array $context = []
     ) {
         $this->destinationClass = $destinationClass;
         $this->sourceIsObjectArray = $sourceIsObjectArray;
+        $this->ownContext = $context;
     }
 
     /**
@@ -61,9 +76,11 @@ class MapTo extends DefaultMappingOperation implements MapperAwareOperation
             $this->getSourcePropertyName($propertyName)
         );
 
+        $context = array_merge($this->context, $this->ownContext);
+
         return $this->sourceIsObjectArray || !$this->isCollection($value)
-            ? $this->mapper->map($value, $this->destinationClass)
-            :$this->mapper->mapMultiple($value, $this->destinationClass);
+            ? $this->mapper->map($value, $this->destinationClass, $context)
+            : $this->mapper->mapMultiple($value, $this->destinationClass, $context);
     }
 
     /**
