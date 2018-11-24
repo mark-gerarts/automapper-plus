@@ -30,6 +30,7 @@ Transfers data from one object to another, allowing custom mapping operations.
     * [The concept of object crates](#the-concept-of-object-crates)
     * [Mapping with arrays](#mapping-with-arrays)
     * [Using a custom mapper](#using-a-custom-mapper)
+    * [Adding context](#adding-context)
     * [Misc](#misc)
 * [Similar libraries](#similar-libraries)
 * [See also](#see-also)
@@ -212,7 +213,7 @@ The following operations are provided:
 
 | Name  | Explanation |
 | ------------- | ------------- |
-| MapFrom | Maps the property from the value returned from the provided callback. Gets passed the source object and an instance of the AutoMapper. |
+| MapFrom | Maps the property from the value returned from the provided callback. Gets passed the source object, an instance of the AutoMapper and optionally the [current context](#adding-context). |
 | Ignore | Ignores the property. |
 | MapTo | Maps the property to another class. Allows for [nested mappings](#dealing-with-nested-mappings). Supports both single values and collections. |
 | FromProperty | Use this to explicitly state the source property name. |
@@ -784,6 +785,34 @@ $mapper = new AutoMapper($config);
 // called to do the actual mapping.
 $employee = new Employee(10, 'John', 'Doe', 1980);
 $result = $mapper->map($employee, EmployeeDto::class);
+```
+
+### Adding context
+Sometimes a mapping should behave differently based on the context. It is
+therefore possible to pass a third argument to the map methods to describe
+the current context. Both the `MapFrom` and `MapTo` operations can make use of
+this context to alter their behaviour.
+
+The context argument is an array that can contain any arbitrary value. Note
+that this argument isn't part of the `AutoMapperInterface` yet, since it would
+break backwards compatibility. It will be added in the next major release.
+
+```php
+<?php
+
+// This example shows how for example the current locale can be passed to alter
+// the mapping behaviour.
+$config->registerMapping(Employee::class, EmployeeDto::class)
+    ->forMember(
+        'honorific',
+        function ($source, AutoMapperInterface $mapper, array $context): string {
+            $translationKey = "honorific.{$source->getGender()}";
+            return $this->translator->trans($translationKey, $context['locale']);
+        }
+    );
+
+// Usage:
+$mapper->map($employee, EmployeeDto::class, ['locale' => $request->getLocale()]);
 ```
 
 ### Misc
