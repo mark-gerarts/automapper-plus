@@ -31,7 +31,8 @@ class Operation
     }
 
     /**
-     * Set a property's value from callback, callback should contain 2 parameters
+     * Set a property's value from callback, callback should contain 2
+     * parameters
      *
      * @param callable $valueCallback
      *      Callback definition:
@@ -40,6 +41,8 @@ class Operation
 
      *      }
      * @return MapFromWithMapper
+     *
+     * @deprecated Will be removed. See MapFromWithMapper for more information.
      */
     public static function mapFromWithMapper(callable $valueCallback): MapFromWithMapper
     {
@@ -63,13 +66,17 @@ class Operation
      * @param bool $sourceIsObjectArray
      *   Indicates whether or not an array as source value should be treated as
      *   a collection of elements, or as an array representing an object.
+     * @param array $context
+     *   Arbitrary values that will be passed the the mapper as context. See
+     *   MapperInterface::nap() as well.
      * @return MapTo
      */
     public static function mapTo(
         string $destinationClass,
-        bool $sourceIsObjectArray = false
+        bool $sourceIsObjectArray = false,
+        array $context = []
     ): MapTo {
-        return new MapTo($destinationClass, $sourceIsObjectArray);
+        return new MapTo($destinationClass, $sourceIsObjectArray, $context);
     }
 
     /**
@@ -77,11 +84,16 @@ class Operation
      * collection of destination objects.
      *
      * @param string $destinationClass
+     * @param array $context
+     *   Arbitrary values that will be passed the the mapper as context. See
+     *   MapperInterface::nap() as well.
      * @return MapTo
      */
-    public static function mapCollectionTo(string $destinationClass): MapTo
-    {
-        return new MapTo($destinationClass, false);
+    public static function mapCollectionTo(
+        string $destinationClass,
+        array $context = []
+    ): MapTo {
+        return new MapTo($destinationClass, false, $context);
     }
 
     /**
@@ -89,11 +101,16 @@ class Operation
      * looking to map a list of objects, use `mapCollectionTo`.
      *
      * @param string $destinationClass
+     * @param array $context
+     *   Arbitrary values that will be passed the the mapper as context. See
+     *   MapperInterface::nap() as well.
      * @return MapTo
      */
-    public static function mapArrayTo(string $destinationClass): MapTo
-    {
-        return new MapTo($destinationClass, true);
+    public static function mapArrayTo(
+        string $destinationClass,
+        array $context = []
+    ): MapTo {
+        return new MapTo($destinationClass, true, $context);
     }
 
     /**

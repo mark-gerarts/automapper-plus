@@ -5,6 +5,7 @@ namespace AutoMapperPlus\MappingOperation\Implementations;
 use AutoMapperPlus\AutoMapper;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use AutoMapperPlus\Configuration\Options;
+use AutoMapperPlus\MappingOperation\ContextAwareOperation;
 use AutoMapperPlus\NameResolver\CallbackNameResolver;
 use PHPUnit\Framework\TestCase;
 use AutoMapperPlus\Test\Models\Nested\ParentClass;
@@ -97,5 +98,12 @@ class MapToTest extends TestCase
         // correctly.
         $this->assertInstanceOf(Destination::class, $parentDestination->anotherProperty);
         $this->assertEquals('SourceName', $parentDestination->anotherProperty->name);
+    }
+
+    public function testItIsContextAware()
+    {
+        $mapTo = new MapTo(\stdClass::class);
+
+        $this->assertInstanceOf(ContextAwareOperation::class, $mapTo);
     }
 }
