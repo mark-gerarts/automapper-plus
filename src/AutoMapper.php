@@ -70,7 +70,7 @@ class AutoMapper implements AutoMapperInterface
         }
 
         $destinationObject = $mapping->hasCustomConstructor()
-            ? $mapping->getCustomConstructor()($source, $this)
+            ? $mapping->getCustomConstructor()($source, $this, $context)
             : new $destinationClass;
 
         return $this->doMap($source, $destinationObject, $mapping, $context);

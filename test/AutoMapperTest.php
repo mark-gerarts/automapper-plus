@@ -418,7 +418,7 @@ class AutoMapperTest extends TestCase
     public function testACustomConstructorCallbackCanBeProvided()
     {
         $this->config->registerMapping(Source::class, Destination::class)
-            ->beConstructedUsing(function (Source $source, AutoMapperInterface $mapper): Destination {
+            ->beConstructedUsing(function (Source $source, AutoMapperInterface $mapper, array $context): Destination {
                 return new Destination('Set during construct');
             })
             ->forMember('name', Operation::ignore());
