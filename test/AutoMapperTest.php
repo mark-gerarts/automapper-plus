@@ -100,6 +100,42 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('another', $destination->anotherProperty);
     }
 
+    public function testMapToAnExistingObjectContext()
+    {
+        $source = new Source();
+        $source->name = 'Hello';
+        $destination = new Destination();
+        $destination->anotherProperty = 'another';
+
+        $this->config
+            ->registerMapping(Source::class, Destination::class)
+            ->forMember('name', Operation::mapFrom(function(Source $source, AutoMapperInterface $mapper, array $context) use ($destination) {
+                $this->assertArrayHasKey(AutoMapper::DESTINATION_CONTEXT, $context);
+                $this->assertInstanceOf(Destination::class, $context[AutoMapper::DESTINATION_CONTEXT]);
+                $this->assertEquals($destination, $context[AutoMapper::DESTINATION_CONTEXT]);
+
+                return $source->name;
+            }))
+        ;
+        $mapper = new AutoMapper($this->config);
+        $mapper->mapToObject($source, $destination);
+
+        // Make sure context added only for mapToObject method
+        $this->config
+            ->getMappingFor(Source::class, Destination::class)
+            ->forMember('name', Operation::mapFrom(function(Source $source, AutoMapperInterface $mapper, array $context) {
+                $this->assertArrayNotHasKey(AutoMapper::DESTINATION_CONTEXT, $context);
+
+                return $source->name;
+            }))
+        ;
+        $mapper = new AutoMapper($this->config);
+
+        $source = new Source();
+        $source->name = 'Hello';
+        $mapper->map($source, Destination::class);
+    }
+
     public function testSourceDoesntGetOverridden()
     {
         $this->config->registerMapping(Source::class, Destination::class);
