@@ -17,6 +17,8 @@ use AutoMapperPlus\MappingOperation\MapperAwareOperation;
  */
 class AutoMapper implements AutoMapperInterface
 {
+    public const DESTINATION_CONTEXT = '__destination';
+
     /**
      * @var AutoMapperConfigInterface
      */
@@ -102,10 +104,14 @@ class AutoMapper implements AutoMapperInterface
 
         $mapping = $this->getMapping($sourceClassName, $destinationClassName);
         if ($mapping->providesCustomMapper()) {
-            return $this->getCustomMapper($mapping)->mapToObject($source, $destination);
+            return $this->getCustomMapper($mapping)->mapToObject($source, $destination, [
+                self::DESTINATION_CONTEXT => $destination,
+            ]);
         }
 
-        return $this->doMap($source, $destination, $mapping, $context);
+        return $this->doMap($source, $destination, $mapping, array_merge([
+            self::DESTINATION_CONTEXT => $destination,
+        ], $context));
     }
 
     /**
