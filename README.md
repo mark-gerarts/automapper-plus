@@ -815,6 +815,11 @@ $config->registerMapping(Employee::class, EmployeeDto::class)
 $mapper->map($employee, EmployeeDto::class, ['locale' => $request->getLocale()]);
 ```
 
+When using the `mapToObject` method, the context will contain the destination
+object by default. It is accessible using `$context['AutoMapper::DESTINATION_CONTEXT']`.
+This is useful in scenarios where you need data from the destination object
+to populate the object you're mapping.
+
 ### Misc
 
 - Passing `NULL` as an argument for the source object to `map` returns `NULL`.
