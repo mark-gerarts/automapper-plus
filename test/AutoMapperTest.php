@@ -14,6 +14,8 @@ use AutoMapperPlus\Test\Models\Inheritance\DestinationChild;
 use AutoMapperPlus\Test\Models\Inheritance\DestinationParent;
 use AutoMapperPlus\Test\Models\Inheritance\SourceChild;
 use AutoMapperPlus\Test\Models\Inheritance\SourceParent;
+use AutoMapperPlus\Test\Models\Issues\Issue33\User;
+use AutoMapperPlus\Test\Models\Issues\Issue33\UserDto;
 use AutoMapperPlus\Test\Models\Nested\Address;
 use AutoMapperPlus\Test\Models\Nested\AddressDto;
 use AutoMapperPlus\Test\Models\Nested\Person;
@@ -658,6 +660,27 @@ class AutoMapperTest extends TestCase
 
         $this->assertEquals('id_1', $result->id);
         $this->assertEquals('id_2', $result->second_id);
+    }
+
+    /**
+     * @see https://github.com/mark-gerarts/automapper-plus/issues/33
+     */
+    public function testItMapsPrivatePropertiesWithTheSameSuffixOnTheTarget()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(UserDto::class, User::class);
+        $mapper = new AutoMapper($config);
+
+        $source = new UserDto();
+        $source->id = 'id-value';
+        $source->cellphone = 'cellphone-value';
+        $source->phone = 'phone-value';
+        /** @var User $result */
+        $result = $mapper->map($source, User::class);
+
+        $this->assertEquals('id-value', $result->getId());
+        $this->assertEquals('cellphone-value', $result->getCellphone());
+        $this->assertEquals('phone-value',  $result->getPhone());
     }
 
     /**

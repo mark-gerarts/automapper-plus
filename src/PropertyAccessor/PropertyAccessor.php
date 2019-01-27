@@ -88,32 +88,26 @@ class PropertyAccessor implements PropertyAccessorInterface
     }
 
     /**
-     * Adapted from https://gist.github.com/githubjeka/153e5a0f6d15cf20512e.
-     *
      * @param $object
      * @param string $propertyName
      * @param $value
      */
     protected function setPrivate($object, string $propertyName, $value): void
     {
-        $propertyNameLength = \strlen($propertyName);
+        $reflectionClass = new \ReflectionClass($object);
 
-        array_walk(
-            $object,
-            function (&$objectValue, $objectPropertyName) use ($value, $propertyName, $propertyNameLength): void {
-                // Since breaking out of `array_walk` isn't possible, we'll
-                // keep track of the fact whether or not we have successfully
-                // set the property using a static variable. This to prevent
-                // doing lots of `substr` calls
-                static $setComplete = false;
-                if ($setComplete) {
-                    return;
-                }
-                if (substr($objectPropertyName, - $propertyNameLength) === $propertyName) {
-                    $objectValue = $value;
-                    $setComplete = true;
-                }
-        });
+        // Parent properties are not included in the reflection class, so we'll
+        // go up the inheritance chain and check if the property exists in one
+        // of the parents.
+        while (
+            !$reflectionClass->hasProperty($propertyName)
+            && $parent = $reflectionClass->getParentClass()
+        ) {
+            $reflectionClass = $parent;
+        }
+        $reflectionProperty = $reflectionClass->getProperty($propertyName);
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($object, $value);
     }
 
     /**

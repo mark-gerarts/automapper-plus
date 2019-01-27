@@ -3,6 +3,7 @@
 namespace AutoMapperPlus\PropertyAccessor;
 
 use AutoMapperPlus\Test\Models\Inheritance\SourceChild;
+use AutoMapperPlus\Test\Models\Issues\Issue33\User;
 use AutoMapperPlus\Test\Models\Visibility\InheritedVisibility;
 use PHPUnit\Framework\TestCase;
 use AutoMapperPlus\Test\Models\Visibility\Visibility;
@@ -149,5 +150,18 @@ class PropertyAccessorTest extends TestCase
         $accessor->setProperty($source, 'publicProperty', 'new value');
 
         $this->assertEquals('new value', $source->getPublicProperty());
+    }
+
+    /**
+     * @see https://github.com/mark-gerarts/automapper-plus/issues/33
+     */
+    public function testItWritesCorrectlyWhenPropertiesShareASuffix()
+    {
+        $accessor = new PropertyAccessor();
+        $source = new User();
+
+        $accessor->setProperty($source, 'phone', 'phone-value');
+
+        $this->assertEquals('phone-value', $source->getPhone());
     }
 }
