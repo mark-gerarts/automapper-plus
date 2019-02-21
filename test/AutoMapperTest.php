@@ -4,6 +4,7 @@ namespace AutoMapperPlus;
 
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
+use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\Test\CustomMapper\EmployeeMapper;
 use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
@@ -697,5 +698,27 @@ class AutoMapperTest extends TestCase
 
         $this->assertEquals($result->username, 'AzureDiamond');
         $this->assertEquals($result->password, 'hunter2');
+    }
+
+    public function testAnExceptionIsThrownForUnregisteredMappings()
+    {
+        $this->expectException(UnregisteredMappingException::class);
+
+        $mapper = new AutoMapper();
+        $source = new Source('a name');
+
+        $mapper->map($source, Destination::class);
+    }
+
+    public function testMappingsCanBeGeneratedOnTheFlyIfOptionIsSet()
+    {
+        $config = new AutoMapperConfig();
+        $config->getOptions()->createUnregisteredMappings();
+        $mapper = new AutoMapper($config);
+        $source = new Source('a name');
+
+        $result = $mapper->map($source, Destination::class);
+
+        $this->assertEquals('a name', $result->name);
     }
 }

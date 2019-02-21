@@ -64,7 +64,16 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         }
 
         if (!$this->options->shouldUseSubstitution()) {
-            return null;
+            if (!$this->options->shouldCreateUnregisteredMappings()) {
+                return null;
+            }
+
+            // We don't use substitution (BC), but we allow creation of mappings
+            // on the fly.
+            return $this->registerMapping(
+                $sourceClassName,
+                $destinationClassName
+            );
         }
 
         // We didn't find an exact match, and substitution is allowed. We'll
@@ -78,8 +87,20 @@ class AutoMapperConfig implements AutoMapperConfigInterface
             }
         );
 
-        return $this->getMostSpecificCandidate(
+        $mapping = $this->getMostSpecificCandidate(
             $candidates,
+            $sourceClassName,
+            $destinationClassName
+        );
+        if ($mapping !== null) {
+            return $mapping;
+        }
+
+        if (!$this->options->shouldCreateUnregisteredMappings()) {
+            return null;
+        }
+
+        return $this->registerMapping(
             $sourceClassName,
             $destinationClassName
         );

@@ -18,6 +18,7 @@ Transfers data from one object to another, allowing custom mapping operations.
         * [Handling object construction](#handling-object-construction)
         * [ReverseMap](#reversemap)
         * [Copying a mapping](#copying-a-mapping)
+    * [Automatic creation of mappings](#automatic-creation-of-mappings)
     * [Resolving property names](#resolving-property-names)
         * [Naming conventions](#naming-conventions)
         * [Explicitly state source property](#explicitly-state-source-property)
@@ -173,7 +174,7 @@ $mapper->mapMultiple($employees, EmployeeDto::class);
 
 ### Registering mappings
 Mappings are defined using the `AutoMapperConfig`'s `registerMapping()` method.
-Every mapping has to be explicitly defined before you can use it.
+By default, every mapping has to be explicitly defined before you can use it.
 
 A mapping is defined by providing the source class and the destination class.
 The most basic definition would be as follows:
@@ -425,6 +426,21 @@ $listMapping = $config->registerMapping(Employee::class, EmployeeListView::class
     ->skipConstructor();
 ```
 
+### Automatic creation of mappings
+When you're dealing with very simple mappings that don't require any
+configuration, it can be quite cumbersome the register a mapping for each and
+every mapping. For these cases it is possible to enable the automatic creation
+of mappings:
+
+```php
+<?php
+
+$config->getOptions()->createUnregisteredMappings();
+```
+
+With this configuration the mapper will generate a very basic mapping on the
+fly instead of throwing an exception if the mapping is not configured.
+
 ### Resolving property names
 Unless you define a specific way to fetch a value (e.g. `mapFrom`), the mapper
 has to have a way to know which source property to map from. By default, it will
@@ -560,6 +576,7 @@ The available options that can be set are:
 | Object crates | `[\stdClass::class]` | See [the dedicated section](#the-concept-of-object-crates). |
 | Ignore null properties | false | Sets whether or not a source property should be mapped to the destination object if the source value is null |
 | Use substitution | true | Whether or not the Liskov substitution principle should be applied when resolving a mapping. |
+| createUnregisteredMappings | false | Whether or not an exception should be thrown for unregistered mappings, or a mapping should be generated on the fly. |
 
 ### Setting the options
 
