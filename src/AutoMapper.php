@@ -71,9 +71,19 @@ class AutoMapper implements AutoMapperInterface
             return $this->getCustomMapper($mapping)->map($source, $destinationClass);
         }
 
-        $destinationObject = $mapping->hasCustomConstructor()
-            ? $mapping->getCustomConstructor()($source, $this, $context)
-            : new $destinationClass;
+        if ($mapping->hasCustomConstructor()) {
+            $destinationObject = $mapping->getCustomConstructor()($source, $this, $context);
+        }
+        elseif (interface_exists($destinationClass)) {
+            // If we're mapping to an interface a valid custom constructor has
+            // to be provided. Otherwise we can't know what to do.
+            $message = 'Mapping to an interface is not possible. Please '
+                . 'provide a concrete class or use mapToObject instead.';
+            throw new AutoMapperPlusException($message);
+        }
+        else {
+            $destinationObject = new $destinationClass;
+        }
 
         return $this->doMap($source, $destinationObject, $mapping, $context);
     }
@@ -169,8 +179,7 @@ class AutoMapper implements AutoMapperInterface
     (
         string $sourceClass,
         string $destinationClass
-    ): MappingInterface
-    {
+    ): MappingInterface {
         $mapping = $this->autoMapperConfig->getMappingFor(
             $sourceClass,
             $destinationClass

@@ -72,7 +72,7 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         // mapping from it.
         $candidates = array_filter(
             $this->mappings,
-            function (MappingInterface $mapping) use ($sourceClassName, $destinationClassName) {
+            function (MappingInterface $mapping) use ($sourceClassName, $destinationClassName): bool {
                 return is_a($sourceClassName, $mapping->getSourceClassName(), true)
                     && is_a($destinationClassName, $mapping->getDestinationClassName(), true);
             }
@@ -132,8 +132,7 @@ class AutoMapperConfig implements AutoMapperConfigInterface
      */
     protected function getClassDistance(
         string $childClass,
-        string
-        $parentClass
+        string $parentClass
     ): int {
         if ($childClass === $parentClass) {
             return 0;
@@ -148,10 +147,23 @@ class AutoMapperConfig implements AutoMapperConfigInterface
             }
         }
 
+        // We'll treat implementing an interface as having a greater class
+        // distance. This because we want a concrete implementation to be more
+        // specific than an interface. For example, suppose we have:
+        // - FooInterface
+        // - FooClass, implementing the above interface
+        // If a mapping has been registered for both of these, we want the
+        // mapper to pick the mapping registered for FooClass, since this is
+        // more specific.
+        $interfaces = class_implements($childClass);
+        if (\in_array($parentClass, $interfaces, true)) {
+            return ++$result;
+        }
+
         // @todo: use a domain specific exception.
-        throw new \Exception("
-            This error should have never be thrown.
-            This could only happen, if given childClass is not a child of the given parentClass"
+        throw new \Exception(
+            'This error should have never be thrown.
+            This could only happen if given childClass is not a child of the given parentClass'
         );
     }
 
