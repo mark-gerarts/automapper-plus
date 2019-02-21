@@ -70,4 +70,15 @@ class AutoMapperConfigTest extends TestCase
             DestinationChild::class
         ));
     }
+
+    public function testMappingsGetGeneratedOnTheFlyIfOptionSet()
+    {
+        $config = new AutoMapperConfig();
+        $config->getOptions()->createUnregisteredMappings();
+
+        $this->assertTrue($config->hasMappingFor(
+            Source::class,
+            Destination::class
+        ));
+    }
 }

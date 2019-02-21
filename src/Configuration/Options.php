@@ -81,6 +81,11 @@ class Options
     private $ignoreNullProperties = false;
 
     /**
+     * @var bool
+     */
+    private $createUnregisteredMappings = false;
+
+    /**
      * @return Options
      *
      * Note: the skipConstructor default will be replaced by dontSkipConstructor
@@ -336,5 +341,26 @@ class Options
     public function shouldIgnoreNullProperties(): bool
     {
         return $this->ignoreNullProperties;
+    }
+
+    public function createUnregisteredMappings(): void
+    {
+        $this->createUnregisteredMappings = true;
+    }
+
+    public function dontCreateUnregisteredMappings(): void
+    {
+        $this->createUnregisteredMappings = false;
+    }
+
+    /**
+     * Whether or not a mapping should be generated on the fly when trying to
+     * execute an unknown mapping. If not, an exception is thrown instead.
+     *
+     * @return bool
+     */
+    public function shouldCreateUnregisteredMappings(): bool
+    {
+        return $this->createUnregisteredMappings;
     }
 }
