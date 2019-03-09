@@ -31,25 +31,6 @@ class Operation
     }
 
     /**
-     * Set a property's value from callback, callback should contain 2
-     * parameters
-     *
-     * @param callable $valueCallback
-     *      Callback definition:
-     *
-     *      function(AutoMapperInterface, mixed){
-
-     *      }
-     * @return MapFromWithMapper
-     *
-     * @deprecated Will be removed. See MapFromWithMapper for more information.
-     */
-    public static function mapFromWithMapper(callable $valueCallback): MapFromWithMapper
-    {
-        return new MapFromWithMapper($valueCallback);
-    }
-
-    /**
      * Ignore a property.
      *
      * @return Ignore

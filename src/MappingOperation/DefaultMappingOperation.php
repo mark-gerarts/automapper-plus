@@ -111,15 +111,6 @@ class DefaultMappingOperation implements MappingOperationInterface
     }
 
     /**
-     * @return PropertyAccessorInterface
-     * @deprecated The PropertyAccessorInterface has been split up in reading and writing. Use these instead.
-     */
-    protected function getPropertyAccessor(): PropertyAccessorInterface
-    {
-        return $this->options->getPropertyAccessor();
-    }
-
-    /**
      * @return PropertyReaderInterface
      */
     protected function getPropertyReader(): PropertyReaderInterface

@@ -556,7 +556,7 @@ class AutoMapperTest extends TestCase
 
         // Act
         $this->config->registerMapping(CamelCaseSource::class, \stdClass::class)
-            ->forMember('propertyName', Operation::mapFromWithMapper(function($source, AutoMapperInterface $mapping){
+            ->forMember('propertyName', Operation::mapFrom(function($source, AutoMapperInterface $mapping){
                 return 13;
             }));
         $mapper = new AutoMapper($this->config);
@@ -581,7 +581,7 @@ class AutoMapperTest extends TestCase
             });
 
         $this->config->registerMapping(CamelCaseSource::class, \stdClass::class)
-            ->forMember('propertyName', Operation::mapFromWithMapper(function($source, AutoMapperInterface $mapping){
+            ->forMember('propertyName', Operation::mapFrom(function($source, AutoMapperInterface $mapping){
                 // if the $mapping isn't a instance of AutoMapperInterface, it wouldn't return anything
 
                 return $mapping->map($source->propertyName, Destination::class);
