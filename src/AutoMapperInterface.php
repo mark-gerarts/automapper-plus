@@ -23,8 +23,8 @@ interface AutoMapperInterface extends MapperInterface
      */
     public function mapMultiple(
         $sourceCollection,
-        string $targetClass
-        /**, array $context = [] */
+        string $targetClass,
+        array $context = []
     ): array;
 
     /**

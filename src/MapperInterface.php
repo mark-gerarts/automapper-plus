@@ -29,7 +29,7 @@ interface MapperInterface
      *   An instance of class $to.
      * @throws UnregisteredMappingException
      */
-    public function map($source, string $targetClass/**, array $context = [] */);
+    public function map($source, string $targetClass, array $context = []);
 
     /**
      * Maps properties of object $from to an existing object $to.
@@ -44,5 +44,5 @@ interface MapperInterface
      *   $to, with properties copied from $from.
      * @throws UnregisteredMappingException
      */
-    public function mapToObject($source, $destination/**, array $context = [] */);
+    public function mapToObject($source, $destination, array $context = []);
 }

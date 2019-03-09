@@ -25,7 +25,7 @@ class EmployeeMapperWithMapperAware extends CustomMapper implements MapperAwareO
      * @return EmployeeDto
      * @throws \AutoMapperPlus\Exception\UnregisteredMappingException
      */
-    public function mapToObject($source, $destination)
+    public function mapToObject($source, $destination, array $context = [])
     {
         $destination->id = $source->getId();
         $destination->firstName = $source->getFirstName();

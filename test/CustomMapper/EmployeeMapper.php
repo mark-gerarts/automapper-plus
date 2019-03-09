@@ -18,7 +18,7 @@ class EmployeeMapper extends CustomMapper
      * @param EmployeeDto $destination
      * @return EmployeeDto
      */
-    public function mapToObject($source, $destination)
+    public function mapToObject($source, $destination, array $context = [])
     {
         $destination->id = $source->getId();
         $destination->firstName = $source->getFirstName();
