@@ -15,7 +15,7 @@ class Ignore implements MappingOperationInterface
     /**
      * @inheritdoc
      */
-    public function mapProperty(string $propertyName, $source, $destination): void
+    public function mapProperty(string $propertyName, $source, &$destination): void
     {
         // Don't do anything.
     }

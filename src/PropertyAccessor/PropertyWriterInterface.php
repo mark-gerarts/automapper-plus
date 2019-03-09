@@ -14,5 +14,5 @@ interface PropertyWriterInterface
      * @param string $propertyName
      * @param $value
      */
-    public function setProperty($object, string $propertyName, $value): void;
+    public function setProperty(&$object, string $propertyName, $value): void;
 }

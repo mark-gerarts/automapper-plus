@@ -13,6 +13,7 @@ use AutoMapperPlus\NameConverter\NameConverter;
 use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
 use AutoMapperPlus\NameResolver\NameResolverInterface;
 use AutoMapperPlus\PropertyAccessor\ArrayPropertyReader;
+use AutoMapperPlus\PropertyAccessor\ArrayPropertyWriter;
 use AutoMapperPlus\PropertyAccessor\ObjectCratePropertyWriter;
 
 /**
@@ -86,6 +87,12 @@ class Mapping implements MappingInterface
         }
         if ($sourceClassName === DataType::ARRAY) {
             $this->options->setPropertyReader(new ArrayPropertyReader());
+        }
+        if ($destinationClassName === DataType::ARRAY) {
+            $this->beConstructedUsing(function() {
+                return [];
+            });
+            $this->options->setPropertyWriter(new ArrayPropertyWriter());
         }
     }
 

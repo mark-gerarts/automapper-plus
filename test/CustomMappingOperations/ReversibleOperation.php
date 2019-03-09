@@ -15,7 +15,7 @@ class ReversibleOperation implements MappingOperationInterface, Reversible
         $this->name = $name;
     }
 
-    public function mapProperty(string $propertyName, $source, $destination): void
+    public function mapProperty(string $propertyName, $source, &$destination): void
     {
         $destination->name = $this->name;
     }

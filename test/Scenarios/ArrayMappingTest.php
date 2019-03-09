@@ -9,6 +9,7 @@ use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\Test\Models\Nested\ChildClass;
 use AutoMapperPlus\Test\Models\Nested\ChildClassDto;
 use AutoMapperPlus\Test\Models\Nested\ParentClass;
+use AutoMapperPlus\Test\Models\Nested\ParentClassDto;
 use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
 use PHPUnit\Framework\TestCase;
 
@@ -116,5 +117,38 @@ class ArrayMappingTest extends TestCase
 
         $this->assertInternalType('array', $result->child);
         $this->assertEquals('John Doe', $result->child[0]->name);
+    }
+
+    public function testItMapsToAnArrayFromAnArray()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(DataType::ARRAY, DataType::ARRAY);
+        $mapper = new AutoMapper($config);
+
+        $source = [
+            'a property' => 'a value',
+            0 => 'some other value',
+        ];
+        $result = $mapper->map($source, DataType::ARRAY);
+
+        $this->assertEquals($source, $result);
+    }
+
+    public function testItMapsToAnArrayWithNestedOperations()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(ParentClass::class, DataType::ARRAY)
+            ->forMember('child', Operation::mapTo(ChildClass::class, true));
+        $config->registerMapping(ChildClassDto::class, ChildClass::class);
+        $mapper = new AutoMapper($config);
+
+        $childDto = new ChildClassDto();
+        $childDto->name = 'John Doe';
+        $source = new ParentClass();
+        $source->child = $childDto;
+        $result = $mapper->map($source, DataType::ARRAY);
+
+        $this->assertArrayHasKey('child', $result);
+        $this->assertEquals('John Doe', $result['child']->name);
     }
 }

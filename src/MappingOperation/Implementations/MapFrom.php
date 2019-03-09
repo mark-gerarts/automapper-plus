@@ -57,7 +57,7 @@ class MapFrom extends DefaultMappingOperation implements
      * @inheritdoc
      */
     protected function setDestinationValue(
-        $destination,
+        &$destination,
         string $propertyName,
         $value
     ): void {

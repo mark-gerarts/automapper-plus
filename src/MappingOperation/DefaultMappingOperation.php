@@ -43,7 +43,7 @@ class DefaultMappingOperation implements MappingOperationInterface
     /**
      * @inheritdoc
      */
-    public function mapProperty(string $propertyName, $source, $destination): void
+    public function mapProperty(string $propertyName, $source, &$destination): void
     {
         if (!$this->canMapProperty($propertyName, $source)) {
             // Alternatively throw an error here.
@@ -95,7 +95,7 @@ class DefaultMappingOperation implements MappingOperationInterface
      * @param $value
      */
     protected function setDestinationValue(
-        $destination,
+        &$destination,
         string $propertyName,
         $value
     ): void {

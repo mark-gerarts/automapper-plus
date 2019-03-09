@@ -17,7 +17,7 @@ interface MappingOperationInterface
      * @param $destination
      * @return void
      */
-    public function mapProperty(string $propertyName, $source, $destination): void;
+    public function mapProperty(string $propertyName, $source, &$destination): void;
 
     /**
      * @param Options $options

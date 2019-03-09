@@ -67,7 +67,8 @@ class MapFromTest extends TestCase
         $operation->setOptions($options);
         $operation->setMapper(AutoMapper::initialize(function () {}));
 
-        $operation->mapProperty('name', new Source(), new Destination());
+        $destination = new Destination();
+        $operation->mapProperty('name', new Source(), $destination);
     }
 
     public function testMapFromIsContextAware()

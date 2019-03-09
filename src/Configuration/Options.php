@@ -99,6 +99,7 @@ class Options
         $options->setDefaultMappingOperation(new DefaultMappingOperation());
         $options->setNameResolver(new NameResolver());
         $options->registerObjectCrate(\stdClass::class);
+        $options->registerObjectCrate('array');
 
         return $options;
     }

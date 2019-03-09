@@ -15,7 +15,7 @@ class ObjectCratePropertyWriter implements PropertyWriterInterface
     /**
      * @inheritdoc
      */
-    public function setProperty($object, string $propertyName, $value): void
+    public function setProperty(&$object, string $propertyName, $value): void
     {
         $object->{$propertyName} = $value;
     }

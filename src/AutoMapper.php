@@ -165,12 +165,10 @@ class AutoMapper implements AutoMapperInterface
      * @return MappingInterface
      * @throws UnregisteredMappingException
      */
-    protected function getMapping
-    (
+    protected function getMapping(
         string $sourceClass,
         string $destinationClass
-    ): MappingInterface
-    {
+    ): MappingInterface {
         $mapping = $this->autoMapperConfig->getMappingFor(
             $sourceClass,
             $destinationClass

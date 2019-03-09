@@ -44,7 +44,7 @@ class PropertyAccessor implements PropertyAccessorInterface
     /**
      * @inheritdoc
      */
-    public function setProperty($object, string $propertyName, $value): void
+    public function setProperty(&$object, string $propertyName, $value): void
     {
         if ($this->isPublic($object, $propertyName)) {
             $object->{$propertyName} = $value;

@@ -62,7 +62,7 @@ class FromProperty extends DefaultMappingOperation implements
     /**
      * @inheritdoc
      */
-    public function mapProperty(string $propertyName, $source, $destination): void {
+    public function mapProperty(string $propertyName, $source, &$destination): void {
         if ($this->nextOperation === null) {
             parent::mapProperty($propertyName, $source, $destination);
             return;
