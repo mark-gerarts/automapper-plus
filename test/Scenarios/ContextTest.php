@@ -47,7 +47,7 @@ class ContextTest extends TestCase
         $mapper = new AutoMapper($config);
         $source = new Source('a name');
 
-        $result = $mapper->mapToObject(
+        $result = $mapper->map(
             $source,
             new Destination(),
             ['context_key' => 'context-value']

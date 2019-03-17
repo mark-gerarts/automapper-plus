@@ -13,12 +13,17 @@ abstract class CustomMapper implements MapperInterface
 {
     /**
      * @inheritdoc
+     *
+     * @deprecated This is kept for BC reasons. It makes more sense to just
+     *             implement the interface now.
      */
-    public function map($source, string $targetClass, array $context = [])
+    public function map($source, $target, array $context = [])
     {
-        $destination = new $targetClass;
+        if (\is_string($target)) {
+            $target = new $target;
+        }
 
-        return $this->mapToObject($source, $destination);
+        return $this->mapToObject($source, $target, $context);
     }
 
     /**

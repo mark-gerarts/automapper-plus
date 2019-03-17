@@ -20,7 +20,7 @@ class IgnoreNullPropertiesTest extends TestCase
         $source = new Source(null);
         $destination = new Destination();
         $destination->name = 'Hello, world';
-        $mapper->mapToObject($source, $destination);
+        $mapper->map($source, $destination);
 
         $this->assertNull($destination->name);
     }
@@ -35,7 +35,7 @@ class IgnoreNullPropertiesTest extends TestCase
         $source = new Source(null);
         $destination = new Destination();
         $destination->name = 'Hello, world';
-        $mapper->mapToObject($source, $destination);
+        $mapper->map($source, $destination);
 
         $this->assertEquals('Hello, world', $destination->name);
     }
@@ -51,7 +51,7 @@ class IgnoreNullPropertiesTest extends TestCase
         $source = new Source(null);
         $destination = new Destination();
         $destination->name = 'Hello, world';
-        $mapper->mapToObject($source, $destination);
+        $mapper->map($source, $destination);
 
         $this->assertEquals(null, $destination->name);
     }

@@ -48,34 +48,83 @@ class AutoMapper implements AutoMapperInterface
     /**
      * @inheritdoc
      */
-    public function map($source, string $destinationClass, array $context = [])
+    public function map($source, $target, array $context = [])
     {
         if ($source === null) {
             return null;
         }
 
-        if (\is_object($source)) {
-            $sourceClass = \get_class($source);
-        }
-        else {
-            $sourceClass= \gettype($source);
-            if ($sourceClass !== DataType::ARRAY) {
-                throw new AutoMapperPlusException(
-                    'Mapping from something else than an object or array is not supported yet.'
-                );
-            }
-        }
+        $sourceClass = $this->getSourceClass($source);
+        $targetClass = $this->getTargetClass($target);
+        $context = array_merge($context, [self::DESTINATION_CONTEXT => $target]);
 
-        $mapping = $this->getMapping($sourceClass, $destinationClass);
+        $mapping = $this->getMapping($sourceClass, $targetClass);
         if ($mapping->providesCustomMapper()) {
-            return $this->getCustomMapper($mapping)->map($source, $destinationClass);
+            return $this->getCustomMapper($mapping)->map($source, $target, $context);
         }
 
-        $destinationObject = $mapping->hasCustomConstructor()
-            ? $mapping->getCustomConstructor()($source, $this, $context)
-            : new $destinationClass;
+        if (!is_object($target)) {
+            $target = $mapping->hasCustomConstructor()
+                ? $mapping->getCustomConstructor()($source, $this, $context)
+                : new $targetClass;
+        }
 
-        return $this->doMap($source, $destinationObject, $mapping, $context);
+        return $this->doMap($source, $target, $mapping, $context);
+    }
+
+    /**
+     * @param mixed $source The source data.
+     * @param object $target An existing object.
+     * @param array $context
+     * @return mixed The mapped object.
+     * @throws AutoMapperPlusException
+     *
+     * @deprecated The `map` method should now be used instead.
+     */
+    public function mapToObject($source, $target, array $context = [])
+    {
+        return $this->map($source, $target, $context);
+    }
+
+    /**
+     * @param $source The source object or data.
+     * @return string The source class name or data type.
+     * @throws AutoMapperPlusException
+     */
+    private function getSourceClass($source): string
+    {
+        if (\is_object($source)) {
+            return \get_class($source);
+        }
+
+        $sourceType= \gettype($source);
+        if (DataType::isDataType($sourceType)) {
+            return $sourceType;
+        }
+
+        $message = sprintf('Unsupported source type: %s', gettype($source));
+        throw new AutoMapperPlusException($message);
+    }
+
+    /**
+     * @param $target The target data or string.
+     * @return string The target class name or data type.
+     * @throws AutoMapperPlusException
+     */
+    private function getTargetClass($target): string
+    {
+        if (is_string($target)) {
+            return $target;
+        }
+        if (is_object($target)) {
+            return get_class($target);
+        }
+        if (is_array($target)) {
+            return DataType::ARRAY;
+        }
+
+        $message = sprintf('Unsupported target type: %s', gettype($target));
+        throw new AutoMapperPlusException($message);
     }
 
     /**
@@ -83,35 +132,15 @@ class AutoMapper implements AutoMapperInterface
      */
     public function mapMultiple(
         $sourceCollection,
-        string $destinationClass,
+        string $targetClass,
         array $context = []
     ): array {
         $mappedResults = [];
         foreach ($sourceCollection as $source) {
-            $mappedResults[] = $this->map($source, $destinationClass, $context);
+            $mappedResults[] = $this->map($source, $targetClass, $context);
         }
 
         return $mappedResults;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function mapToObject($source, $destination, array $context = [])
-    {
-        $sourceClassName = \get_class($source);
-        $destinationClassName = \get_class($destination);
-
-        $mapping = $this->getMapping($sourceClassName, $destinationClassName);
-        if ($mapping->providesCustomMapper()) {
-            return $this->getCustomMapper($mapping)->mapToObject($source, $destination, [
-                self::DESTINATION_CONTEXT => $destination,
-            ]);
-        }
-
-        return $this->doMap($source, $destination, $mapping, array_merge([
-            self::DESTINATION_CONTEXT => $destination,
-        ], $context));
     }
 
     /**
