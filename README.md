@@ -758,8 +758,8 @@ See the `MapTo` section under [Operations](#operations) for some more details
 about the intricacies involving this operation in combination with arrays.
 
 As for now, it is not possible to map *to* an array. While this is relatively
-easy to implement, it would introduce a breaking change. It is therefore delayed
-until the next major release.
+easy to implement, it would introduce a breaking change. It is part of version
+2.x, so check there if you need this feature.
 
 ### Using a custom mapper
 This library attempts to make registering mappings painless, with as little 
@@ -894,6 +894,7 @@ where needed, without needing to change the code that uses the mapper.
 - [The Symfony demo app (WIP)](https://github.com/mark-gerarts/automapper-plus-demo-app)
 
 ## Roadmap
+
 - [x] Provide a more detailed tutorial
 - [x] Create a sample app demonstrating the automapper
 - [x] Allow mapping from `stdClass`,
@@ -913,3 +914,5 @@ where needed, without needing to change the code that uses the mapper.
 - [ ] Make use of a decorated Symfony's `PropertyAccessor` (see [#16](https://github.com/mark-gerarts/automapper-plus/issues/16))
 - [ ] Allow adding of middleware to the mapper
 - [ ] Allow mapping *to* array
+
+*[Version 2](https://github.com/mark-gerarts/automapper-plus/tree/2.0) is in the works, check there for new features as well*
