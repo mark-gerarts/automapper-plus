@@ -166,7 +166,7 @@ $john = new Employee("John", "Doe", 1980);
 $mapper->map($john, EmployeeDto::class);
 
 // Mapping to an existing object is possible as well.
-$mapper->mapToObject($john, new EmployeeDto());
+$mapper->map($john, new EmployeeDto());
 
 // Map a collection using mapMultiple
 $mapper->mapMultiple($employees, EmployeeDto::class);
@@ -313,9 +313,9 @@ $config->createMapping(Parent::class, ParentDto::class)
 
 #### Handling object construction
 You can specify how the new destination object will be constructed (this isn't
-relevant if you use `mapToObject`). You can do this by registering a *factory
-callback*. This callback will be passed both the source object and an instance
-of the AutoMapper.
+relevant if you pass the destination object directly). You can do this by
+registering a *factory callback*. This callback will be passed both the source
+object and an instance of the AutoMapper.
 
 ```php
 <?php
@@ -573,7 +573,7 @@ The available options that can be set are:
 | Default mapping operation | `DefaultMappingOperation` | the default operation used when mapping a property. Also see [mapping operations](#operations) |
 | Default name resolver | `NameResolver` | The default class to resolve property names |
 | Custom Mapper | `null` | Grants the ability to use a [custom mapper](#using-a-custom-mapper). |
-| Object crates | `[\stdClass::class]` | See [the dedicated section](#the-concept-of-object-crates). |
+| Object crates | `[\stdClass::class, 'array']` | See [the dedicated section](#the-concept-of-object-crates). |
 | Ignore null properties | false | Sets whether or not a source property should be mapped to the destination object if the source value is null |
 | Use substitution | true | Whether or not the Liskov substitution principle should be applied when resolving a mapping. |
 | createUnregisteredMappings | false | Whether or not an exception should be thrown for unregistered mappings, or a mapping should be generated on the fly. |
@@ -757,9 +757,7 @@ echo $result->type; // => "employee"
 See the `MapTo` section under [Operations](#operations) for some more details
 about the intricacies involving this operation in combination with arrays.
 
-As for now, it is not possible to map *to* an array. While this is relatively
-easy to implement, it would introduce a breaking change. It is therefore delayed
-until the next major release.
+Mapping *to* an array works similarly to `stdClass`.
 
 ### Using a custom mapper
 This library attempts to make registering mappings painless, with as little 
@@ -768,8 +766,7 @@ of custom code. This code would look a lot cleaner if put in its own class.
 Another reason to resort to a custom mapper would be [performance](#performance).
 
 It is therefore possible to specify a custom mapper class for a mapping. This
-mapper has to implement the `MapperInterface`. For your convenience, a
-`CustomMapper` class has been provided that implements this interface.
+mapper has to implement the `MapperInterface`.
 
 ```php
 <?php
@@ -832,10 +829,10 @@ $config->registerMapping(Employee::class, EmployeeDto::class)
 $mapper->map($employee, EmployeeDto::class, ['locale' => $request->getLocale()]);
 ```
 
-When using the `mapToObject` method, the context will contain the destination
-object by default. It is accessible using `$context['AutoMapper::DESTINATION_CONTEXT']`.
-This is useful in scenarios where you need data from the destination object
-to populate the object you're mapping.
+The context will contain the destination by default. It is accessible using
+`$context['AutoMapper::DESTINATION_CONTEXT']`. This is useful in scenarios
+where you need data from the destination object to populate the object you're
+mapping.
 
 ### Misc
 
@@ -894,22 +891,12 @@ where needed, without needing to change the code that uses the mapper.
 - [The Symfony demo app (WIP)](https://github.com/mark-gerarts/automapper-plus-demo-app)
 
 ## Roadmap
-- [x] Provide a more detailed tutorial
-- [x] Create a sample app demonstrating the automapper
-- [x] Allow mapping from `stdClass`,
-- [x] or perhaps even an associative array (could have)
-- [x] Allow mapping to `stdClass`
-- [x] Provide options to copy a mapping
 - [ ] Allow setting of prefix for name resolver (see [automapper](https://github.com/AutoMapper/AutoMapper/wiki/Configuration#recognizing-prepostfixes))
-- [x] Create operation to copy value from property
-- [x] Allow passing of contructor function
 - [ ] Allow configuring of options in AutoMapperConfig -> error when trying with a registered mapping
 - [ ] Consider: passing of options to a single mapping operation
-- [x] MapTo: allow mapping of collection
 - [ ] Clean up the property checking in the Mapping::forMember() method.
 - [ ] Refactor tests
 - [ ] Allow setting a maximum depth, see #14
 - [ ] Provide a NameResolver that accepts an array mapping, as an alternative to multiple `FromProperty`s
 - [ ] Make use of a decorated Symfony's `PropertyAccessor` (see [#16](https://github.com/mark-gerarts/automapper-plus/issues/16))
 - [ ] Allow adding of middleware to the mapper
-- [ ] Allow mapping *to* array

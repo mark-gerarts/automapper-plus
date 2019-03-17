@@ -5,7 +5,7 @@ namespace AutoMapperPlus\CustomMapper;
 use AutoMapperPlus\MapperInterface;
 
 /**
- * Interface CustomMapperInterface
+ * Class CustomMapper
  *
  * @package AutoMapperPlus\CustomMapper
  */
@@ -13,9 +13,6 @@ abstract class CustomMapper implements MapperInterface
 {
     /**
      * @inheritdoc
-     *
-     * @deprecated This is kept for BC reasons. It makes more sense to just
-     *             implement the interface now.
      */
     public function map($source, $target, array $context = [])
     {
