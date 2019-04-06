@@ -114,6 +114,7 @@ class AutoMapper implements AutoMapperInterface
     private function getTargetClass($target): string
     {
         if (is_string($target)) {
+            $this->checkIfValidTargetClass($target);
             return $target;
         }
         if (is_object($target)) {
@@ -125,6 +126,21 @@ class AutoMapper implements AutoMapperInterface
 
         $message = sprintf('Unsupported target type: %s', gettype($target));
         throw new AutoMapperPlusException($message);
+    }
+
+    /**
+     * @param string $targetClass
+     * @throws AutoMapperPlusException
+     */
+    private function checkIfValidTargetClass(string $targetClass): void
+    {
+        if (interface_exists($targetClass)) {
+            // If we're mapping to an interface a valid custom constructor has
+            // to be provided. Otherwise we can't know what to do.
+            $message = 'Mapping to an interface is not possible. Please '
+                .'provide a concrete class or use mapToObject instead.';
+            throw new AutoMapperPlusException($message);
+        }
     }
 
     /**
