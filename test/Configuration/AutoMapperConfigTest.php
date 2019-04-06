@@ -7,6 +7,10 @@ use AutoMapperPlus\Test\Models\Inheritance\DestinationChild;
 use AutoMapperPlus\Test\Models\Inheritance\DestinationParent;
 use AutoMapperPlus\Test\Models\Inheritance\SourceChild;
 use AutoMapperPlus\Test\Models\Inheritance\SourceParent;
+use AutoMapperPlus\Test\Models\Interfaces\DestinationImplementation;
+use AutoMapperPlus\Test\Models\Interfaces\DestinationInterface;
+use AutoMapperPlus\Test\Models\Interfaces\SourceImplementation;
+use AutoMapperPlus\Test\Models\Interfaces\SourceInterface;
 use PHPUnit\Framework\TestCase;
 use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
 use AutoMapperPlus\Test\Models\SimpleProperties\Source;
@@ -80,5 +84,45 @@ class AutoMapperConfigTest extends TestCase
             Source::class,
             Destination::class
         ));
+    }
+
+    public function testInterfacesAreLessSpecificThanClassesInTheSource()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(
+            SourceInterface::class,
+            DestinationImplementation::class
+        );
+        $concreteMapping = $config->registerMapping(
+            SourceImplementation::class,
+            DestinationImplementation::class
+        );
+
+        $result = $config->getMappingFor(
+            SourceImplementation::class,
+            DestinationImplementation::class
+        );
+
+        $this->assertEquals($concreteMapping, $result);
+    }
+
+    public function testInterfacesAreLessSpecificThanClassesInTheDestination()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(
+            SourceImplementation::class,
+            DestinationInterface::class
+        );
+        $concreteMapping = $config->registerMapping(
+            SourceImplementation::class,
+            DestinationImplementation::class
+        );
+
+        $result = $config->getMappingFor(
+            SourceImplementation::class,
+            DestinationImplementation::class
+        );
+
+        $this->assertEquals($concreteMapping, $result);
     }
 }
