@@ -43,6 +43,7 @@ use AutoMapperPlus\Test\Models\SpecialConstructor\Destination as ConstructorDest
 use AutoMapperPlus\Test\Models\Visibility\Visibility;
 use AutoMapperPlus\Test\Models\SimilarPropertyNames\Source as SimilarSource;
 use AutoMapperPlus\Test\Models\SimilarPropertyNames\Destination as SimilarDestination;
+use AutoMapperPlus\Exception\InvalidArgumentException;
 
 /**
  * Class AutoMapperTest
@@ -720,5 +721,17 @@ class AutoMapperTest extends TestCase
         $result = $mapper->map($source, Destination::class);
 
         $this->assertEquals('a name', $result->name);
+    }
+
+    public function testAnExceptionIsThrownForNoIterableSourceInMultpleMappings()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->config->registerMapping(Source::class, Destination::class);
+        $mapper = new AutoMapper($this->config);
+
+        $sourceCollection = new \stdClass();
+        
+        $mapper->mapMultiple($sourceCollection, Destination::class);
     }
 }
