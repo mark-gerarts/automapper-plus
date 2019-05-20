@@ -6,6 +6,7 @@ use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use AutoMapperPlus\Configuration\MappingInterface;
 use AutoMapperPlus\Exception\AutoMapperPlusException;
+use AutoMapperPlus\Exception\InvalidArgumentException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\MappingOperation\ContextAwareOperation;
 use AutoMapperPlus\MappingOperation\MapperAwareOperation;
@@ -96,6 +97,13 @@ class AutoMapper implements AutoMapperInterface
         string $destinationClass,
         array $context = []
     ): array {
+
+        if(!is_iterable($sourceCollection)){
+            throw new InvalidArgumentException(
+                'The collection provided should be iterable.'
+            );
+        }
+
         $mappedResults = [];
         foreach ($sourceCollection as $source) {
             $mappedResults[] = $this->map($source, $destinationClass, $context);
