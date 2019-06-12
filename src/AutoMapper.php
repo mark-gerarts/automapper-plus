@@ -8,6 +8,7 @@ use AutoMapperPlus\Configuration\MappingInterface;
 use AutoMapperPlus\Exception\AutoMapperPlusException;
 use AutoMapperPlus\Exception\InvalidArgumentException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
+use AutoMapperPlus\Exception\UnsupportedSourceTypeException;
 use AutoMapperPlus\MappingOperation\ContextAwareOperation;
 use AutoMapperPlus\MappingOperation\MapperAwareOperation;
 
@@ -61,9 +62,7 @@ class AutoMapper implements AutoMapperInterface
         else {
             $sourceClass = \gettype($source);
             if ($sourceClass !== DataType::ARRAY) {
-                throw new AutoMapperPlusException(
-                    'Mapping from something else than an object or array is not supported yet.'
-                );
+                throw UnsupportedSourceTypeException::fromType($sourceClass);
             }
         }
 
@@ -123,9 +122,7 @@ class AutoMapper implements AutoMapperInterface
         else {
             $sourceClass = \gettype($source);
             if ($sourceClass !== DataType::ARRAY) {
-                throw new AutoMapperPlusException(
-                    'Mapping from something else than an object or array is not supported yet.'
-                );
+                throw UnsupportedSourceTypeException::fromType($sourceClass);
             }
         }
 

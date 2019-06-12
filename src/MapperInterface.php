@@ -15,7 +15,7 @@ interface MapperInterface
      * Maps an object to an instance of class $to, provided a mapping is
      * configured.
      *
-     * @param $source
+     * @param array|object $source
      *   The source object.
      * @param string $targetClass
      *   The target classname.
@@ -34,9 +34,9 @@ interface MapperInterface
     /**
      * Maps properties of object $from to an existing object $to.
      *
-     * @param $source
+     * @param array|object $source
      *   The source object.
-     * @param $destination
+     * @param object $destination
      *   The target object.
      * @param array $context
      *   See MapperInterface::map()
