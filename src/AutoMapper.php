@@ -8,6 +8,7 @@ use AutoMapperPlus\Configuration\MappingInterface;
 use AutoMapperPlus\Exception\AutoMapperPlusException;
 use AutoMapperPlus\Exception\InvalidArgumentException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
+use AutoMapperPlus\Exception\UnsupportedSourceTypeException;
 use AutoMapperPlus\MappingOperation\ContextAwareOperation;
 use AutoMapperPlus\MappingOperation\MapperAwareOperation;
 
@@ -59,11 +60,9 @@ class AutoMapper implements AutoMapperInterface
             $sourceClass = \get_class($source);
         }
         else {
-            $sourceClass= \gettype($source);
+            $sourceClass = \gettype($source);
             if ($sourceClass !== DataType::ARRAY) {
-                throw new AutoMapperPlusException(
-                    'Mapping from something else than an object or array is not supported yet.'
-                );
+                throw UnsupportedSourceTypeException::fromType($sourceClass);
             }
         }
 
@@ -117,10 +116,19 @@ class AutoMapper implements AutoMapperInterface
      */
     public function mapToObject($source, $destination, array $context = [])
     {
-        $sourceClassName = \get_class($source);
-        $destinationClassName = \get_class($destination);
+        if (\is_object($source)) {
+            $sourceClass = \get_class($source);
+        }
+        else {
+            $sourceClass = \gettype($source);
+            if ($sourceClass !== DataType::ARRAY) {
+                throw UnsupportedSourceTypeException::fromType($sourceClass);
+            }
+        }
 
-        $mapping = $this->getMapping($sourceClassName, $destinationClassName);
+        $destinationClass = \get_class($destination);
+
+        $mapping = $this->getMapping($sourceClass, $destinationClass);
         if ($mapping->providesCustomMapper()) {
             return $this->getCustomMapper($mapping)->mapToObject($source, $destination, [
                 self::DESTINATION_CONTEXT => $destination,
