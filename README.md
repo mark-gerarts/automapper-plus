@@ -837,6 +837,9 @@ object by default. It is accessible using `$context['AutoMapper::DESTINATION_CON
 This is useful in scenarios where you need data from the destination object
 to populate the object you're mapping.
 
+When implementing a custom constructor, the context will contain the destination
+class by default. It is accessible using `$context['AutoMapper::DESTINATION_CLASS_CONTEXT']`.
+
 ### Misc
 
 - Passing `NULL` as an argument for the source object to `map` returns `NULL`.
