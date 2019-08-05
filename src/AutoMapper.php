@@ -20,6 +20,8 @@ use AutoMapperPlus\MappingOperation\MapperAwareOperation;
 class AutoMapper implements AutoMapperInterface
 {
     public const DESTINATION_CONTEXT = '__destination';
+    
+    public const DESTINATION_CLASS_CONTEXT = '__destination_class';
 
     /**
      * @var AutoMapperConfigInterface
@@ -72,7 +74,9 @@ class AutoMapper implements AutoMapperInterface
         }
 
         if ($mapping->hasCustomConstructor()) {
-            $destinationObject = $mapping->getCustomConstructor()($source, $this, $context);
+            $destinationObject = $mapping->getCustomConstructor()($source, $this, array_merge([
+                self::DESTINATION_CLASS_CONTEXT => $destinationClass
+            ]));
         }
         elseif (interface_exists($destinationClass)) {
             // If we're mapping to an interface a valid custom constructor has
