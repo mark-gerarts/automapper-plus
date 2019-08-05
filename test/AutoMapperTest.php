@@ -123,21 +123,6 @@ class AutoMapperTest extends TestCase
         ;
         $mapper = new AutoMapper($this->config);
         $mapper->mapToObject($source, $destination);
-
-        // Make sure context added only for mapToObject method
-        $this->config
-            ->getMappingFor(Source::class, Destination::class)
-            ->forMember('name', Operation::mapFrom(function(Source $source, AutoMapperInterface $mapper, array $context) {
-                $this->assertArrayNotHasKey(AutoMapper::DESTINATION_CONTEXT, $context);
-
-                return $source->name;
-            }))
-        ;
-        $mapper = new AutoMapper($this->config);
-
-        $source = new Source();
-        $source->name = 'Hello';
-        $mapper->map($source, Destination::class);
     }
 
     public function testSourceDoesntGetOverridden()
@@ -731,7 +716,7 @@ class AutoMapperTest extends TestCase
         $mapper = new AutoMapper($this->config);
 
         $sourceCollection = new \stdClass();
-        
+
         $mapper->mapMultiple($sourceCollection, Destination::class);
     }
 }

@@ -129,4 +129,37 @@ class ContextTest extends TestCase
 
         $this->assertEquals('map-to-value', $result->source->name);
     }
+
+    public function testDestinationClassIsPassed()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(Source::class, Destination::class)
+            ->forMember('name', function ($source, $mapper, $context = []) {
+                $this->assertArrayHasKey(
+                    AutoMapper::DESTINATION_CONTEXT,
+                    $context
+                );
+                $this->assertArrayHasKey(
+                    AutoMapper::DESTINATION_CLASS_CONTEXT,
+                    $context
+                );
+                $this->assertInstanceOf(
+                    Destination::class,
+                    $context[AutoMapper::DESTINATION_CONTEXT]
+                );
+                $this->assertEquals(
+                    Destination::class,
+                    $context[AutoMapper::DESTINATION_CLASS_CONTEXT]
+                );
+
+                return 'some value';
+            });
+        $mapper = new AutoMapper($config);
+        $source = new Source('a name');
+
+        $mapper->map(
+            $source,
+            Destination::class
+        );
+    }
 }

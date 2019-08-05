@@ -20,7 +20,6 @@ use AutoMapperPlus\MappingOperation\MapperAwareOperation;
 class AutoMapper implements AutoMapperInterface
 {
     public const DESTINATION_CONTEXT = '__destination';
-    
     public const DESTINATION_CLASS_CONTEXT = '__destination_class';
 
     /**
@@ -68,15 +67,21 @@ class AutoMapper implements AutoMapperInterface
             }
         }
 
+        $context = array_merge(
+            [self::DESTINATION_CLASS_CONTEXT => $destinationClass],
+            $context
+        );
         $mapping = $this->getMapping($sourceClass, $destinationClass);
         if ($mapping->providesCustomMapper()) {
             return $this->getCustomMapper($mapping)->map($source, $destinationClass);
         }
 
         if ($mapping->hasCustomConstructor()) {
-            $destinationObject = $mapping->getCustomConstructor()($source, $this, array_merge([
-                self::DESTINATION_CLASS_CONTEXT => $destinationClass
-            ]));
+            $destinationObject = $mapping->getCustomConstructor()(
+                $source,
+                $this,
+                $context
+            );
         }
         elseif (interface_exists($destinationClass)) {
             // If we're mapping to an interface a valid custom constructor has
@@ -89,6 +94,8 @@ class AutoMapper implements AutoMapperInterface
             $destinationObject = new $destinationClass;
         }
 
+        $context[self::DESTINATION_CONTEXT] = $destinationObject;
+
         return $this->doMap($source, $destinationObject, $mapping, $context);
     }
 
@@ -100,7 +107,6 @@ class AutoMapper implements AutoMapperInterface
         string $destinationClass,
         array $context = []
     ): array {
-
         if(!is_iterable($sourceCollection)){
             throw new InvalidArgumentException(
                 'The collection provided should be iterable.'
@@ -132,16 +138,29 @@ class AutoMapper implements AutoMapperInterface
 
         $destinationClass = \get_class($destination);
 
+        $context = array_merge(
+            [
+                self::DESTINATION_CONTEXT => $destination,
+                self::DESTINATION_CLASS_CONTEXT => $destinationClass
+            ],
+            $context
+        );
+
         $mapping = $this->getMapping($sourceClass, $destinationClass);
         if ($mapping->providesCustomMapper()) {
-            return $this->getCustomMapper($mapping)->mapToObject($source, $destination, [
-                self::DESTINATION_CONTEXT => $destination,
-            ]);
+            return $this->getCustomMapper($mapping)->mapToObject(
+                $source,
+                $destination,
+                $context
+            );
         }
 
-        return $this->doMap($source, $destination, $mapping, array_merge([
-            self::DESTINATION_CONTEXT => $destination,
-        ], $context));
+        return $this->doMap(
+            $source,
+            $destination,
+            $mapping,
+            $context
+        );
     }
 
     /**
