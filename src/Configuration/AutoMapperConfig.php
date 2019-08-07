@@ -55,12 +55,9 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         string $destinationClassName
     ): ?MappingInterface {
         // Check for an exact match before we try parent classes.
-        foreach ($this->mappings as $mapping) {
-            $isExactMatch = $mapping->getSourceClassName() === $sourceClassName
-                && $mapping->getDestinationClassName() === $destinationClassName;
-            if ($isExactMatch) {
-                return $mapping;
-            }
+        $mapping = $this->mappings["$sourceClassName|$destinationClassName"] ?? NULL;
+        if ($mapping) {
+            return $mapping;
         }
 
         if (!$this->options->shouldUseSubstitution()) {
@@ -200,7 +197,7 @@ class AutoMapperConfig implements AutoMapperConfigInterface
             $destinationClassName,
             $this
         );
-        $this->mappings[] = $mapping;
+        $this->mappings["$sourceClassName|$destinationClassName"] = $mapping;
 
         return $mapping;
     }
