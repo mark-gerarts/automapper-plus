@@ -35,7 +35,7 @@ Transfers data from one object to another, allowing custom mapping operations.
     * [Misc](#misc)
 * [Similar libraries](#similar-libraries)
 * [See also](#see-also)
-* [A not on PHPStan](#a-note-on-phpstan)
+* [A note on PHPStan](#a-note-on-phpstan)
 * [Roadmap](#roadmap)
 
 ## Installation
