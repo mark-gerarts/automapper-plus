@@ -2,6 +2,10 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\Middleware\MapperMiddleware;
+use AutoMapperPlus\Middleware\Middleware;
+use AutoMapperPlus\Middleware\PropertyMiddleware;
+
 /**
  * Class AutoMapperConfig
  *
@@ -13,6 +17,16 @@ class AutoMapperConfig implements AutoMapperConfigInterface
      * @var MappingInterface[]
      */
     private $mappings = [];
+
+    /**
+     * @var MapperMiddleware[]
+     */
+    private $mapperMiddlewares = [];
+
+    /**
+     * @var PropertyMiddleware[]
+     */
+    private $propertyMiddlewares = [];
 
     /**
      * @var Options
@@ -38,7 +52,8 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     public function hasMappingFor(
         string $sourceClassName,
         string $destinationClassName
-    ): bool {
+    ): bool
+    {
         $mapping = $this->getMappingFor(
             $sourceClassName,
             $destinationClassName
@@ -53,7 +68,8 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     public function getMappingFor(
         string $sourceClassName,
         string $destinationClassName
-    ): ?MappingInterface {
+    ): ?MappingInterface
+    {
         // Check for an exact match before we try parent classes.
         foreach ($this->mappings as $mapping) {
             $isExactMatch = $mapping->getSourceClassName() === $sourceClassName
@@ -120,11 +136,12 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         array $candidates,
         string $sourceClassName,
         string $destinationClassName
-    ): ?MappingInterface {
+    ): ?MappingInterface
+    {
         $lowestDistance = PHP_INT_MAX;
         $selectedCandidate = null;
         /** @var MappingInterface $candidate */
-        foreach($candidates as $candidate) {
+        foreach ($candidates as $candidate) {
             $sourceDistance = $this->getClassDistance(
                 $sourceClassName,
                 $candidate->getSourceClassName()
@@ -154,14 +171,15 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     protected function getClassDistance(
         string $childClass,
         string $parentClass
-    ): int {
+    ): int
+    {
         if ($childClass === $parentClass) {
             return 0;
         }
 
         $result = 0;
         $childParents = class_parents($childClass, true);
-        foreach($childParents as $childParent) {
+        foreach ($childParents as $childParent) {
             $result++;
             if ($childParent === $parentClass) {
                 return $result;
@@ -194,7 +212,8 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     public function registerMapping(
         string $sourceClassName,
         string $destinationClassName
-    ): MappingInterface {
+    ): MappingInterface
+    {
         $mapping = new Mapping(
             $sourceClassName,
             $destinationClassName,
@@ -205,11 +224,40 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         return $mapping;
     }
 
+    public function registerMiddlewares(Middleware ...$middlewares): void
+    {
+        foreach ($middlewares as $middleware) {
+            if ($middleware instanceof MapperMiddleware) {
+                $this->mapperMiddlewares[] = $middleware;
+            }
+            if ($middleware instanceof PropertyMiddleware) {
+                $this->propertyMiddlewares[] = $middleware;
+            }
+        }
+    }
+
+
     /**
      * @inheritdoc
      */
     public function getOptions(): Options
     {
         return $this->options;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMapperMiddlewares()
+    {
+        return $this->mapperMiddlewares;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPropertyMiddlewares()
+    {
+        return $this->propertyMiddlewares;
     }
 }

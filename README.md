@@ -31,6 +31,7 @@ Transfers data from one object to another, allowing custom mapping operations.
     * [The concept of object crates](#the-concept-of-object-crates)
     * [Mapping with arrays](#mapping-with-arrays)
     * [Using a custom mapper](#using-a-custom-mapper)
+    * [Using middlewares](#using-middlewares)
     * [Adding context](#adding-context)
     * [Misc](#misc)
 * [Similar libraries](#similar-libraries)
@@ -804,6 +805,55 @@ $employee = new Employee(10, 'John', 'Doe', 1980);
 $result = $mapper->map($employee, EmployeeDto::class);
 ```
 
+### Using middlewares
+You can register middlewares to customize how automapper works internally and define
+global behaviors.
+
+The following example will set 42 to any `id` property that would have been `null`.
+
+```php
+<?php
+
+class AnwserToUniverseMiddleware implements PropertyMiddleware
+{
+    public function supportsMapProperty($propertyName,
+                                        $source,
+                                        $destination,
+                                        MappingInterface $mapping,
+                                        MappingOperationInterface $operation,
+                                        array $context = [])
+    {
+        return $propertyName == 'id';
+    }
+
+    public function mapProperty($propertyName,
+                                $source,
+                                $destination,
+                                MappingInterface $mapping,
+                                MappingOperationInterface $operation,
+                                array $context = [])
+    {
+        $defaultValue = $mapping->getOptions()->getPropertyReader()->getProperty($destination, $propertyName);
+        if ($defaultValue === NULL) {
+            $mapping->getOptions()->getPropertyWriter()->setProperty($destination, $propertyName, 42);
+        }
+    }
+}
+
+$config->registerMiddlewares(new AnwserToUniverseMiddleware());
+$config->registerMapping(Employee::class, EmployeeDto::class);
+$mapper = new AutoMapper($config);
+
+// The AutoMapper can now be used as usual, but your middleware will intercept some property mappings.
+$employee = new Employee(NULL, 'John', 'Doe', 1980);
+$result = $mapper->map($employee, EmployeeDto::class);
+echo $result->id; // => 42
+```
+
+Middleware feature open up many extension capabilities, feel free to check PHPDocs 
+from [PropertyMiddleware](./src/Middleware/PropertyMiddleware.php) and 
+[MapperMiddleware](./src/Middleware/MapperMiddleware.php) interfaces for details.
+
 ### Adding context
 Sometimes a mapping should behave differently based on the context. It is
 therefore possible to pass a third argument to the map methods to describe
@@ -915,7 +965,7 @@ where needed, without needing to change the code that uses the mapper.
 - [ ] Allow setting a maximum depth, see #14
 - [ ] Provide a NameResolver that accepts an array mapping, as an alternative to multiple `FromProperty`s
 - [ ] Make use of a decorated Symfony's `PropertyAccessor` (see [#16](https://github.com/mark-gerarts/automapper-plus/issues/16))
-- [ ] Allow adding of middleware to the mapper
+- [x] Allow adding of middleware to the mapper
 - [ ] Allow mapping *to* array
 
 *[Version 2](https://github.com/mark-gerarts/automapper-plus/tree/2.0) is in the works, check there for new features as well*

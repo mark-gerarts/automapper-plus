@@ -11,6 +11,10 @@ use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\Exception\UnsupportedSourceTypeException;
 use AutoMapperPlus\MappingOperation\ContextAwareOperation;
 use AutoMapperPlus\MappingOperation\MapperAwareOperation;
+use AutoMapperPlus\MappingOperation\MappingOperationInterface;
+use AutoMapperPlus\Middleware\MapperMiddleware;
+use AutoMapperPlus\Middleware\Middleware;
+use AutoMapperPlus\Middleware\PropertyMiddleware;
 
 /**
  * Class AutoMapper
@@ -164,7 +168,7 @@ class AutoMapper implements AutoMapperInterface
     }
 
     /**
-     * Performs the actual transferring of properties.
+     * Performs the actual transferring of properties, involving all matching mapper and property middleware.
      *
      * @param $source
      * @param $destination
@@ -179,6 +183,44 @@ class AutoMapper implements AutoMapperInterface
         MappingInterface $mapping,
         array $context = []
     ) {
+        $mapperMiddlewares = $this->getMapperMiddlewares($source, $destination, $mapping, $context);
+        foreach ($mapperMiddlewares[Middleware::BEFORE] as $middleware) {
+            $middleware->map($source, $destination, $mapping, $context);
+        }
+
+        $overrideMiddlewares = $mapperMiddlewares[Middleware::OVERRIDE];
+        if ($overrideMiddlewares) {
+            foreach ($overrideMiddlewares as $middleware) {
+                $middleware->map($source, $destination, $mapping, $context);
+            }
+        } else {
+            $this->doMapDefault($source, $destination, $mapping, $context);
+        }
+
+        foreach ($mapperMiddlewares[Middleware::AFTER] as $middleware) {
+            $middleware->map($source, $destination, $mapping, $context);
+        }
+
+        return $destination;
+    }
+
+    /**
+     * Performs the actual default transferring of properties, involving all registered property middleware.
+     *
+     * @param $source
+     * @param $destination
+     * @param MappingInterface $mapping
+     * @param array $context
+     * @return mixed
+     *   The destination object with mapped properties.
+     */
+    protected function doMapDefault(
+        $source,
+        $destination,
+        MappingInterface $mapping,
+        array $context = []
+    )
+    {
         $propertyNames = $mapping->getTargetProperties($destination, $source);
         foreach ($propertyNames as $propertyName) {
             $mappingOperation = $mapping->getMappingOperationFor($propertyName);
@@ -190,14 +232,28 @@ class AutoMapper implements AutoMapperInterface
                 $mappingOperation->setContext($context);
             }
 
-            $mappingOperation->mapProperty(
-                $propertyName,
-                $source,
-                $destination
-            );
-        }
+            $propertyMiddlewares = $this->getPropertyMiddlewares($propertyName, $source, $destination, $mapping, $mappingOperation, $context);
+            foreach ($propertyMiddlewares[Middleware::BEFORE] as $middleware) {
+                $middleware->mapProperty($propertyName, $source, $destination, $mapping, $mappingOperation, $context);
+            }
 
-        return $destination;
+            $overrideMiddlewares = $propertyMiddlewares[Middleware::OVERRIDE];
+            if ($overrideMiddlewares) {
+                foreach ($overrideMiddlewares as $middleware) {
+                    $middleware->mapProperty($propertyName, $source, $destination, $mapping, $mappingOperation, $context);
+                }
+            } else {
+                $mappingOperation->mapProperty(
+                    $propertyName,
+                    $source,
+                    $destination
+                );
+            }
+
+            foreach ($propertyMiddlewares[Middleware::AFTER] as $middleware) {
+                $middleware->mapProperty($propertyName, $source, $destination, $mapping, $mappingOperation, $context);
+            }
+        }
     }
 
     /**
@@ -247,5 +303,55 @@ class AutoMapper implements AutoMapperInterface
         }
 
         return $customMapper;
+    }
+
+    /**
+     * @param $source
+     * @param $destination
+     * @param string $propertyName
+     * @param MappingInterface $mapping
+     * @param MappingOperationInterface $mappingOperation
+     * @param array $context
+     * @return PropertyMiddleware[][]
+     */
+    private function getPropertyMiddlewares(
+        $propertyName,
+        $source,
+        $destination,
+        MappingInterface $mapping,
+        MappingOperationInterface $mappingOperation,
+        array $context = []): array
+    {
+        $propertyMiddleware = [Middleware::AFTER => [], Middleware::OVERRIDE => NULL, Middleware::BEFORE => []];
+        foreach ($this->getConfiguration()->getPropertyMiddlewares() as $middleware) {
+            $supports = intval($middleware->supportsMapProperty($propertyName, $source, $destination, $mapping, $mappingOperation, $context));
+            if ($supports != Middleware::SKIP) {
+                $propertyMiddleware[$supports][] = $middleware;
+            }
+        }
+        return $propertyMiddleware;
+    }
+
+    /**
+     * @param $source
+     * @param $destination
+     * @param MappingInterface $mapping
+     * @param array $context
+     * @return MapperMiddleware[][]
+     */
+    private function getMapperMiddlewares(
+        $source,
+        $destination,
+        MappingInterface $mapping,
+        array $context = []): array
+    {
+        $mapperMiddlewares = [Middleware::AFTER => [], Middleware::OVERRIDE => [], Middleware::BEFORE => []];
+        foreach ($this->getConfiguration()->getMapperMiddlewares() as $middleware) {
+            $supports = intval($middleware->supportsMap($source, $destination, $mapping, $context));
+            if ($supports != Middleware::SKIP) {
+                $mapperMiddlewares[$supports][] = $middleware;
+            }
+        }
+        return $mapperMiddlewares;
     }
 }

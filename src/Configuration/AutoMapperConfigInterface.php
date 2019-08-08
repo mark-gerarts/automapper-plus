@@ -2,6 +2,10 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\Middleware\MapperMiddleware;
+use AutoMapperPlus\Middleware\Middleware;
+use AutoMapperPlus\Middleware\PropertyMiddleware;
+
 /**
  * Interface AutoMapperConfigInterface
  *
@@ -48,7 +52,25 @@ interface AutoMapperConfigInterface
     ): MappingInterface;
 
     /**
+     * Register middlewares.
+     *
+     * @param Middleware ...$middlewares
+     * @return void
+     */
+    public function registerMiddlewares(Middleware ...$middlewares): void;
+
+    /**
      * @return Options
      */
     public function getOptions(): Options;
+
+    /**
+     * @return MapperMiddleware[]
+     */
+    public function getMapperMiddlewares();
+
+    /**
+     * @return PropertyMiddleware[]
+     */
+    public function getPropertyMiddlewares();
 }
