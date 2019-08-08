@@ -67,10 +67,8 @@ class AutoMapper implements AutoMapperInterface
             }
         }
 
-        $context = array_merge(
-            [self::DESTINATION_CLASS_CONTEXT => $destinationClass],
-            $context
-        );
+        $context[self::DESTINATION_CLASS_CONTEXT] = $destinationClass;
+
         $mapping = $this->getMapping($sourceClass, $destinationClass);
         if ($mapping->providesCustomMapper()) {
             return $this->getCustomMapper($mapping)->map($source, $destinationClass);
@@ -138,13 +136,8 @@ class AutoMapper implements AutoMapperInterface
 
         $destinationClass = \get_class($destination);
 
-        $context = array_merge(
-            [
-                self::DESTINATION_CONTEXT => $destination,
-                self::DESTINATION_CLASS_CONTEXT => $destinationClass
-            ],
-            $context
-        );
+        $context[self::DESTINATION_CONTEXT] = $destination;
+        $context[self::DESTINATION_CLASS_CONTEXT] = $destinationClass;
 
         $mapping = $this->getMapping($sourceClass, $destinationClass);
         if ($mapping->providesCustomMapper()) {
