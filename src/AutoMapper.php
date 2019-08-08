@@ -19,6 +19,9 @@ use AutoMapperPlus\MappingOperation\MapperAwareOperation;
  */
 class AutoMapper implements AutoMapperInterface
 {
+    public const SOURCE_STACK_CONTEXT = '__source_stack';
+    public const DESTINATION_STACK_CONTEXT = '__destination_stack';
+    public const PROPERTY_STACK_CONTEXT = '__property_stack';
     public const DESTINATION_CONTEXT = '__destination';
     public const DESTINATION_CLASS_CONTEXT = '__destination_class';
 
@@ -48,6 +51,22 @@ class AutoMapper implements AutoMapperInterface
         return $mapper;
     }
 
+    private function push($key, $value, &$context)
+    {
+        if (!array_key_exists($key, $context)) {
+            $stack = [];
+        } else {
+            $stack = $context[$key];
+        }
+        $stack[] = $value;
+        $context[$key] = $stack;
+    }
+
+    private function pop($key, &$context)
+    {
+        array_pop($context[$key]);
+    }
+
     /**
      * @inheritdoc
      */
@@ -59,8 +78,7 @@ class AutoMapper implements AutoMapperInterface
 
         if (\is_object($source)) {
             $sourceClass = \get_class($source);
-        }
-        else {
+        } else {
             $sourceClass = \gettype($source);
             if ($sourceClass !== DataType::ARRAY) {
                 throw UnsupportedSourceTypeException::fromType($sourceClass);
@@ -82,21 +100,27 @@ class AutoMapper implements AutoMapperInterface
                 $this,
                 $context
             );
-        }
-        elseif (interface_exists($destinationClass)) {
+        } elseif (interface_exists($destinationClass)) {
             // If we're mapping to an interface a valid custom constructor has
             // to be provided. Otherwise we can't know what to do.
             $message = 'Mapping to an interface is not possible. Please '
                 . 'provide a concrete class or use mapToObject instead.';
             throw new AutoMapperPlusException($message);
-        }
-        else {
+        } else {
             $destinationObject = new $destinationClass;
         }
 
         $context[self::DESTINATION_CONTEXT] = $destinationObject;
 
-        return $this->doMap($source, $destinationObject, $mapping, $context);
+        $this->push(self::SOURCE_STACK_CONTEXT, $source, $context);
+        $this->push(self::DESTINATION_STACK_CONTEXT, $destinationObject, $context);
+
+        try {
+            return $this->doMap($source, $destinationObject, $mapping, $context);
+        } finally {
+            $this->pop(self::DESTINATION_STACK_CONTEXT, $context);
+            $this->pop(self::SOURCE_STACK_CONTEXT, $context);
+        }
     }
 
     /**
@@ -106,8 +130,9 @@ class AutoMapper implements AutoMapperInterface
         $sourceCollection,
         string $destinationClass,
         array $context = []
-    ): array {
-        if(!is_iterable($sourceCollection)){
+    ): array
+    {
+        if (!is_iterable($sourceCollection)) {
             throw new InvalidArgumentException(
                 'The collection provided should be iterable.'
             );
@@ -128,8 +153,7 @@ class AutoMapper implements AutoMapperInterface
     {
         if (\is_object($source)) {
             $sourceClass = \get_class($source);
-        }
-        else {
+        } else {
             $sourceClass = \gettype($source);
             if ($sourceClass !== DataType::ARRAY) {
                 throw UnsupportedSourceTypeException::fromType($sourceClass);
@@ -146,21 +170,28 @@ class AutoMapper implements AutoMapperInterface
             $context
         );
 
-        $mapping = $this->getMapping($sourceClass, $destinationClass);
-        if ($mapping->providesCustomMapper()) {
-            return $this->getCustomMapper($mapping)->mapToObject(
+        $this->push(self::SOURCE_STACK_CONTEXT, $source, $context);
+        $this->push(self::DESTINATION_STACK_CONTEXT, $destination, $context);
+        try {
+            $mapping = $this->getMapping($sourceClass, $destinationClass);
+            if ($mapping->providesCustomMapper()) {
+                return $this->getCustomMapper($mapping)->mapToObject(
+                    $source,
+                    $destination,
+                    $context
+                );
+            }
+
+            return $this->doMap(
                 $source,
                 $destination,
+                $mapping,
                 $context
             );
+        } finally {
+            $this->pop(self::DESTINATION_STACK_CONTEXT, $context);
+            $this->pop(self::SOURCE_STACK_CONTEXT, $context);
         }
-
-        return $this->doMap(
-            $source,
-            $destination,
-            $mapping,
-            $context
-        );
     }
 
     /**
@@ -178,23 +209,29 @@ class AutoMapper implements AutoMapperInterface
         $destination,
         MappingInterface $mapping,
         array $context = []
-    ) {
+    )
+    {
         $propertyNames = $mapping->getTargetProperties($destination, $source);
         foreach ($propertyNames as $propertyName) {
-            $mappingOperation = $mapping->getMappingOperationFor($propertyName);
+            $this->push(self::PROPERTY_STACK_CONTEXT, $propertyName, $context);
+            try {
+                $mappingOperation = $mapping->getMappingOperationFor($propertyName);
 
-            if ($mappingOperation instanceof MapperAwareOperation) {
-                $mappingOperation->setMapper($this);
-            }
-            if ($mappingOperation instanceof ContextAwareOperation) {
-                $mappingOperation->setContext($context);
-            }
+                if ($mappingOperation instanceof MapperAwareOperation) {
+                    $mappingOperation->setMapper($this);
+                }
+                if ($mappingOperation instanceof ContextAwareOperation) {
+                    $mappingOperation->setContext($context);
+                }
 
-            $mappingOperation->mapProperty(
-                $propertyName,
-                $source,
-                $destination
-            );
+                $mappingOperation->mapProperty(
+                    $propertyName,
+                    $source,
+                    $destination
+                );
+            } finally {
+                $this->pop(self::PROPERTY_STACK_CONTEXT, $context);
+            }
         }
 
         return $destination;
@@ -218,7 +255,8 @@ class AutoMapper implements AutoMapperInterface
     (
         string $sourceClass,
         string $destinationClass
-    ): MappingInterface {
+    ): MappingInterface
+    {
         $mapping = $this->autoMapperConfig->getMappingFor(
             $sourceClass,
             $destinationClass

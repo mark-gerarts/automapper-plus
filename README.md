@@ -833,12 +833,19 @@ $mapper->map($employee, EmployeeDto::class, ['locale' => $request->getLocale()])
 ```
 
 When using the `mapToObject` method, the context will contain the destination
-object by default. It is accessible using `$context['AutoMapper::DESTINATION_CONTEXT']`.
+object by default. It is accessible using `$context[AutoMapper::DESTINATION_CONTEXT]`.
 This is useful in scenarios where you need data from the destination object
 to populate the object you're mapping.
 
 When implementing a custom constructor, the context will contain the destination
-class by default. It is accessible using `$context['AutoMapper::DESTINATION_CLASS_CONTEXT']`.
+class by default. It is accessible using `$context[AutoMapper::DESTINATION_CLASS_CONTEXT]`.
+
+When mapping an object graph, the context will also contain arrays for property 
+name paths, ancestor source objects and ancestor destination objects. Those arrays 
+are accessible using `$context[AutoMapper::PROPERTY_STACK_CONTEXT]`, 
+`$context[AutoMapper::SOURCE_STACK_CONTEXT]` and `$context[AutoMapper::DESTINATION_STACK_CONTEXT]`.
+They can be used to implement custom mapping function based on the hierarchy level and current position
+inside the object graph being mapped.
 
 ### Misc
 
