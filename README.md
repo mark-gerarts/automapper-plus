@@ -35,6 +35,7 @@ Transfers data from one object to another, allowing custom mapping operations.
     * [Misc](#misc)
 * [Similar libraries](#similar-libraries)
 * [See also](#see-also)
+* [A not on PHPStan](#a-note-on-phpstan)
 * [Roadmap](#roadmap)
 
 ## Installation
@@ -895,6 +896,19 @@ where needed, without needing to change the code that uses the mapper.
 ## See also
 - [The Symfony bundle](https://github.com/mark-gerarts/automapper-plus-bundle)
 - [The Symfony demo app (WIP)](https://github.com/mark-gerarts/automapper-plus-demo-app)
+
+## A note on PHPStan
+
+Because of an issue described [here](https://github.com/mark-gerarts/phpstan-automapper-plus),
+PHPStan reports the following error if you use the `$context` parameter:
+
+```
+Method AutoMapperPlus\MapperInterface::map() invoked with 3 parameters, 2 required.
+```
+
+If you see this error, you should enable the [AutoMapper+ extension](https://github.com/mark-gerarts/phpstan-automapper-plus).
+Please note that this is a temporary solution. The issue will be fixed in the
+2.0 release.
 
 ## Roadmap
 
