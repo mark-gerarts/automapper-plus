@@ -6,6 +6,10 @@ use AutoMapperPlus\AutoMapper;
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\MappingOperation\Implementations\MapTo;
 use AutoMapperPlus\MappingOperation\Operation;
+use AutoMapperPlus\Test\Models\Nested\ChildClass;
+use AutoMapperPlus\Test\Models\Nested\ChildClassDto;
+use AutoMapperPlus\Test\Models\Nested\ParentClass;
+use AutoMapperPlus\Test\Models\Nested\ParentClassDto;
 use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
 use AutoMapperPlus\Test\Models\SimpleProperties\Source;
 use PHPUnit\Framework\TestCase;
@@ -60,7 +64,7 @@ class ContextTest extends TestCase
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(Source::class, Destination::class)
-            ->forMember('name', function ($source, $mapper, $context= []) {
+            ->forMember('name', function ($source, $mapper, $context = []) {
                 $this->assertArrayHasKey('context_key', $context);
                 $this->assertEquals('context-value', $context['context_key']);
 
@@ -160,6 +164,51 @@ class ContextTest extends TestCase
         $mapper->map(
             $source,
             Destination::class
+        );
+    }
+
+    public function testMapToBuildsContextStacks()
+    {
+        $parent = new ParentClass();
+        $parent->child = new ChildClass();
+
+        $config = new AutoMapperConfig();
+        $config->registerMapping(ParentClass::class, ParentClassDto::class)
+            ->forMember('child', Operation::mapTo(ChildClassDto::class));
+
+        $config->registerMapping(ChildClass::class, ChildClassDto::class)
+            ->forMember('name', function ($source, $mapper, $context = []) use ($parent) {
+                $this->assertArrayHasKey(
+                    AutoMapper::SOURCE_STACK_CONTEXT,
+                    $context
+                );
+
+                $this->assertEquals([$parent, $parent->child], $context[AutoMapper::SOURCE_STACK_CONTEXT]);
+
+                $this->assertArrayHasKey(
+                    AutoMapper::DESTINATION_STACK_CONTEXT,
+                    $context
+                );
+
+                $this->assertCount(2, $context[AutoMapper::DESTINATION_STACK_CONTEXT]);
+                $this->assertInstanceOf(ParentClassDto::class, $context[AutoMapper::DESTINATION_STACK_CONTEXT][0]);
+                $this->assertInstanceOf(ChildClassDto::class, $context[AutoMapper::DESTINATION_STACK_CONTEXT][1]);
+
+                $this->assertEquals($context[AutoMapper::DESTINATION_CONTEXT], $context[AutoMapper::DESTINATION_STACK_CONTEXT][1]);
+
+                $this->assertArrayHasKey(
+                    AutoMapper::PROPERTY_STACK_CONTEXT,
+                    $context
+                );
+
+                $this->assertEquals($context[AutoMapper::PROPERTY_STACK_CONTEXT], ['child', 'name']);
+            });
+
+        $mapper = new AutoMapper($config);
+
+        $mapper->map(
+            $parent,
+            ParentClassDto::class
         );
     }
 }
