@@ -88,10 +88,6 @@ class AutoMapper implements AutoMapperInterface
         $context[self::DESTINATION_CLASS_CONTEXT] = $destinationClass;
 
         $mapping = $this->getMapping($sourceClass, $destinationClass);
-        if ($mapping->providesCustomMapper()) {
-            return $this->getCustomMapper($mapping)->map($source, $destinationClass);
-        }
-
         if ($mapping->hasCustomConstructor()) {
             $destinationObject = $mapping->getCustomConstructor()(
                 $source,
@@ -167,14 +163,6 @@ class AutoMapper implements AutoMapperInterface
         $this->push(self::DESTINATION_STACK_CONTEXT, $destination, $context);
         try {
             $mapping = $this->getMapping($sourceClass, $destinationClass);
-            if ($mapping->providesCustomMapper()) {
-                return $this->getCustomMapper($mapping)->mapToObject(
-                    $source,
-                    $destination,
-                    $context
-                );
-            }
-
             return $this->doMap(
                 $source,
                 $destination,
@@ -206,8 +194,12 @@ class AutoMapper implements AutoMapperInterface
     {
         $mapper = $this;
 
-        $this->autoMapperConfig->getDefaultMapperMiddleware()->map($source, $destination, $mapper, $mapping, $context, function () {
-        });
+        if ($mapping->providesCustomMapper()) {
+            $this->getCustomMapper($mapping)->mapToObject($source, $destination, $context);
+        } else {
+            $this->autoMapperConfig->getDefaultMapperMiddleware()->map($source, $destination, $mapper, $mapping, $context, function () {
+            });
+        }
 
         $map = function () {
             // NOOP
@@ -262,9 +254,9 @@ class AutoMapper implements AutoMapperInterface
     /**
      * @param MappingInterface $mapping
      *
-     * @return MapperInterface|null
+     * @return DestinationMapperInterface|null
      */
-    private function getCustomMapper(MappingInterface $mapping): ?MapperInterface
+    private function getCustomMapper(MappingInterface $mapping): ?DestinationMapperInterface
     {
         $customMapper = $mapping->getCustomMapper();
 
