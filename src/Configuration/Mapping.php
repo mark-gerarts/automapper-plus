@@ -3,6 +3,7 @@
 namespace AutoMapperPlus\Configuration;
 
 use AutoMapperPlus\DataType;
+use AutoMapperPlus\DestinationMapperInterface;
 use AutoMapperPlus\Exception\NoConstructorSetException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\MapperInterface;
@@ -364,7 +365,7 @@ class Mapping implements MappingInterface
     /**
      * @inheritdoc
      */
-    public function useCustomMapper(MapperInterface $mapper): void
+    public function useCustomMapper(DestinationMapperInterface $mapper): void
     {
         $this->options->setCustomMapper($mapper);
     }
@@ -380,7 +381,7 @@ class Mapping implements MappingInterface
     /**
      * @inheritdoc
      */
-    public function getCustomMapper(): ?MapperInterface
+    public function getCustomMapper(): ?DestinationMapperInterface
     {
         return $this->options->getCustomMapper();
     }

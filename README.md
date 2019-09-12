@@ -770,15 +770,12 @@ of custom code. This code would look a lot cleaner if put in its own class.
 Another reason to resort to a custom mapper would be [performance](#performance).
 
 It is therefore possible to specify a custom mapper class for a mapping. This
-mapper has to implement the `MapperInterface`. For your convenience, a
-`CustomMapper` class has been provided that implements this interface.
+mapper has to implement the `DestinationMapperInterface`.
 
 ```php
 <?php
 
-// You can either extend the CustomMapper, or just implement the MapperInterface
-// directly.
-class EmployeeMapper extends CustomMapper
+class EmployeeMapper implements DestinationMapperInterface
 {
     /**
      * @param Employee $source

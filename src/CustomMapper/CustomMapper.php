@@ -7,6 +7,7 @@ use AutoMapperPlus\MapperInterface;
 /**
  * Interface CustomMapperInterface
  *
+ * @deprecated Implement DestinationMapperInterface instead
  * @package AutoMapperPlus\CustomMapper
  */
 abstract class CustomMapper implements MapperInterface
