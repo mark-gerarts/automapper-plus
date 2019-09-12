@@ -15,7 +15,7 @@ class Employee
     private $birthYear;
     private $address;
 
-    function __construct(int $id, string $firstName, string $lastName, int $birthYear, $address = null)
+    function __construct(?int $id, string $firstName, string $lastName, int $birthYear, $address = null)
     {
         $this->id = $id;
         $this->firstName = $firstName;
