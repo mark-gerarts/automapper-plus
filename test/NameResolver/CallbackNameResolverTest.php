@@ -11,7 +11,7 @@ class CallbackNameResolverTest extends TestCase
     public function testItResolvesNamesWithACallback()
     {
         $resolver = new CallbackNameResolver(function (string $property) {
-            return strtoupper($property);
+            return \strtoupper($property);
         });
 
         $output = $resolver->getSourcePropertyName(
@@ -25,7 +25,7 @@ class CallbackNameResolverTest extends TestCase
     public function testAPropertyCanStillBeExplicitlyOverridden()
     {
         $resolver = new CallbackNameResolver(function (string $property) {
-            return strtoupper($property);
+            return \strtoupper($property);
         });
 
         $output = $resolver->getSourcePropertyName(

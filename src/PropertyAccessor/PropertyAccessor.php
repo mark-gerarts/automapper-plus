@@ -14,14 +14,14 @@ class PropertyAccessor implements PropertyAccessorInterface
      */
     public function hasProperty($object, string $propertyName): bool
     {
-        if (property_exists($object, $propertyName)) {
+        if (\property_exists($object, $propertyName)) {
             return true;
         }
 
         // property_exists doesn't return true for inherited properties.
         $objectArray = (array) $object;
         foreach ($objectArray as $name => $value) {
-            if (substr($name, - \strlen($propertyName) - 1) === "\x00" . $propertyName) {
+            if (\substr($name, - \strlen($propertyName) - 1) === "\x00" . $propertyName) {
                 return true;
             }
         }
@@ -79,7 +79,7 @@ class PropertyAccessor implements PropertyAccessorInterface
     {
         $objectArray = (array) $object;
         foreach ($objectArray as $name => $value) {
-            if (substr($name, - \strlen($propertyName) - 1) === "\x00" . $propertyName) {
+            if (\substr($name, - \strlen($propertyName) - 1) === "\x00" . $propertyName) {
                 return $value;
             }
         }
@@ -121,7 +121,7 @@ class PropertyAccessor implements PropertyAccessorInterface
     {
         $objectArray = (array) $object;
 
-        return array_key_exists($propertyName, $objectArray);
+        return \array_key_exists($propertyName, $objectArray);
     }
 
     /**

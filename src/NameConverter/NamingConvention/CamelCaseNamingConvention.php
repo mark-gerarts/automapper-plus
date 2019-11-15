@@ -14,7 +14,7 @@ class CamelCaseNamingConvention extends BaseNamingConvention
      */
     public function toParts(string $name): array
     {
-        $parts = preg_split('/(?=[A-Z])/', $name, -1, PREG_SPLIT_NO_EMPTY);
+        $parts = \preg_split('/(?=[A-Z])/', $name, -1, PREG_SPLIT_NO_EMPTY);
 
         return $this->normalize($parts);
     }
@@ -24,8 +24,8 @@ class CamelCaseNamingConvention extends BaseNamingConvention
      */
     public function fromParts(array $parts): string
     {
-        $parts = array_map('ucfirst', $parts);
+        $parts = \array_map('ucfirst', $parts);
 
-        return lcfirst(implode('', $parts));
+        return \lcfirst(\implode('', $parts));
     }
 }

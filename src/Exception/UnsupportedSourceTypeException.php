@@ -10,7 +10,7 @@ class UnsupportedSourceTypeException extends AutoMapperPlusException
      */
     public static function fromType($type): UnsupportedSourceTypeException
     {
-        $message = sprintf('Expected object or array as a source, got %s.', $type);
+        $message = \sprintf('Expected object or array as a source, got %s.', $type);
 
         return new static($message);
     }

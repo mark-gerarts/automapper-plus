@@ -30,7 +30,7 @@ class EmployeeMapperWithMapperAware extends CustomMapper implements MapperAwareO
         $destination->id = $source->getId();
         $destination->firstName = $source->getFirstName();
         $destination->lastName = $source->getLastName();
-        $destination->age = date('Y') - $source->getBirthYear();
+        $destination->age = \date('Y') - $source->getBirthYear();
         $destination->notes = 'Mapped by EmployeeMapperWithMapperAware';
 
         $destination->address = $this->mapper->map($source->getAddress(), AddressDto::class);

@@ -76,11 +76,11 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         // We didn't find an exact match, and substitution is allowed. We'll
         // build a list of potential candidates and retrieve the most specific
         // mapping from it.
-        $candidates = array_filter(
+        $candidates = \array_filter(
             $this->mappings,
             function (MappingInterface $mapping) use ($sourceClassName, $destinationClassName): bool {
-                return is_a($sourceClassName, $mapping->getSourceClassName(), true)
-                    && is_a($destinationClassName, $mapping->getDestinationClassName(), true);
+                return \is_a($sourceClassName, $mapping->getSourceClassName(), true)
+                    && \is_a($destinationClassName, $mapping->getDestinationClassName(), true);
             }
         );
 
@@ -157,7 +157,7 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         }
 
         $result = 0;
-        $childParents = class_parents($childClass, true);
+        $childParents = \class_parents($childClass, true);
         foreach($childParents as $childParent) {
             $result++;
             if ($childParent === $parentClass) {
@@ -173,7 +173,7 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         // If a mapping has been registered for both of these, we want the
         // mapper to pick the mapping registered for FooClass, since this is
         // more specific.
-        $interfaces = class_implements($childClass);
+        $interfaces = \class_implements($childClass);
         if (\in_array($parentClass, $interfaces, true)) {
             return ++$result;
         }

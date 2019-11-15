@@ -23,7 +23,7 @@ class EmployeeMapper extends CustomMapper
         $destination->id = $source->getId();
         $destination->firstName = $source->getFirstName();
         $destination->lastName = $source->getLastName();
-        $destination->age = date('Y') - $source->getBirthYear();
+        $destination->age = \date('Y') - $source->getBirthYear();
         $destination->notes = 'Mapped by EmployeeMapper';
 
         return $destination;

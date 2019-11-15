@@ -341,7 +341,7 @@ class AutoMapperTest extends TestCase
     public function testItCanResolveNamesWithACallbackNameResolver()
     {
         $resolver = new CallbackNameResolver(function ($target) {
-            return 'prefix' . ucfirst($target);
+            return 'prefix' . \ucfirst($target);
         });
 
         $this->config->registerMapping(PrefixedSource::class, UnPrefixedSource::class)

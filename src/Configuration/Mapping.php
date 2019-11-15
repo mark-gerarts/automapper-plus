@@ -209,11 +209,11 @@ class Mapping implements MappingInterface
         $propertyAccessor = $this->autoMapperConfig->getOptions()->getPropertyAccessor();
         if (!$this->options->isObjectCrate($this->destinationClassName)) {
             $properties = $propertyAccessor->getPropertyNames($targetObject);
-            return array_values($properties);
+            return \array_values($properties);
         }
 
         $sourceProperties = $propertyAccessor->getPropertyNames($sourceObject);
-        $sourceProperties = array_values($sourceProperties);
+        $sourceProperties = \array_values($sourceProperties);
         if (!$this->options->shouldConvertName()) {
             return $sourceProperties;
         }
@@ -226,7 +226,7 @@ class Mapping implements MappingInterface
             );
         };
 
-        return array_map($nameConverter, $sourceProperties);
+        return \array_map($nameConverter, $sourceProperties);
     }
 
     /**

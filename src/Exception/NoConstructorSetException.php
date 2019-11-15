@@ -17,7 +17,7 @@ class NoConstructorSetException extends AutoMapperPlusException
      */
     public static function fromMapping(MappingInterface $mapping): self
     {
-        $message = sprintf(
+        $message = \sprintf(
             'No custom constructor set for the mapping %s -> %s. Check using hasCustomConstructor() first.',
             $mapping->getSourceClassName(),
             $mapping->getDestinationClassName()

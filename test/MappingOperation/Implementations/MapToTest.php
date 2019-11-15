@@ -66,7 +66,7 @@ class MapToTest extends TestCase
 
         $mapTo->mapProperty('child', $parent, $parentDestination);
 
-        $this->assertEquals(count($children), count($parentDestination->child));
+        $this->assertEquals(\count($children), \count($parentDestination->child));
         $this->assertEquals('SourceName1', $parentDestination->child[0]->name);
         $this->assertInstanceOf(Destination::class, $parentDestination->child[1]);
     }

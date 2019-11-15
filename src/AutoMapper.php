@@ -53,7 +53,7 @@ class AutoMapper implements AutoMapperInterface
 
     private function push($key, $value, &$context)
     {
-        if (!array_key_exists($key, $context)) {
+        if (!\array_key_exists($key, $context)) {
             $stack = [];
         } else {
             $stack = $context[$key];
@@ -64,7 +64,7 @@ class AutoMapper implements AutoMapperInterface
 
     private function pop($key, &$context)
     {
-        array_pop($context[$key]);
+        \array_pop($context[$key]);
     }
 
     /**
@@ -98,7 +98,7 @@ class AutoMapper implements AutoMapperInterface
                 $this,
                 $context
             );
-        } elseif (interface_exists($destinationClass)) {
+        } elseif (\interface_exists($destinationClass)) {
             // If we're mapping to an interface a valid custom constructor has
             // to be provided. Otherwise we can't know what to do.
             $message = 'Mapping to an interface is not possible. Please '
@@ -130,7 +130,7 @@ class AutoMapper implements AutoMapperInterface
         array $context = []
     ): array
     {
-        if (!is_iterable($sourceCollection)) {
+        if (!\is_iterable($sourceCollection)) {
             throw new InvalidArgumentException(
                 'The collection provided should be iterable.'
             );

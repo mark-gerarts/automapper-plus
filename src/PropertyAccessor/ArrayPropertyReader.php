@@ -14,7 +14,7 @@ class ArrayPropertyReader implements PropertyReaderInterface
      */
     public function hasProperty($array, string $propertyName): bool
     {
-        return array_key_exists($propertyName, $array);
+        return \array_key_exists($propertyName, $array);
     }
 
     /**
@@ -32,6 +32,6 @@ class ArrayPropertyReader implements PropertyReaderInterface
      */
     public function getPropertyNames($array): array
     {
-        return array_keys($array);
+        return \array_keys($array);
     }
 }

@@ -76,7 +76,7 @@ class MapTo extends DefaultMappingOperation implements
             $this->getSourcePropertyName($propertyName)
         );
 
-        $context = array_merge($this->context, $this->ownContext);
+        $context = \array_merge($this->context, $this->ownContext);
 
         return $this->sourceIsObjectArray || !$this->isCollection($value)
             ? $this->mapper->map($value, $this->destinationClass, $context)

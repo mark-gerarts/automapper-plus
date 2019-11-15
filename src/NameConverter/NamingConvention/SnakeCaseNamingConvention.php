@@ -14,7 +14,7 @@ class SnakeCaseNamingConvention extends BaseNamingConvention
      */
     public function toParts(string $name): array
     {
-        return explode('_', $name);
+        return \explode('_', $name);
     }
 
     /**
@@ -22,7 +22,7 @@ class SnakeCaseNamingConvention extends BaseNamingConvention
      */
     public function fromParts(array $parts): string
     {
-        return implode('_', $parts);
+        return \implode('_', $parts);
     }
 
 }
