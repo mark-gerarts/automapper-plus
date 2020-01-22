@@ -16,7 +16,7 @@ class NameResolverTest extends TestCase
      */
     private $resolver;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->resolver = new NameResolver();
     }

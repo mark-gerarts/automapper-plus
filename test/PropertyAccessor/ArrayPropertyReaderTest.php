@@ -13,7 +13,7 @@ class ArrayPropertyReaderTest extends TestCase
     protected $reader;
     protected $array;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->reader = new ArrayPropertyReader();
         $this->array = ['property' => 'value'];
