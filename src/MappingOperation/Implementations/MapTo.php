@@ -44,7 +44,7 @@ class MapTo extends DefaultMappingOperation implements
      * @param bool $sourceIsObjectArray
      *   Indicates whether or not an array as source value should be treated as
      *   a collection of elements, or as an array representing an object.
-     * @param array
+     * @param array $context
      *   $context Optional context that will be merged with the parent's
      *   context.
      */
@@ -84,7 +84,7 @@ class MapTo extends DefaultMappingOperation implements
     }
 
     /**
-     * @param $variable
+     * @param mixed $variable
      * @return bool
      */
     private function isCollection($variable): bool

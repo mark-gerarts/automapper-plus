@@ -71,7 +71,7 @@ class PropertyAccessor implements PropertyAccessorInterface
      * Abuses PHP's internal representation of properties when casting an object
      * to an array.
      *
-     * @param $object
+     * @param mixed $object
      * @param string $propertyName
      * @return mixed
      */
@@ -88,9 +88,9 @@ class PropertyAccessor implements PropertyAccessorInterface
     }
 
     /**
-     * @param $object
+     * @param mixed $object
      * @param string $propertyName
-     * @param $value
+     * @param mixed $value
      */
     protected function setPrivate($object, string $propertyName, $value): void
     {
@@ -113,7 +113,7 @@ class PropertyAccessor implements PropertyAccessorInterface
     /**
      * Checks if the given property is public.
      *
-     * @param $object
+     * @param mixed $object
      * @param string $propertyName
      * @return bool
      */

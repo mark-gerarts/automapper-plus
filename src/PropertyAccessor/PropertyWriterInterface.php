@@ -10,9 +10,9 @@ namespace AutoMapperPlus\PropertyAccessor;
 interface PropertyWriterInterface
 {
     /**
-     * @param $object
+     * @param mixed $object
      * @param string $propertyName
-     * @param $value
+     * @param mixed $value
      */
     public function setProperty(&$object, string $propertyName, $value): void;
 }

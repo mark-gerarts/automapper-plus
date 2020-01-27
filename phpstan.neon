@@ -5,12 +5,13 @@ includes:
     - vendor/thecodingmachine/phpstan-strict-rules/phpstan-strict-rules.neon
 
 parameters:
-    level: 0
+    level: 5
     paths:
         - src
         - test
     ignoreErrors:
         - '#Unsafe usage of new static\(\)#'
+    inferPrivatePropertyTypeFromConstructor: true
     reportUnmatchedIgnoredErrors: false
     autoload_files:
         - vendor/autoload.php

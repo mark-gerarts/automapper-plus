@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\Exception\InvalidOptionsException;
 use AutoMapperPlus\MapperInterface;
 use AutoMapperPlus\MappingOperation\DefaultMappingOperation;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
@@ -36,17 +37,17 @@ class Options
     private $shouldSkipConstructor = false;
 
     /**
-     * @var PropertyAccessorInterface
+     * @var PropertyAccessorInterface|null
      */
     private $propertyAccessor;
 
     /**
-     * @var PropertyWriterInterface
+     * @var PropertyWriterInterface|null
      */
     private $propertyWriter;
 
     /**
-     * @var PropertyReaderInterface
+     * @var PropertyReaderInterface|null
      */
     private $propertyReader;
 
@@ -71,7 +72,7 @@ class Options
     private $useSubstitution = true;
 
     /**
-     * @var string[]
+     * @var array<string, bool>
      */
     private $objectCrates = [];
 
@@ -164,9 +165,16 @@ class Options
 
     /**
      * @return PropertyAccessorInterface
+     * @throws InvalidOptionsException
      */
     public function getPropertyAccessor(): PropertyAccessorInterface
     {
+        if ($this->propertyAccessor === null) {
+            throw new InvalidOptionsException(
+                'Either a property reader and writer are required, or an accessor'
+            );
+        }
+
         return $this->propertyAccessor;
     }
 
@@ -185,7 +193,11 @@ class Options
      */
     public function getPropertyWriter(): PropertyWriterInterface
     {
-        return $this->propertyWriter ?: $this->propertyAccessor;
+        if ($this->propertyWriter !== null) {
+            return $this->propertyWriter;
+        }
+
+        return $this->getPropertyAccessor();
     }
 
     /**
@@ -201,7 +213,11 @@ class Options
      */
     public function getPropertyReader(): PropertyReaderInterface
     {
-        return $this->propertyReader ?: $this->propertyAccessor;
+        if ($this->propertyReader !== null) {
+            return $this->propertyReader;
+        }
+
+        return $this->getPropertyAccessor();
     }
 
     /**
