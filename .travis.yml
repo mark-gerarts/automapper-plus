@@ -5,3 +5,7 @@ php:
     - '7.3'
 install:
     - composer install
+
+script:
+    - vendor/bin/phpunit
+    - vendor/bin/phpstan analyse
