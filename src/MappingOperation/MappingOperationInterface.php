@@ -13,8 +13,8 @@ interface MappingOperationInterface
 {
     /**
      * @param string $propertyName
-     * @param $source
-     * @param $destination
+     * @param mixed $source
+     * @param mixed $destination
      * @return void
      */
     public function mapProperty(string $propertyName, $source, &$destination): void;

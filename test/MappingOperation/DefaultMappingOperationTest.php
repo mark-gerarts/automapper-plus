@@ -24,7 +24,7 @@ class DefaultMappingOperationTest extends TestCase
      */
     protected $operation;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->operation = new DefaultMappingOperation();
         $this->operation->setOptions(Options::default());

@@ -47,7 +47,7 @@ class InterfacesTest extends TestCase
         $mapper = new AutoMapper($config);
         $source = new SourceImplementation('a name');
         $destination = new DestinationImplementation();
-        $result = $mapper->mapToObject($source, $destination);
+        $result = $mapper->map($source, $destination);
 
         $this->assertEquals('a name', $result->name);
     }

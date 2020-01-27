@@ -87,7 +87,7 @@ class AutoMapper implements AutoMapperInterface
     }
 
     /**
-     * @param $source The source object or data.
+     * @param mixed $source The source object or data.
      * @return string The source class name or data type.
      * @throws AutoMapperPlusException
      */
@@ -107,7 +107,7 @@ class AutoMapper implements AutoMapperInterface
     }
 
     /**
-     * @param $target The target data or string.
+     * @param mixed $target The target data or string.
      * @return string The target class name or data type.
      * @throws AutoMapperPlusException
      */
@@ -162,8 +162,8 @@ class AutoMapper implements AutoMapperInterface
     /**
      * Performs the actual transferring of properties.
      *
-     * @param $source
-     * @param $destination
+     * @param mixed $source
+     * @param mixed $destination
      * @param MappingInterface $mapping
      * @param array $context
      * @return mixed

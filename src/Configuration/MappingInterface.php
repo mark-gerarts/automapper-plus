@@ -31,7 +31,7 @@ interface MappingInterface
      *
      * @param string $targetPropertyName
      *   The name of a property of the destination class.
-     * @param $operation
+     * @param callable|MappingOperationInterface $operation
      *   The operation to be performed. Either a callback function or an
      *   instance of MappingOperationInterface. When a regular callback is
      *   given, it will be wrapped in a MapFrom operation for convenience.

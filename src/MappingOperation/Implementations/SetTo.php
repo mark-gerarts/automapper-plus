@@ -19,7 +19,7 @@ class SetTo extends DefaultMappingOperation
     /**
      * SetTo constructor.
      *
-     * @param $value
+     * @param mixed $value
      */
     public function __construct($value)
     {

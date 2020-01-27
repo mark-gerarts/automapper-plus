@@ -1,6 +1,6 @@
 <?php
 
-namespace AutoMapperPlus\NameResolver;
+namespace AutoMapperPlus\NameConverter;
 
 use AutoMapperPlus\NameConverter\NameConverter;
 use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;

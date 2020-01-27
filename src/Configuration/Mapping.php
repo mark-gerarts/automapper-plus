@@ -49,7 +49,7 @@ class Mapping implements MappingInterface
     private $autoMapperConfig;
 
     /**
-     * @var callable
+     * @var callable|null
      */
     private $factoryCallback;
 

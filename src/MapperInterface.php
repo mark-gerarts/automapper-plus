@@ -15,7 +15,7 @@ interface MapperInterface
      * Maps an object to an instance of class $to, provided a mapping is
      * configured.
      *
-     * @param $source
+     * @param mixed $source
      *   The source object.
      * @param string|object $target
      *   When passed a classname (or 'array'), it will map to a new instance of

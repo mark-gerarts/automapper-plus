@@ -117,8 +117,8 @@ class FromProperty extends DefaultMappingOperation implements
 
     /**
      * @param string $propertyName
-     * @param $source
-     * @param $destination
+     * @param mixed $source
+     * @param mixed $destination
      */
     protected function mapPropertyWithNextOperation(
         string $propertyName,

@@ -38,7 +38,7 @@ class PrefixedSource
     }
 
     /**
-     * @param $prefixPrivateProperty
+     * @param mixed $prefixPrivateProperty
      */
     public function setPrefixPrivateProperty($prefixPrivateProperty)
     {

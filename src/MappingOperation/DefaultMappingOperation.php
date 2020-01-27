@@ -66,7 +66,7 @@ class DefaultMappingOperation implements MappingOperationInterface
 
     /**
      * @param string $propertyName
-     * @param $source
+     * @param mixed $source
      * @return bool
      */
     protected function canMapProperty(string $propertyName, $source): bool
@@ -77,7 +77,7 @@ class DefaultMappingOperation implements MappingOperationInterface
     }
 
     /**
-     * @param $source
+     * @param mixed $source
      * @param string $propertyName
      * @return mixed
      */
@@ -90,9 +90,9 @@ class DefaultMappingOperation implements MappingOperationInterface
     }
 
     /**
-     * @param $destination
+     * @param mixed $destination
      * @param string $propertyName
-     * @param $value
+     * @param mixed $value
      */
     protected function setDestinationValue(
         &$destination,

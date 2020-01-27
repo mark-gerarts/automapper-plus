@@ -2,6 +2,8 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\Exception\AutoMapperPlusException;
+
 /**
  * Class AutoMapperConfig
  *
@@ -181,11 +183,13 @@ class AutoMapperConfig implements AutoMapperConfigInterface
             return ++$result;
         }
 
-        // @todo: use a domain specific exception.
-        throw new \Exception(
-            'This error should have never be thrown.
-            This could only happen if given childClass is not a child of the given parentClass'
-        );
+        // This error can never be thrown. It can only happen if the child
+        // class is not a child of the given parent class.
+        throw new AutoMapperPlusException(sprintf(
+            'Impossible situation: %s does not inherit from %s',
+            $childClass,
+            $parentClass
+        ));
     }
 
     /**
