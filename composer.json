@@ -17,7 +17,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "AutoMapperPlus\\Test\\": "test/"
+            "AutoMapperPlus\\Test\\": "test/",
+            "AutoMapperPlus\\": "test/"
         }
     },
     "require": {

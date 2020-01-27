@@ -9,7 +9,8 @@ parameters:
     paths:
         - src
         - test
-    ignoreErrors: []
+    ignoreErrors:
+        - '#Unsafe usage of new static\(\)#'
     reportUnmatchedIgnoredErrors: false
     autoload_files:
         - vendor/autoload.php
