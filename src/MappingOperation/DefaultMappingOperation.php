@@ -4,7 +4,6 @@ namespace AutoMapperPlus\MappingOperation;
 
 use AutoMapperPlus\Configuration\Options;
 use AutoMapperPlus\NameResolver\NameResolverInterface;
-use AutoMapperPlus\PropertyAccessor\PropertyAccessorInterface;
 use AutoMapperPlus\PropertyAccessor\PropertyReaderInterface;
 use AutoMapperPlus\PropertyAccessor\PropertyWriterInterface;
 
@@ -73,7 +72,7 @@ class DefaultMappingOperation implements MappingOperationInterface
     {
         $sourcePropertyName = $this->getSourcePropertyName($propertyName);
 
-        return $this->propertyReader->hasProperty($source, $sourcePropertyName);
+        return $this->getPropertyReader()->hasProperty($source, $sourcePropertyName);
     }
 
     /**
@@ -83,7 +82,7 @@ class DefaultMappingOperation implements MappingOperationInterface
      */
     protected function getSourceValue($source, string $propertyName)
     {
-        return $this->propertyReader->getProperty(
+        return $this->getPropertyReader()->getProperty(
             $source,
             $this->getSourcePropertyName($propertyName)
         );
@@ -103,7 +102,7 @@ class DefaultMappingOperation implements MappingOperationInterface
             return;
         }
 
-        $this->propertyWriter->setProperty(
+        $this->getPropertyWriter()->setProperty(
             $destination,
             $propertyName,
             $value

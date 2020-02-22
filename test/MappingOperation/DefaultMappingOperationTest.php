@@ -5,6 +5,7 @@ namespace AutoMapperPlus\MappingOperation;
 use AutoMapperPlus\Configuration\Options;
 use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
 use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
+use AutoMapperPlus\PropertyAccessor\PropertyAccessorInterface;
 use PHPUnit\Framework\TestCase;
 use AutoMapperPlus\Test\Models\NamingConventions\CamelCaseSource;
 use AutoMapperPlus\Test\Models\NamingConventions\SnakeCaseSource;
@@ -83,5 +84,19 @@ class DefaultMappingOperationTest extends TestCase
         $this->operation->mapProperty('propertyName', $source, $destination);
 
         $this->assertEquals('stdclass snake', $destination->propertyName);
+    }
+
+    public function testPossibleOverriddenPropertyAccessorIsUsed()
+    {
+        $accessor = $this->getMockBuilder(PropertyAccessorInterface::class)->getMock();
+        $accessor->expects($this->once())->method('hasProperty')->willReturn(true);
+        $accessor->expects($this->once())->method('getProperty');
+
+        $child = new DefaultMappingOperationChild($accessor);
+        $child->setOptions(Options::default());
+
+        $destination = new Destination();
+        $source = new Source();
+        $child->mapProperty('name', $source, $destination);
     }
 }
