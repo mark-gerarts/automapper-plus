@@ -33,4 +33,12 @@ class SetTo extends DefaultMappingOperation
     {
         return $this->value;
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function canMapProperty(string $propertyName, $source): bool
+    {
+        return true;
+    }
 }
