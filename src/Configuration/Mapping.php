@@ -353,7 +353,7 @@ class Mapping implements MappingInterface
     protected function getDefaultMappingOperation(): MappingOperationInterface
     {
         if ($this->defaultMappingOperation === null) {
-            $operation = $this->options->getDefaultMappingOperation();
+            $operation = clone $this->options->getDefaultMappingOperation();
             $operation->setOptions($this->options);
             $this->defaultMappingOperation = $operation;
         }
