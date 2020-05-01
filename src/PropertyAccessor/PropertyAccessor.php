@@ -59,12 +59,12 @@ class PropertyAccessor implements PropertyAccessorInterface
      */
     public function getPropertyNames($object): array
     {
-        $propertyNames = [];
-        foreach ((array) $object as $propertyPath => $value) {
-            $propertyNames[] = $this->getRealName($propertyPath);
+        $names = [];
+        foreach ($this->getReflectionProperties($object) as $reflectionProperty) {
+            $names[] = $reflectionProperty->getName();
         }
 
-        return $propertyNames;
+        return $names;
     }
 
     /**
@@ -94,20 +94,13 @@ class PropertyAccessor implements PropertyAccessorInterface
      */
     protected function setPrivate($object, string $propertyName, $value): void
     {
-        $reflectionClass = new \ReflectionClass($object);
-
-        // Parent properties are not included in the reflection class, so we'll
-        // go up the inheritance chain and check if the property exists in one
-        // of the parents.
-        while (
-            !$reflectionClass->hasProperty($propertyName)
-            && $parent = $reflectionClass->getParentClass()
-        ) {
-            $reflectionClass = $parent;
+        $property = $this->getReflectionProperty($object, $propertyName);
+        if ($property === null) {
+            return;
         }
-        $reflectionProperty = $reflectionClass->getProperty($propertyName);
-        $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue($object, $value);
+
+        $property->setAccessible(true);
+        $property->setValue($object, $value);
     }
 
     /**
@@ -125,18 +118,33 @@ class PropertyAccessor implements PropertyAccessorInterface
     }
 
     /**
-     * @param string $propertyPath
-     * @return string
+     * @param $object
+     * @return iterable|\ReflectionProperty[]
      */
-    private function getRealName(string $propertyPath): string
-    {
-        $currChar = \strlen($propertyPath) - 1;
-        $realName = '';
-        while ($currChar >= 0 && $propertyPath[$currChar] !== "\x00") {
-            $realName = $propertyPath[$currChar] . $realName;
-            $currChar--;
+    private function getReflectionProperties($object): iterable {
+        $reflectionClass = new \ReflectionObject($object);
+        $properties = $reflectionClass->getProperties();
+        foreach ($properties as $property) {
+            yield $property;
         }
 
-        return $realName;
+
+        // Parent properties are not included in the reflection class, so we'll
+        // go up the inheritance chain and collect private properties.
+        while ($reflectionClass = $reflectionClass->getParentClass()) {
+            foreach ($reflectionClass->getProperties(\ReflectionProperty::IS_PRIVATE) as $property) {
+                yield $property;
+            }
+        }
+    }
+
+    private function getReflectionProperty($object, string $propertyName): ?\ReflectionProperty {
+        foreach ($this->getReflectionProperties($object) as $property) {
+            if ($property->getName() === $propertyName) {
+                return $property;
+            }
+        }
+
+        return null;
     }
 }
