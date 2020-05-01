@@ -4,6 +4,7 @@ namespace AutoMapperPlus\PropertyAccessor;
 
 use AutoMapperPlus\Test\Models\Inheritance\SourceChild;
 use AutoMapperPlus\Test\Models\Issues\Issue33\User;
+use AutoMapperPlus\Test\Models\Typed\TypedDestination;
 use AutoMapperPlus\Test\Models\Visibility\InheritedVisibility;
 use PHPUnit\Framework\TestCase;
 use AutoMapperPlus\Test\Models\Visibility\Visibility;
@@ -163,5 +164,22 @@ class PropertyAccessorTest extends TestCase
         $accessor->setProperty($source, 'phone', 'phone-value');
 
         $this->assertEquals('phone-value', $source->getPhone());
+    }
+
+    public function testItGetsTypedPropertyNames()
+    {
+        // Skip the test for PHP versions that don't support typed properties.
+        // There might be a better way?
+        if (PHP_VERSION_ID < 70400) {
+            $this->assertTrue(true);
+            return;
+        }
+
+        $accessor = new PropertyAccessor();
+        $destination = new TypedDestination();
+
+        $properties = $accessor->getPropertyNames($destination);
+
+        $this->assertEquals(['name'], $properties);
     }
 }
