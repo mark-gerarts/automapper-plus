@@ -166,15 +166,11 @@ class PropertyAccessorTest extends TestCase
         $this->assertEquals('phone-value', $source->getPhone());
     }
 
+    /**
+     * @requires PHP >= 7.4
+     */
     public function testItGetsTypedPropertyNames()
     {
-        // Skip the test for PHP versions that don't support typed properties.
-        // There might be a better way?
-        if (PHP_VERSION_ID < 70400) {
-            $this->assertTrue(true);
-            return;
-        }
-
         $accessor = new PropertyAccessor();
         $destination = new TypedDestination();
 
