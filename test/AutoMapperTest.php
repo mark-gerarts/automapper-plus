@@ -719,4 +719,27 @@ class AutoMapperTest extends TestCase
 
         $mapper->mapMultiple($sourceCollection, Destination::class);
     }
+
+    /**
+     * @group test
+     */
+    public function testItMapsANullObjectReturnedFromConstructorToNull()
+    {
+        $this->config->registerMapping(DataType::ARRAY, Address::class)
+            ->beConstructedUsing(function () { return null; });
+        $this->config->registerMapping(DataType::ARRAY, Person::class)
+            ->forMember('adres', Operation::mapTo(Address::class, true));
+        $mapper = new AutoMapper($this->config);
+
+        $source = [
+            'adres' => [
+                'street' => 'Main Street',
+                'number' => '314'
+            ]
+        ];
+
+        $result = $mapper->map($source, Person::class);
+
+        $this->assertNull($result->adres);
+    }
 }

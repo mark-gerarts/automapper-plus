@@ -122,6 +122,10 @@ class PropertyAccessor implements PropertyAccessorInterface
      * @return iterable|\ReflectionProperty[]
      */
     private function getReflectionProperties($object): iterable {
+        if ($object === null) {
+            return;
+        }
+
         $reflectionClass = new \ReflectionObject($object);
         $properties = $reflectionClass->getProperties();
         foreach ($properties as $property) {
