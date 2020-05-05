@@ -720,9 +720,6 @@ class AutoMapperTest extends TestCase
         $mapper->mapMultiple($sourceCollection, Destination::class);
     }
 
-    /**
-     * @group test
-     */
     public function testItMapsANullObjectReturnedFromConstructorToNull()
     {
         $this->config->registerMapping(DataType::ARRAY, Address::class)
