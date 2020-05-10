@@ -9,8 +9,8 @@ use AutoMapperPlus\Exception\AutoMapperPlusException;
 use AutoMapperPlus\Exception\InvalidArgumentException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\Exception\UnsupportedSourceTypeException;
-use AutoMapperPlus\MappingOperation\ContextAwareOperation;
 use AutoMapperPlus\MappingOperation\MapperAwareOperation;
+use AutoMapperPlus\Middleware\MapperMiddleware;
 
 /**
  * Class AutoMapper
@@ -88,10 +88,6 @@ class AutoMapper implements AutoMapperInterface
         $context[self::DESTINATION_CLASS_CONTEXT] = $destinationClass;
 
         $mapping = $this->getMapping($sourceClass, $destinationClass);
-        if ($mapping->providesCustomMapper()) {
-            return $this->getCustomMapper($mapping)->map($source, $destinationClass);
-        }
-
         if ($mapping->hasCustomConstructor()) {
             $destinationObject = $mapping->getCustomConstructor()(
                 $source,
@@ -167,14 +163,6 @@ class AutoMapper implements AutoMapperInterface
         $this->push(self::DESTINATION_STACK_CONTEXT, $destination, $context);
         try {
             $mapping = $this->getMapping($sourceClass, $destinationClass);
-            if ($mapping->providesCustomMapper()) {
-                return $this->getCustomMapper($mapping)->mapToObject(
-                    $source,
-                    $destination,
-                    $context
-                );
-            }
-
             return $this->doMap(
                 $source,
                 $destination,
@@ -188,7 +176,7 @@ class AutoMapper implements AutoMapperInterface
     }
 
     /**
-     * Performs the actual transferring of properties.
+     * Performs the actual transferring of properties, involving all matching mapper and property middleware.
      *
      * @param $source
      * @param $destination
@@ -204,28 +192,27 @@ class AutoMapper implements AutoMapperInterface
         array $context = []
     )
     {
-        $propertyNames = $mapping->getTargetProperties($destination, $source);
-        foreach ($propertyNames as $propertyName) {
-            $this->push(self::PROPERTY_STACK_CONTEXT, $propertyName, $context);
-            try {
-                $mappingOperation = $mapping->getMappingOperationFor($propertyName);
+        $mapper = $this;
 
-                if ($mappingOperation instanceof MapperAwareOperation) {
-                    $mappingOperation->setMapper($this);
-                }
-                if ($mappingOperation instanceof ContextAwareOperation) {
-                    $mappingOperation->setContext($context);
-                }
-
-                $mappingOperation->mapProperty(
-                    $propertyName,
-                    $source,
-                    $destination
-                );
-            } finally {
-                $this->pop(self::PROPERTY_STACK_CONTEXT, $context);
-            }
+        if ($mapping->providesCustomMapper()) {
+            $this->getCustomMapper($mapping)->mapToObject($source, $destination, $context);
+        } else {
+            $this->autoMapperConfig->getDefaultMapperMiddleware()->map($source, $destination, $mapper, $mapping, $context, function () {
+            });
         }
+
+        $map = function () {
+            // NOOP
+        };
+
+        foreach (array_reverse($this->getMapperMiddlewares()) as $middleware) {
+            $map = function () use ($middleware, $source, $destination, $mapper, $mapping, $context, $map) {
+                /** @var MapperMiddleware $middleware */
+                return $middleware->map($source, $destination, $mapper, $mapping, $context, $map);
+            };
+        }
+
+        $map();
 
         return $destination;
     }
@@ -267,9 +254,9 @@ class AutoMapper implements AutoMapperInterface
     /**
      * @param MappingInterface $mapping
      *
-     * @return MapperInterface|null
+     * @return DestinationMapperInterface|null
      */
-    private function getCustomMapper(MappingInterface $mapping): ?MapperInterface
+    private function getCustomMapper(MappingInterface $mapping): ?DestinationMapperInterface
     {
         $customMapper = $mapping->getCustomMapper();
 
@@ -278,5 +265,12 @@ class AutoMapper implements AutoMapperInterface
         }
 
         return $customMapper;
+    }
+
+    private function getMapperMiddlewares()
+    {
+        return array_filter($this->getConfiguration()->getMapperMiddlewares(), function ($middleware) {
+            return $middleware !== $this->getConfiguration()->getDefaultMapperMiddleware();
+        });
     }
 }

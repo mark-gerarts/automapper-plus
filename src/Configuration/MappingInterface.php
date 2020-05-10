@@ -2,9 +2,9 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\DestinationMapperInterface;
 use AutoMapperPlus\Exception\NoConstructorSetException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
-use AutoMapperPlus\MapperInterface;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
 use AutoMapperPlus\NameResolver\NameResolverInterface;
@@ -201,9 +201,9 @@ interface MappingInterface
     /**
      * Registers a custom mapper to be used for this specific mapping.
      *
-     * @param MapperInterface $mapper
+     * @param DestinationMapperInterface $mapper
      */
-    public function useCustomMapper(MapperInterface $mapper): void;
+    public function useCustomMapper(DestinationMapperInterface $mapper): void;
 
     /**
      * @return bool
@@ -211,7 +211,7 @@ interface MappingInterface
     public function providesCustomMapper(): bool;
 
     /**
-     * @return MapperInterface|null
+     * @return DestinationMapperInterface|null
      */
-    public function getCustomMapper(): ?MapperInterface;
+    public function getCustomMapper(): ?DestinationMapperInterface;
 }

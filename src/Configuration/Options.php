@@ -2,7 +2,7 @@
 
 namespace AutoMapperPlus\Configuration;
 
-use AutoMapperPlus\MapperInterface;
+use AutoMapperPlus\DestinationMapperInterface;
 use AutoMapperPlus\MappingOperation\DefaultMappingOperation;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
@@ -61,7 +61,7 @@ class Options
     private $defaultMappingOperation;
 
     /**
-     * @var MapperInterface|null
+     * @var DestinationMapperInterface|null
      */
     private $customMapper;
 
@@ -256,17 +256,17 @@ class Options
     }
 
     /**
-     * @return MapperInterface|null
+     * @return DestinationMapperInterface|null
      */
-    public function getCustomMapper(): ?MapperInterface
+    public function getCustomMapper(): ?DestinationMapperInterface
     {
         return $this->customMapper;
     }
 
     /**
-     * @param MapperInterface $customMapper
+     * @param DestinationMapperInterface $customMapper
      */
-    public function setCustomMapper(MapperInterface $customMapper): void
+    public function setCustomMapper(DestinationMapperInterface $customMapper): void
     {
         $this->customMapper = $customMapper;
     }

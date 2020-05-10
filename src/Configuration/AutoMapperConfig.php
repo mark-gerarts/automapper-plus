@@ -2,6 +2,13 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\Middleware\DefaultMapperMiddleware;
+use AutoMapperPlus\Middleware\DefaultMiddleware;
+use AutoMapperPlus\Middleware\DefaultPropertyMiddleware;
+use AutoMapperPlus\Middleware\MapperMiddleware;
+use AutoMapperPlus\Middleware\Middleware;
+use AutoMapperPlus\Middleware\PropertyMiddleware;
+
 /**
  * Class AutoMapperConfig
  *
@@ -13,6 +20,22 @@ class AutoMapperConfig implements AutoMapperConfigInterface
      * @var MappingInterface[]
      */
     private $mappings = [];
+
+    /** @var MapperMiddleware */
+    private $defaultMapperMiddleware;
+
+    /** @var PropertyMiddleware */
+    private $defaultPropertyMiddleware;
+
+    /**
+     * @var MapperMiddleware[]
+     */
+    private $mapperMiddlewares = [];
+
+    /**
+     * @var PropertyMiddleware[]
+     */
+    private $propertyMiddlewares = [];
 
     /**
      * @var Options
@@ -30,6 +53,8 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         if ($configurator !== null) {
             $configurator($this->options);
         }
+        $this->defaultMapperMiddleware = new DefaultMapperMiddleware();
+        $this->defaultPropertyMiddleware = new DefaultPropertyMiddleware();
     }
 
     /**
@@ -202,11 +227,64 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         return $mapping;
     }
 
+
+    public function registerMiddlewares(Middleware ...$middlewares): AutoMapperConfigInterface
+    {
+        foreach ($middlewares as $middleware) {
+            if ($middleware instanceof MapperMiddleware) {
+                $this->mapperMiddlewares[] = $middleware;
+                if ($middleware instanceof DefaultMiddleware) {
+                    $this->defaultMapperMiddleware = $middleware;
+                }
+            }
+            if ($middleware instanceof PropertyMiddleware) {
+                $this->propertyMiddlewares[] = $middleware;
+                if ($middleware instanceof DefaultMiddleware) {
+                    $this->defaultPropertyMiddleware = $middleware;
+                }
+            }
+        }
+
+        return $this;
+    }
+
     /**
      * @inheritdoc
      */
     public function getOptions(): Options
     {
         return $this->options;
+    }
+
+    /**
+     * @return PropertyMiddleware
+     */
+    public function getDefaultPropertyMiddleware(): PropertyMiddleware
+    {
+        return $this->defaultPropertyMiddleware;
+    }
+
+    /**
+     * @return MapperMiddleware
+     */
+    public function getDefaultMapperMiddleware(): MapperMiddleware
+    {
+        return $this->defaultMapperMiddleware;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMapperMiddlewares()
+    {
+        return $this->mapperMiddlewares;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPropertyMiddlewares()
+    {
+        return $this->propertyMiddlewares;
     }
 }
