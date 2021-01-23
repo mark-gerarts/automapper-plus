@@ -79,8 +79,8 @@ class AutoMapperConfig implements AutoMapperConfigInterface
         $candidates = array_filter(
             $this->mappings,
             function (MappingInterface $mapping) use ($sourceClassName, $destinationClassName): bool {
-                return is_a($sourceClassName, $mapping->getSourceClassName(), true)
-                    && is_a($destinationClassName, $mapping->getDestinationClassName(), true);
+                return $this->isOrExtends($sourceClassName, $mapping->getSourceClassName())
+                    && $this->isOrExtends($destinationClassName, $mapping->getDestinationClassName());
             }
         );
 
@@ -208,5 +208,10 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     public function getOptions(): Options
     {
         return $this->options;
+    }
+
+    private function isOrExtends(string $classA, string $classB): bool
+    {
+        return $classA === $classB || is_a($classA, $classB, true);
     }
 }

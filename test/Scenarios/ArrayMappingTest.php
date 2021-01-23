@@ -6,6 +6,8 @@ use AutoMapperPlus\AutoMapper;
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\DataType;
 use AutoMapperPlus\MappingOperation\Operation;
+use AutoMapperPlus\Test\Models\Inheritance\SourceChild;
+use AutoMapperPlus\Test\Models\Inheritance\SourceParent;
 use AutoMapperPlus\Test\Models\Nested\ChildClass;
 use AutoMapperPlus\Test\Models\Nested\ChildClassDto;
 use AutoMapperPlus\Test\Models\Nested\ParentClass;
@@ -116,5 +118,17 @@ class ArrayMappingTest extends TestCase
 
         $this->assertInternalType('array', $result->child);
         $this->assertEquals('John Doe', $result->child[0]->name);
+    }
+
+    public function testMapFromArrayWorksWithPolymorphism()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(DataType::ARRAY, SourceParent::class);
+        $mapper = new AutoMapper($config);
+
+        $child = ['name' => 'child'];
+        $result = $mapper->map($child, SourceChild::class);
+
+        $this->assertEquals('child', $result->getName());
     }
 }
