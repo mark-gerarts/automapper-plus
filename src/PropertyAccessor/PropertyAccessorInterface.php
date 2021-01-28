@@ -7,7 +7,7 @@ namespace AutoMapperPlus\PropertyAccessor;
  *
  * @package AutoMapperPlus\PropertyAccessor
  */
-interface PropertyAccessorInterface extends PropertyWriterInterface, PropertyReaderInterface
+interface PropertyAccessorInterface extends PropertyWriterInterface, PropertyReaderInterface, MethodReaderInterface
 {
     //
 }

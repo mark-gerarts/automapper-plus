@@ -2,9 +2,10 @@
 
 namespace AutoMapperPlus\PropertyAccessor;
 
+use ReflectionMethod;
+
 /**
  * Class PropertyAccessor
- *
  * @package AutoMapperPlus\PropertyAccessor
  */
 class PropertyAccessor implements PropertyAccessorInterface
@@ -150,5 +151,20 @@ class PropertyAccessor implements PropertyAccessorInterface
         }
 
         return null;
+    }
+
+    public function hasMethod($object, string $methodName): bool
+    {
+        return method_exists($object, $methodName) && $this->isMethodPublic($object, $methodName);
+    }
+
+    public function getMethod($object, string $methodName)
+    {
+        return $object->{$methodName}();
+    }
+
+    protected function isMethodPublic($object, string $methodName): bool
+    {
+        return (new ReflectionMethod($object, $methodName))->isPublic();
     }
 }

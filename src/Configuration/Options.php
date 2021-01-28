@@ -8,6 +8,7 @@ use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\NameConverter\NamingConvention\NamingConventionInterface;
 use AutoMapperPlus\NameResolver\NameResolver;
 use AutoMapperPlus\NameResolver\NameResolverInterface;
+use AutoMapperPlus\PropertyAccessor\MethodReaderInterface;
 use AutoMapperPlus\PropertyAccessor\PropertyAccessor;
 use AutoMapperPlus\PropertyAccessor\PropertyAccessorInterface;
 use AutoMapperPlus\PropertyAccessor\PropertyReaderInterface;
@@ -49,6 +50,11 @@ class Options
      * @var PropertyReaderInterface
      */
     private $propertyReader;
+
+    /**
+     * @var MethodReaderInterface
+     */
+    private $methodReader;
 
     /**
      * @var NameResolverInterface
@@ -177,6 +183,7 @@ class Options
         $this->propertyReader = $propertyAccessor;
         $this->propertyWriter = $propertyAccessor;
         $this->propertyAccessor = $propertyAccessor;
+        $this->methodReader = $propertyAccessor;
     }
 
     /**
@@ -209,6 +216,22 @@ class Options
     public function setPropertyReader(PropertyReaderInterface $propertyReader): void
     {
         $this->propertyReader = $propertyReader;
+    }
+
+    /**
+     * @return MethodReaderInterface
+     */
+    public function getMethodReader(): MethodReaderInterface
+    {
+        return $this->methodReader ?: $this->propertyAccessor;
+    }
+
+    /**
+     * @param MethodReaderInterface $methodReader
+     */
+    public function setMethodReader(MethodReaderInterface $methodReader): void
+    {
+        $this->methodReader = $methodReader;
     }
 
     /**
