@@ -2,6 +2,7 @@
 
 namespace AutoMapperPlus\Configuration;
 
+use AutoMapperPlus\PropertyAccessor\MethodReaderInterface;
 use AutoMapperPlus\PropertyAccessor\PropertyAccessorInterface;
 use AutoMapperPlus\PropertyAccessor\PropertyReaderInterface;
 use AutoMapperPlus\PropertyAccessor\PropertyWriterInterface;
@@ -48,6 +49,18 @@ class OptionsTest extends TestCase
         $this->assertEquals($reader, $options->getPropertyReader());
     }
 
+    public function testMethodReaderCanBeOverridden()
+    {
+        $options = new Options();
+        $accessor = $this->createMock(PropertyAccessorInterface::class);
+        $reader = $this->createMock(MethodReaderInterface::class);
+        $options->setPropertyAccessor($accessor);
+        $options->setMethodReader($reader);
+
+        $this->assertEquals($accessor, $options->getPropertyAccessor());
+        $this->assertEquals($reader, $options->getMethodReader());
+    }
+
     public function testPropertyWriterDefaultsToAccessor()
     {
         $options = new Options();
@@ -64,5 +77,14 @@ class OptionsTest extends TestCase
         $options->setPropertyAccessor($accessor);
 
         $this->assertEquals($accessor, $options->getPropertyReader());
+    }
+
+    public function testMethodReaderDefaultsToAccessor()
+    {
+        $options = new Options();
+        $accessor = $this->createMock(PropertyAccessorInterface::class);
+        $options->setPropertyAccessor($accessor);
+
+        $this->assertEquals($accessor, $options->getMethodReader());
     }
 }
