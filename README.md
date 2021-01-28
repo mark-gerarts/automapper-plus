@@ -81,6 +81,11 @@ class Employee
     {
         return $this->id;
     }
+    
+    public function getFullName()
+    {
+        return $this->firstName .' '. $this->lastName;
+    }
 
     // And so on...
 }
@@ -92,6 +97,7 @@ class EmployeeDto
     public $firstName;
     public $lastName;
     public $age;
+    public $fullName;
 }
 ```
 
@@ -218,7 +224,8 @@ The following operations are provided:
 | MapFrom | Maps the property from the value returned from the provided callback. Gets passed the source object, an instance of the AutoMapper and optionally the [current context](#adding-context). |
 | Ignore | Ignores the property. |
 | MapTo | Maps the property to another class. Allows for [nested mappings](#dealing-with-nested-mappings). Supports both single values and collections. |
-| FromProperty | Use this to explicitly state the source property name. |
+| FromProperty | Use this to explicitly state the source property name. This Operation does not support reverse mapping |
+| FromMethod | Use this to map your value from a **public** method. |
 | DefaultMappingOperation | Simply transfers the property, taking into account the provided naming conventions (if there are any). |
 | SetTo | Always sets the property to the given value |
 
@@ -243,7 +250,9 @@ $mapping->forMember('id', Operation::ignore());
 $mapping->forMember('employee', Operation::mapTo(EmployeeDto::class));
 // Explicitly state what the property name is of the source object.
 $mapping->forMember('name', Operation::fromProperty('unconventially_named_property'));
-// The `FromProperty` operation can be chained with `MapTo`, allowing a
+// Explicitly state what the property name is of the source object.
+$mapping->forMember('fullName', Operation::fromMethod('getFullName'));
+// The `FromProperty` and `FromMethod` operations can be chained with `MapTo`, allowing a
 // differently named property to be mapped to a class.
 $mapping->forMember(
     'address',
