@@ -224,8 +224,8 @@ The following operations are provided:
 | MapFrom | Maps the property from the value returned from the provided callback. Gets passed the source object, an instance of the AutoMapper and optionally the [current context](#adding-context). |
 | Ignore | Ignores the property. |
 | MapTo | Maps the property to another class. Allows for [nested mappings](#dealing-with-nested-mappings). Supports both single values and collections. |
-| FromProperty | Use this to explicitly state the source property name. This Operation does not support reverse mapping |
-| FromMethod | Use this to map your value from a **public** method. |
+| FromProperty | Use this to explicitly state the source property name. |
+| FromMethod | Use this to map your value from a **public** method. This Operation does not support reverse mapping |
 | DefaultMappingOperation | Simply transfers the property, taking into account the provided naming conventions (if there are any). |
 | SetTo | Always sets the property to the given value |
 
