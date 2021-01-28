@@ -4,6 +4,7 @@ namespace AutoMapperPlus\MappingOperation;
 
 use AutoMapperPlus\Configuration\Options;
 use AutoMapperPlus\NameResolver\NameResolverInterface;
+use AutoMapperPlus\PropertyAccessor\MethodReaderInterface;
 use AutoMapperPlus\PropertyAccessor\PropertyReaderInterface;
 use AutoMapperPlus\PropertyAccessor\PropertyWriterInterface;
 
@@ -35,6 +36,11 @@ class DefaultMappingOperation implements MappingOperationInterface
     protected $propertyReader;
 
     /**
+     * @var MethodReaderInterface
+     */
+    protected $methodReader;
+
+    /**
      * @var PropertyWriterInterface
      */
     protected $propertyWriter;
@@ -60,6 +66,7 @@ class DefaultMappingOperation implements MappingOperationInterface
         $this->options = $options;
         $this->nameResolver = $options->getNameResolver();
         $this->propertyReader = $options->getPropertyReader();
+        $this->methodReader = $options->getMethodReader();
         $this->propertyWriter = $options->getPropertyWriter();
     }
 
@@ -124,6 +131,14 @@ class DefaultMappingOperation implements MappingOperationInterface
     protected function getPropertyReader(): PropertyReaderInterface
     {
         return $this->propertyReader;
+    }
+
+    /**
+     * @return MethodReaderInterface
+     */
+    protected function getMethodReader(): MethodReaderInterface
+    {
+        return $this->methodReader;
     }
 
     /**

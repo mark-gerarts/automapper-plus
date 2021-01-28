@@ -28,4 +28,9 @@ class Visibility
         return $this->privateProperty;
     }
 
+    public function getMethodValue()
+    {
+        return 'foo';
+    }
+
 }
