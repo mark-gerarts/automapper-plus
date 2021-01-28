@@ -250,7 +250,7 @@ $mapping->forMember('id', Operation::ignore());
 $mapping->forMember('employee', Operation::mapTo(EmployeeDto::class));
 // Explicitly state what the property name is of the source object.
 $mapping->forMember('name', Operation::fromProperty('unconventially_named_property'));
-// Explicitly state what the property name is of the source object.
+// Map property from given method name of the source object.
 $mapping->forMember('fullName', Operation::fromMethod('getFullName'));
 // The `FromProperty` and `FromMethod` operations can be chained with `MapTo`, allowing a
 // differently named property to be mapped to a class.
