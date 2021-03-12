@@ -51,7 +51,7 @@ class AutoMapper implements AutoMapperInterface
         return $mapper;
     }
 
-    private function push($key, $value, &$context)
+    private function push($key, $value, &$context): void
     {
         if (!array_key_exists($key, $context)) {
             $stack = [];
@@ -62,7 +62,7 @@ class AutoMapper implements AutoMapperInterface
         $context[$key] = $stack;
     }
 
-    private function pop($key, &$context)
+    private function pop($key, &$context): void
     {
         array_pop($context[$key]);
     }
@@ -70,7 +70,7 @@ class AutoMapper implements AutoMapperInterface
     /**
      * @inheritdoc
      */
-    public function map($source, string $destinationClass, array $context = [])
+    public function map($source, string $targetClass, array $context = [])
     {
         if ($source === null) {
             return null;
@@ -85,11 +85,11 @@ class AutoMapper implements AutoMapperInterface
             }
         }
 
-        $context[self::DESTINATION_CLASS_CONTEXT] = $destinationClass;
+        $context[self::DESTINATION_CLASS_CONTEXT] = $targetClass;
 
-        $mapping = $this->getMapping($sourceClass, $destinationClass);
+        $mapping = $this->getMapping($sourceClass, $targetClass);
         if ($mapping->providesCustomMapper()) {
-            return $this->getCustomMapper($mapping)->map($source, $destinationClass);
+            return $this->getCustomMapper($mapping)->map($source, $targetClass);
         }
 
         if ($mapping->hasCustomConstructor()) {
@@ -98,14 +98,14 @@ class AutoMapper implements AutoMapperInterface
                 $this,
                 $context
             );
-        } elseif (interface_exists($destinationClass)) {
+        } elseif (interface_exists($targetClass)) {
             // If we're mapping to an interface a valid custom constructor has
             // to be provided. Otherwise we can't know what to do.
             $message = 'Mapping to an interface is not possible. Please '
                 . 'provide a concrete class or use mapToObject instead.';
             throw new AutoMapperPlusException($message);
         } else {
-            $destinationObject = new $destinationClass;
+            $destinationObject = new $targetClass;
         }
 
         $context[self::DESTINATION_CONTEXT] = $destinationObject;
@@ -126,7 +126,7 @@ class AutoMapper implements AutoMapperInterface
      */
     public function mapMultiple(
         $sourceCollection,
-        string $destinationClass,
+        string $targetClass,
         array $context = []
     ): array
     {
@@ -138,7 +138,7 @@ class AutoMapper implements AutoMapperInterface
 
         $mappedResults = [];
         foreach ($sourceCollection as $source) {
-            $mappedResults[] = $this->map($source, $destinationClass, $context);
+            $mappedResults[] = $this->map($source, $targetClass, $context);
         }
 
         return $mappedResults;
