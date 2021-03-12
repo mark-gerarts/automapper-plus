@@ -19,8 +19,8 @@ interface MapperInterface
      * @param array|object $source
      *   The source object.
      * @param string $targetClass
-     * @psalm-param class-string<T> $targetClass
      *   The target classname.
+     * @psalm-param class-string<T> $targetClass
      * @param array $context
      *   An arbitrary array of values that will be passed to supporting
      *   mapping operations (e.g. MapFrom) to alter their behaviour based on
@@ -41,8 +41,8 @@ interface MapperInterface
      * @param array|object $source
      *   The source object.
      * @param object $destination
-     * @psalm-param T $destination
      *   The target object.
+     * @psalm-param T $destination
      * @param array $context
      *   See MapperInterface::map()
      * @return mixed
