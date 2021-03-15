@@ -307,8 +307,8 @@ child class has to be registered as well.
 ```php
 <?php
 
-$config->createMapping(Child::class, ChildDto::class);
-$config->createMapping(Parent::class, ParentDto::class)
+$config->registerMapping(Child::class, ChildDto::class);
+$config->registerMapping(Parent::class, ParentDto::class)
     ->forMember('child', Operation::mapTo(ChildDto::class));
 ```
 
