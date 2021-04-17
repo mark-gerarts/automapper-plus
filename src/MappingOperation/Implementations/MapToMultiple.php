@@ -8,12 +8,10 @@ use AutoMapperPlus\MappingOperation\ContextAwareTrait;
 use AutoMapperPlus\MappingOperation\DefaultMappingOperation;
 use AutoMapperPlus\MappingOperation\MapperAwareOperation;
 use AutoMapperPlus\MappingOperation\MapperAwareTrait;
-use Traversable;
-use function is_array;
 
 /**
- * Class MapTo.
- * Allows a property to be mapped itself.
+ * Class MapToMultiple.
+ *
  * @package AutoMapperPlus\MappingOperation\Implementations
  */
 class MapToMultiple extends DefaultMappingOperation implements
@@ -24,7 +22,7 @@ class MapToMultiple extends DefaultMappingOperation implements
     use ContextAwareTrait;
 
     /**
-     * @var string
+     * @var string[]
      */
     private $destinationClassList;
 
@@ -34,12 +32,9 @@ class MapToMultiple extends DefaultMappingOperation implements
     private $ownContext = [];
 
     /**
-     * MapTo constructor.
+     * MapToMultiple constructor.
      * @param string[] $destinationClassList
      * @param array $context
-     *   Indicates whether or not an array as source value should be treated as
-     *   a collection of elements, or as an array representing an object.
-     * @param array
      *   $context Optional context that will be merged with the parent's
      *   context.
      */
@@ -73,7 +68,7 @@ class MapToMultiple extends DefaultMappingOperation implements
         $returnValue = null;
         $mappingFailed = false;
         foreach ($this->destinationClassList as $destinationClass) {
-            if ($this->isCollection($value) === false) {
+            if (!$this->isCollection($value)) {
                 try {
                     $returnValue = $this->mapper->map($value, $destinationClass, $context);
                     $mappingFailed = false;
@@ -102,6 +97,6 @@ class MapToMultiple extends DefaultMappingOperation implements
      */
     private function isCollection($variable): bool
     {
-        return is_array($variable) || $variable instanceof Traversable;
+        return is_iterable($variable);
     }
 }

@@ -4,46 +4,50 @@ namespace AutoMapperPlus;
 
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
+use AutoMapperPlus\Exception\InvalidArgumentException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
-use AutoMapperPlus\Test\CustomMapper\EmployeeMapper;
 use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
 use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use AutoMapperPlus\NameResolver\CallbackNameResolver;
+use AutoMapperPlus\Test\CustomMapper\EmployeeMapper;
 use AutoMapperPlus\Test\CustomMapper\EmployeeMapperWithMapperAware;
+use AutoMapperPlus\Test\Models\Employee\Employee;
+use AutoMapperPlus\Test\Models\Employee\EmployeeDto;
 use AutoMapperPlus\Test\Models\Inheritance\DestinationChild;
 use AutoMapperPlus\Test\Models\Inheritance\DestinationParent;
 use AutoMapperPlus\Test\Models\Inheritance\SourceChild;
 use AutoMapperPlus\Test\Models\Inheritance\SourceParent;
 use AutoMapperPlus\Test\Models\Issues\Issue33\User;
 use AutoMapperPlus\Test\Models\Issues\Issue33\UserDto;
-use AutoMapperPlus\Test\Models\Nested\Address;
-use AutoMapperPlus\Test\Models\Nested\AddressDto;
-use AutoMapperPlus\Test\Models\Nested\Person;
-use AutoMapperPlus\Test\Models\Nested\PersonDto;
-use AutoMapperPlus\Test\Models\SimpleProperties\HasPrivateProperties;
-use AutoMapperPlus\Test\Models\SimpleProperties\NoProperties;
-use PHPUnit\Framework\TestCase;
-use AutoMapperPlus\Test\Models\Employee\Employee;
-use AutoMapperPlus\Test\Models\Employee\EmployeeDto;
 use AutoMapperPlus\Test\Models\NamingConventions\CamelCaseSource;
 use AutoMapperPlus\Test\Models\NamingConventions\SnakeCaseSource;
+use AutoMapperPlus\Test\Models\Nested\Address;
+use AutoMapperPlus\Test\Models\Nested\AddressDto;
 use AutoMapperPlus\Test\Models\Nested\ChildClass;
 use AutoMapperPlus\Test\Models\Nested\ChildClassDto;
 use AutoMapperPlus\Test\Models\Nested\ParentClass;
 use AutoMapperPlus\Test\Models\Nested\ParentClassDto;
+use AutoMapperPlus\Test\Models\Nested\Person;
+use AutoMapperPlus\Test\Models\Nested\PersonDto;
+use AutoMapperPlus\Test\Models\Nested\PolymorphicChildA;
+use AutoMapperPlus\Test\Models\Nested\PolymorphicChildB;
+use AutoMapperPlus\Test\Models\Nested\PolymorphicDtoA;
+use AutoMapperPlus\Test\Models\Nested\PolymorphicDtoB;
 use AutoMapperPlus\Test\Models\Post\CreatePostViewModel;
 use AutoMapperPlus\Test\Models\Post\Post;
 use AutoMapperPlus\Test\Models\Prefix\PrefixedSource;
 use AutoMapperPlus\Test\Models\Prefix\UnPrefixedSource;
-use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
-use AutoMapperPlus\Test\Models\SimpleProperties\Source;
-use AutoMapperPlus\Test\Models\SpecialConstructor\Source as ConstructorSource;
-use AutoMapperPlus\Test\Models\SpecialConstructor\Destination as ConstructorDestination;
-use AutoMapperPlus\Test\Models\Visibility\Visibility;
-use AutoMapperPlus\Test\Models\SimilarPropertyNames\Source as SimilarSource;
 use AutoMapperPlus\Test\Models\SimilarPropertyNames\Destination as SimilarDestination;
-use AutoMapperPlus\Exception\InvalidArgumentException;
+use AutoMapperPlus\Test\Models\SimilarPropertyNames\Source as SimilarSource;
+use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
+use AutoMapperPlus\Test\Models\SimpleProperties\HasPrivateProperties;
+use AutoMapperPlus\Test\Models\SimpleProperties\NoProperties;
+use AutoMapperPlus\Test\Models\SimpleProperties\Source;
+use AutoMapperPlus\Test\Models\SpecialConstructor\Destination as ConstructorDestination;
+use AutoMapperPlus\Test\Models\SpecialConstructor\Source as ConstructorSource;
+use AutoMapperPlus\Test\Models\Visibility\Visibility;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class AutoMapperTest
@@ -738,5 +742,29 @@ class AutoMapperTest extends TestCase
         $result = $mapper->map($source, Person::class);
 
         $this->assertNull($result->adres);
+    }
+
+    public function testItCanMapToMultiple()
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(PolymorphicChildA::class, PolymorphicDtoA::class);
+        $config->registerMapping(PolymorphicChildB::class, PolymorphicDtoB::class);
+        $config->registerMapping(ParentClass::class, ParentClassDto::class)
+               ->forMember(
+                   'polymorphicChildren',
+                   Operation::mapToMultiple([PolymorphicDtoA::class, PolymorphicDtoB::class])
+               );
+        $mapper = new AutoMapper($config);
+
+        $source = new ParentClass();
+        $source->polymorphicChildren = [new PolymorphicChildA('foo'), new PolymorphicChildB('bar')];
+        $result = $mapper->map($source, ParentClassDto::class);
+
+        $this->assertIsArray($result->polymorphicChildren);
+        $this->assertInstanceOf(PolymorphicDtoA::class, $result->polymorphicChildren[0]);
+        $this->assertEquals('foo', $result->polymorphicChildren[0]->name);
+
+        $this->assertInstanceOf(PolymorphicDtoB::class, $result->polymorphicChildren[1]);
+        $this->assertEquals('bar', $result->polymorphicChildren[1]->name);
     }
 }

@@ -37,9 +37,7 @@ class MapToMultipleTest extends TestCase
         $mapToAnyOf->setMapper(AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
             $config->registerMapping(PolymorphicChildA::class, PolymorphicDtoA::class);
             $config->registerMapping(PolymorphicChildB::class, PolymorphicDtoB::class);
-        }
-        )
-        );
+        }));
 
         $parent = new ParentClass();
         $parent->polymorphicChildren = [new PolymorphicChildA('foo'), new PolymorphicChildB('bar')];
@@ -62,9 +60,7 @@ class MapToMultipleTest extends TestCase
         $mapToAnyOf->setMapper(AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
             $config->registerMapping(PolymorphicChildA::class, PolymorphicDtoA::class);
             $config->registerMapping(PolymorphicChildB::class, PolymorphicDtoB::class);
-        }
-        )
-        );
+        }));
 
         $parent = new ParentClass();
         $parent->polymorphicChildren = new PolymorphicChildA('foo');
@@ -81,9 +77,7 @@ class MapToMultipleTest extends TestCase
         $mapToAnyOf->setOptions(Options::default());
         $mapToAnyOf->setMapper(AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
             $config->registerMapping(PolymorphicChildB::class, PolymorphicDtoB::class);
-        }
-        )
-        );
+        }));
 
         $parent = new ParentClass();
         $parent->polymorphicChildren = new PolymorphicChildA('foo');
@@ -103,16 +97,12 @@ class MapToMultipleTest extends TestCase
         // Set a name resolver to always use the property 'child' of the source.
         $options->setNameResolver(new CallbackNameResolver(function () {
             return 'polymorphicChildren';
-        }
-        )
-        );
+        }));
         $mapToAnyOf->setOptions($options);
         $mapToAnyOf->setMapper(AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
             $config->registerMapping(PolymorphicChildA::class, PolymorphicDtoA::class);
             $config->registerMapping(PolymorphicChildB::class, PolymorphicDtoB::class);
-        }
-        )
-        );
+        }));
 
         $parent = new ParentClass();
         $parent->polymorphicChildren = [new PolymorphicChildA('foo'), new PolymorphicChildB('bar')];
