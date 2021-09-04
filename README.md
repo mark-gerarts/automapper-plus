@@ -452,7 +452,7 @@ that you need to have mapped differently:
 ```php
 <?php
 
-$listMapping = $config->extendMapping(Employee::class, EmployeeListView::class)
+$config->extendMapping(Employee::class, EmployeeListView::class)
     ->forMember('name', function (Employee $employee) {
         return strtoupper($employee->name);
     });
