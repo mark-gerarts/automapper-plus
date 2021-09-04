@@ -19,6 +19,7 @@ Transfers data from one object to another, allowing custom mapping operations.
         * [ReverseMap](#reversemap)
         * [Copying a mapping](#copying-a-mapping)
     * [Automatic creation of mappings](#automatic-creation-of-mappings)
+    * [Extending already registered mappings](#extending-already-registered-mappings)
     * [Resolving property names](#resolving-property-names)
         * [Naming conventions](#naming-conventions)
         * [Explicitly state source property](#explicitly-state-source-property)
@@ -437,6 +438,24 @@ of mappings:
 <?php
 
 $config->getOptions()->createUnregisteredMappings();
+```
+
+With this configuration the mapper will generate a very basic mapping on the
+fly instead of throwing an exception if the mapping is not configured.
+
+### Extending already registered mappings
+There are some cases when you want to use unregistered mappings but you want to setup 
+mapping just for one or few properties of the mapped class without need to define mapping for 
+each property. In this case you can simply extend mapping and define just those properties
+that you need to have mapped differently:
+
+```php
+<?php
+
+$listMapping = $config->extendMapping(Employee::class, EmployeeListView::class)
+    ->forMember('name', function (Employee $employee) {
+        return strtoupper($employee->name);
+    });
 ```
 
 With this configuration the mapper will generate a very basic mapping on the
