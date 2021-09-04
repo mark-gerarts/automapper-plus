@@ -458,9 +458,6 @@ $config->extendMapping(Employee::class, EmployeeListView::class)
     });
 ```
 
-With this configuration the mapper will generate a very basic mapping on the
-fly instead of throwing an exception if the mapping is not configured.
-
 ### Resolving property names
 Unless you define a specific way to fetch a value (e.g. `mapFrom`), the mapper
 has to have a way to know which source property to map from. By default, it will
