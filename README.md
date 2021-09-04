@@ -19,7 +19,7 @@ Transfers data from one object to another, allowing custom mapping operations.
         * [ReverseMap](#reversemap)
         * [Copying a mapping](#copying-a-mapping)
     * [Automatic creation of mappings](#automatic-creation-of-mappings)
-    * [Extending already registered mappings](#extending-already-registered-mappings)
+    * [Extending mappings](#extending-mappings)
     * [Resolving property names](#resolving-property-names)
         * [Naming conventions](#naming-conventions)
         * [Explicitly state source property](#explicitly-state-source-property)
@@ -443,7 +443,7 @@ $config->getOptions()->createUnregisteredMappings();
 With this configuration the mapper will generate a very basic mapping on the
 fly instead of throwing an exception if the mapping is not configured.
 
-### Extending already registered mappings
+### Extending mappings
 There are some cases when you want to use unregistered mappings but you want to setup 
 mapping just for one or few properties of the mapped class without need to define mapping for 
 each property. In this case you can simply extend mapping and define just those properties
