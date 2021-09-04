@@ -48,6 +48,19 @@ interface AutoMapperConfigInterface
     ): MappingInterface;
 
     /**
+     * Extends already registered mapping. Whether it's unregistered type
+     * of mapping or manually registered mapping.
+     *
+     * @param string $sourceClassName
+     * @param string $destinationClassName
+     * @return MappingInterface
+     */
+    public function extendMapping(
+        string $sourceClassName,
+        string $destinationClassName
+    ): MappingInterface;
+
+    /**
      * @return Options
      */
     public function getOptions(): Options;

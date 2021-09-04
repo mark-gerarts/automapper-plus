@@ -205,6 +205,22 @@ class AutoMapperConfig implements AutoMapperConfigInterface
     /**
      * @inheritdoc
      */
+    public function extendMapping(
+        string $sourceClassName,
+        string $destinationClassName
+    ): MappingInterface {
+        if (!$this->hasMappingFor($sourceClassName, $destinationClassName)) {
+            throw new \RuntimeException("Undefined mapping for class $sourceClassName");
+        }
+
+        $mapping = $this->getMappingFor($sourceClassName, $destinationClassName);
+
+        return $this->registerMapping($sourceClassName, $destinationClassName)->copyFromMapping($mapping);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getOptions(): Options
     {
         return $this->options;
