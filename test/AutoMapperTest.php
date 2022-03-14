@@ -744,7 +744,7 @@ class AutoMapperTest extends TestCase
         $this->assertNull($result->adres);
     }
 
-    public function testItCanMapToMultiple()
+    public function testItCanMapToAnyOf()
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(PolymorphicChildA::class, PolymorphicDtoA::class);
@@ -752,7 +752,7 @@ class AutoMapperTest extends TestCase
         $config->registerMapping(ParentClass::class, ParentClassDto::class)
                ->forMember(
                    'polymorphicChildren',
-                   Operation::mapToMultiple([PolymorphicDtoA::class, PolymorphicDtoB::class])
+                   Operation::mapToAnyOf([PolymorphicDtoA::class, PolymorphicDtoB::class])
                );
         $mapper = new AutoMapper($config);
 

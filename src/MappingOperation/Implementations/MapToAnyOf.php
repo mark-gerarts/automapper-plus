@@ -10,11 +10,11 @@ use AutoMapperPlus\MappingOperation\MapperAwareOperation;
 use AutoMapperPlus\MappingOperation\MapperAwareTrait;
 
 /**
- * Class MapToMultiple.
+ * Class MapToAnyOf.
  *
  * @package AutoMapperPlus\MappingOperation\Implementations
  */
-class MapToMultiple extends DefaultMappingOperation implements
+class MapToAnyOf extends DefaultMappingOperation implements
     MapperAwareOperation,
     ContextAwareOperation
 {
@@ -32,7 +32,7 @@ class MapToMultiple extends DefaultMappingOperation implements
     private $ownContext;
 
     /**
-     * MapToMultiple constructor.
+     * MapToAnyOf constructor.
      *
      * @param string[] $destinationClassList
      *   List of possible destination classes. The first match will be used.

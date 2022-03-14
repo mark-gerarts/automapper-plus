@@ -17,15 +17,16 @@ use AutoMapperPlus\Test\Models\Nested\PolymorphicDtoB;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class MapToTest
+ * Class MapToAnyOfTest
+ *
  * @package AutoMapperPlus\MappingOperation\Implementations
  * @group mappingOperations
  */
-class MapToMultipleTest extends TestCase
+class MapToAnyOfTest extends TestCase
 {
     public function testItCanMapToAClass()
     {
-        $mapToAnyOf = new MapToMultiple([PolymorphicDtoA::class, PolymorphicDtoB::class]);
+        $mapToAnyOf = new MapToAnyOf([PolymorphicDtoA::class, PolymorphicDtoB::class]);
         $mapToAnyOf->setOptions(Options::default());
         $mapToAnyOf->setMapper(AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
             $config->registerMapping(PolymorphicChildA::class, PolymorphicDtoA::class);
@@ -48,7 +49,7 @@ class MapToMultipleTest extends TestCase
 
     public function testItMapsToTheFirstMatchingMapping()
     {
-        $mapToAnyOf = new MapToMultiple([PolymorphicDtoA::class, PolymorphicDtoB::class]);
+        $mapToAnyOf = new MapToAnyOf([PolymorphicDtoA::class, PolymorphicDtoB::class]);
         $mapToAnyOf->setOptions(Options::default());
         $mapToAnyOf->setMapper(AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
             $config->registerMapping(PolymorphicChildA::class, PolymorphicDtoA::class);
@@ -65,7 +66,7 @@ class MapToMultipleTest extends TestCase
 
     public function testItCanMapSingle()
     {
-        $mapToAnyOf = new MapToMultiple([PolymorphicDtoA::class, PolymorphicDtoB::class]);
+        $mapToAnyOf = new MapToAnyOf([PolymorphicDtoA::class, PolymorphicDtoB::class]);
         $mapToAnyOf->setOptions(Options::default());
         $mapToAnyOf->setMapper(AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
             $config->registerMapping(PolymorphicChildA::class, PolymorphicDtoA::class);
@@ -83,7 +84,7 @@ class MapToMultipleTest extends TestCase
 
     public function testItCantMapToUnregistered()
     {
-        $mapToAnyOf = new MapToMultiple([PolymorphicDtoA::class, PolymorphicDtoB::class]);
+        $mapToAnyOf = new MapToAnyOf([PolymorphicDtoA::class, PolymorphicDtoB::class]);
         $mapToAnyOf->setOptions(Options::default());
         $mapToAnyOf->setMapper(AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
             $config->registerMapping(PolymorphicChildB::class, PolymorphicDtoB::class);
@@ -102,7 +103,7 @@ class MapToMultipleTest extends TestCase
      */
     public function testItUsesTheNameResolver()
     {
-        $mapToAnyOf = new MapToMultiple([PolymorphicDtoA::class, PolymorphicDtoB::class]);
+        $mapToAnyOf = new MapToAnyOf([PolymorphicDtoA::class, PolymorphicDtoB::class]);
         $options = Options::default();
         // Set a name resolver to always use the property 'child' of the source.
         $options->setNameResolver(new CallbackNameResolver(function () {
@@ -132,7 +133,7 @@ class MapToMultipleTest extends TestCase
 
     public function testItIsContextAware()
     {
-        $mapToAnyOf = new MapToMultiple([PolymorphicDtoA::class, PolymorphicDtoB::class]);
+        $mapToAnyOf = new MapToAnyOf([PolymorphicDtoA::class, PolymorphicDtoB::class]);
 
         $this->assertInstanceOf(ContextAwareOperation::class, $mapToAnyOf);
     }

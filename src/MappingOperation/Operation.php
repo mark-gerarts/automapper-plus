@@ -7,7 +7,7 @@ use AutoMapperPlus\MappingOperation\Implementations\Ignore;
 use AutoMapperPlus\MappingOperation\Implementations\MapFrom;
 use AutoMapperPlus\MappingOperation\Implementations\MapFromWithMapper;
 use AutoMapperPlus\MappingOperation\Implementations\MapTo;
-use AutoMapperPlus\MappingOperation\Implementations\MapToMultiple;
+use AutoMapperPlus\MappingOperation\Implementations\MapToAnyOf;
 use AutoMapperPlus\MappingOperation\Implementations\SetTo;
 
 /**
@@ -127,18 +127,18 @@ class Operation
 
 
     /**
-     * Allows to map the property to list of another classes (maps to first found match).
-     * See "Polymorphic properties" in readme.
+     * Allows to map the property to the first match from a a list of classes.
+     * See "Polymorphic properties" in the readme.
      *
      * @param string[] $destinationClassList
      * @param array $context
      *   Arbitrary values that will be passed the the mapper as context. See
-     *   MapperInterface::nap() as well.
-     * @return MapToMultiple
+     *   MapperInterface::map() as well.
+     * @return MapToAnyOf
      */
-    public static function mapToMultiple(array $destinationClassList, array $context = []): MapToMultiple
+    public static function mapToAnyOf(array $destinationClassList, array $context = []): MapToAnyOf
     {
-        return new MapToMultiple($destinationClassList, $context);
+        return new MapToAnyOf($destinationClassList, $context);
     }
 
     /**
