@@ -10,4 +10,9 @@ namespace AutoMapperPlus\Test\Models\Nested;
 class ParentClass
 {
     public $child;
+
+    /**
+     * @var AbstractPolymorphicChild[]
+     */
+    public $polymorphicChildren;
 }
