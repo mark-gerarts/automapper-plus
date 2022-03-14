@@ -10,12 +10,17 @@ namespace AutoMapperPlus\Exception;
 class UnregisteredMappingException extends AutoMapperPlusException
 {
     /**
-     * @param $from
-     * @param $to
+     * @param string $from
+     * @param string ...$to
      * @return UnregisteredMappingException
      */
-    public static function fromClasses($from, $to): UnregisteredMappingException
+    public static function fromClasses(string $from, string ...$to): UnregisteredMappingException
     {
-        return new static("No mapping registered for converting an instance of class {$from} into one of {$to}");
+        $message = sprintf(
+            'No mapping registered for converting an instance of class %s into one of %s',
+            $from,
+            implode(", ", $to)
+        );
+        return new static($message);
     }
 }

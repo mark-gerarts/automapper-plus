@@ -23,13 +23,6 @@ use PHPUnit\Framework\TestCase;
  */
 class MapToMultipleTest extends TestCase
 {
-    public function testItCanBeInstantiated()
-    {
-        $mapToAnyOf = new MapToMultiple([PolymorphicDtoA::class, PolymorphicDtoB::class]);
-
-        $this->assertEquals([PolymorphicDtoA::class, PolymorphicDtoB::class], $mapToAnyOf->getDestinationClassList());
-    }
-
     public function testItCanMapToAClass()
     {
         $mapToAnyOf = new MapToMultiple([PolymorphicDtoA::class, PolymorphicDtoB::class]);
@@ -51,6 +44,23 @@ class MapToMultipleTest extends TestCase
 
         $this->assertInstanceOf(PolymorphicDtoB::class, $parentDestination->polymorphicChildren[1]);
         $this->assertEquals('bar', $parentDestination->polymorphicChildren[1]->name);
+    }
+
+    public function testItMapsToTheFirstMatchingMapping()
+    {
+        $mapToAnyOf = new MapToMultiple([PolymorphicDtoA::class, PolymorphicDtoB::class]);
+        $mapToAnyOf->setOptions(Options::default());
+        $mapToAnyOf->setMapper(AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
+            $config->registerMapping(PolymorphicChildA::class, PolymorphicDtoA::class);
+            $config->registerMapping(PolymorphicChildA::class, PolymorphicDtoB::class);
+        }));
+
+        $parent = new ParentClass();
+        $parent->polymorphicChildren = new PolymorphicChildA('foo');
+        $parentDestination = new ParentClassDto();
+
+        $mapToAnyOf->mapProperty('polymorphicChildren', $parent, $parentDestination);
+        $this->assertInstanceOf(PolymorphicDtoA::class, $parentDestination->polymorphicChildren);
     }
 
     public function testItCanMapSingle()

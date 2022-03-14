@@ -29,14 +29,15 @@ class MapToMultiple extends DefaultMappingOperation implements
     /**
      * @var array
      */
-    private $ownContext = [];
+    private $ownContext;
 
     /**
      * MapToMultiple constructor.
+     *
      * @param string[] $destinationClassList
+     *   List of possible destination classes. The first match will be used.
      * @param array $context
-     *   $context Optional context that will be merged with the parent's
-     *   context.
+     *   Optional context that will be merged with the parent's context.
      */
     public function __construct(
         array $destinationClassList,
@@ -47,52 +48,55 @@ class MapToMultiple extends DefaultMappingOperation implements
     }
 
     /**
-     * @return string[]
-     */
-    public function getDestinationClassList(): array
-    {
-        return $this->destinationClassList;
-    }
-
-    /**
      * @inheritdoc
      */
     protected function getSourceValue($source, string $propertyName)
     {
-        $value = $this->propertyReader->getProperty(
+        $context = array_merge($this->context, $this->ownContext);
+        $sourceValue = $this->propertyReader->getProperty(
             $source,
             $this->getSourcePropertyName($propertyName)
         );
 
-        $context = array_merge($this->context, $this->ownContext);
-        $returnValue = null;
-        $mappingFailed = false;
-        foreach ($this->destinationClassList as $destinationClass) {
-            if (!$this->isCollection($value)) {
-                try {
-                    $returnValue = $this->mapper->map($value, $destinationClass, $context);
-                    $mappingFailed = false;
-                    break;
-                } catch (UnregisteredMappingException $exception) {
-                    $mappingFailed = true;
-                }
-            } else {
-                foreach ($value as $item) {
-                    if ($this->mapper->getConfiguration()->hasMappingFor(get_class($item), $destinationClass)) {
-                        $returnValue[] = $this->mapper->map($item, $destinationClass, $context);
-                    }
-                }
-            }
-        }
-        if ($mappingFailed) {
-            throw UnregisteredMappingException::fromClasses(get_class($value),'"'.implode('", "',$this->destinationClassList).'"');
+        if (!$this->isCollection($sourceValue)) {
+            return $this->mapSingle($sourceValue, $context);
         }
 
-        return $returnValue;
+        return array_map(
+            function ($value) use ($context) {
+                return $this->mapSingle($value, $context);
+            },
+            $sourceValue
+        );
+    }
+
+    private function mapSingle($item, $context)
+    {
+        $destinationClass = $this->getDestinationClass($item);
+
+        return $this->mapper->map($item, $destinationClass, $context);
+    }
+
+    private function getDestinationClass($item): ?string
+    {
+        foreach ($this->destinationClassList as $destinationClass) {
+            $mappingExists = $this->mapper->getConfiguration()->hasMappingFor(
+                get_class($item),
+                $destinationClass
+            );
+            if ($mappingExists) {
+                return $destinationClass;
+            }
+        }
+
+        throw UnregisteredMappingException::fromClasses(
+            get_class($item),
+            ...$this->destinationClassList
+        );
     }
 
     /**
-     * @param $variable
+     * @param mixed $variable
      * @return bool
      */
     private function isCollection($variable): bool

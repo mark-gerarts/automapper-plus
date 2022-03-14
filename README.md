@@ -218,7 +218,7 @@ The following operations are provided:
 | MapFrom | Maps the property from the value returned from the provided callback. Gets passed the source object, an instance of the AutoMapper and optionally the [current context](#adding-context). |
 | Ignore | Ignores the property. |
 | MapTo | Maps the property to another class. Allows for [nested mappings](#dealing-with-nested-mappings). Supports both single values and collections. |
-| MapToMultiple | Maps the property to list of another classes (maps to first found match). This can be used for [polymorphic properties](#dealing-with-polymorphic-properties). Allows for [nested mappings](#dealing-with-nested-mappings). Supports both single values and collections. |
+| MapToMultiple | Similar to `MapTo`, but maps the property to the first match from a list of classes. This can be used for [polymorphic properties](#dealing-with-polymorphic-properties). Supports both single values and collections. |
 | FromProperty | Use this to explicitly state the source property name. |
 | DefaultMappingOperation | Simply transfers the property, taking into account the provided naming conventions (if there are any). |
 | SetTo | Always sets the property to the given value |
@@ -299,18 +299,30 @@ implement the `MapperAwareInterface`, and use the `MapperAwareTrait`. The
 default `MapTo` and `MapFrom` operations use these.
 
 #### Dealing with polymorphic properties
-Sometimes you have properties, which contains list of different objects e.g. when you load all entities with [single table inheritance](https://www.doctrine-project.org/projects/doctrine-orm/en/2.8/reference/inheritance-mapping.html#single-table-inheritance). You can use `MapToMultiple` to map every object to a different one. Keep in mind that the mapping for the child class has to be registered as well.
+
+Sometimes you have properties which contain a list of different types of objects
+e.g. when you load all entities with [single table inheritance](https://www.doctrine-project.org/projects/doctrine-orm/en/2.8/reference/inheritance-mapping.html#single-table-inheritance). You can use
+`MapToMultiple` to map every object to a possible different one. Keep in mind
+that the mapping for the child class has to be registered as well. The source
+property can be both a single value or a collection.
 
 ```php
 <?php
 
+// This iterates over every property of the source property
+// 'polymorphicChildren'. Each value will be mapped to the first existing
+// mapping from the value to one of the given classes.
 $config->createMapping(ChildA::class, ChildADto::class);
 $config->createMapping(ChildB::class, ChildBDto::class);
 $config->createMapping(Parent::class, ParentDto::class)
-    ->forMember('polymorphicChildren', Operation::mapToMultiple([ChildADto::class, ChildBDto::class]));
+    ->forMember(
+        'polymorphicChildren',
+        Operation::mapToMultiple([ChildADto::class, ChildBDto::class]
+    ));
 ```
 
 #### Dealing with nested mappings
+
 Nested mappings can be registered using the `MapTo` operation. Keep in mind that the mapping for the
 child class has to be registered as well.
 
