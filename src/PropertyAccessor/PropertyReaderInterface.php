@@ -10,14 +10,14 @@ namespace AutoMapperPlus\PropertyAccessor;
 interface PropertyReaderInterface
 {
     /**
-     * @param $object
+     * @param object|array $object
      * @param string $propertyName
      * @return bool
      */
     public function hasProperty($object, string $propertyName): bool;
 
     /**
-     * @param $object
+     * @param object|array $object
      * @param string $propertyName
      * @return mixed
      */
@@ -26,7 +26,7 @@ interface PropertyReaderInterface
     /**
      * Returns a list of property names available on the object.
      *
-     * @param object $object
+     * @param object|array $object
      * @return string[]
      */
     public function getPropertyNames($object): array;
