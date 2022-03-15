@@ -154,6 +154,40 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('NewName', $destination->name);
     }
 
+    public function testItCanExtendMapping()
+    {
+        $this->config->registerMapping(Source::class, Destination::class);
+        $mapper = new AutoMapper($this->config);
+        $source = new Source();
+        $source->name = 'John';
+        $destination = $mapper->map($source, Destination::class);
+
+        $this->assertEquals('John', $destination->name);
+
+        $this->config->extendMapping(Source::class, Destination::class)
+            ->forMember('name', function (Source $source) {
+                return $source->name . ' ' . 'Doe';
+            });
+        $destination = $mapper->map($source, Destination::class);
+
+        $this->assertEquals('John Doe', $destination->name);
+    }
+
+    public function testItThrowsRuntimeErrorOnExtendMappingWhenDoesntHaveMapping()
+    {
+        $this->expectException(\RuntimeException::class);
+
+        $this->config->getOptions()->dontCreateUnregisteredMappings();
+        $mapper = new AutoMapper($this->config);
+        $this->config->extendMapping(Source::class, Destination::class)
+            ->forMember('name', function (Source $source) {
+                return $source->name . ' ' . 'Doe';
+            });
+        $source = new Source();
+        $source->name = 'John';
+        $mapper->map($source, Destination::class);
+    }
+
     public function testTheConfigurationCanBeRetrieved()
     {
         $config = new AutoMapperConfig();
