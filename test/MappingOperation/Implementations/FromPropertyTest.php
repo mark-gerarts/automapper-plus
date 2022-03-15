@@ -26,4 +26,17 @@ class FromPropertyTest extends TestCase
 
         $this->assertTrue($destination->name);
     }
+
+    public function testItMapsAMethod()
+    {
+        $operation = new FromProperty('getMethodValue');
+        $operation->setOptions(Options::default());
+
+        $source = new Visibility();
+        $destination = new Destination();
+
+        $operation->mapProperty('name', $source, $destination);
+
+        $this->assertEmpty($destination->name);
+    }
 }
