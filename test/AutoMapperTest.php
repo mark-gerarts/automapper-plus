@@ -4,6 +4,7 @@ namespace AutoMapperPlus;
 
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
+use AutoMapperPlus\CustomMapper\CustomMapper;
 use AutoMapperPlus\Exception\InvalidArgumentException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 use AutoMapperPlus\MappingOperation\Operation;
@@ -396,6 +397,25 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('Mapped by EmployeeMapperWithMapperAware', $result->notes);
         $this->assertInstanceOf(AddressDto::class, $result->address);
         $this->assertEquals($expectedStreetAndNumber, $result->address->streetAndNumber);
+    }
+
+    public function testACustomMapperReceivesTheContext()
+    {
+        $customMapper = new class extends CustomMapper {
+
+            public function mapToObject($source, $destination, array $context = [])
+            {
+                AutoMapperTest::assertNotEmpty($context);
+            }
+
+        };
+
+        $this->config->registerMapping(Employee::class, EmployeeDto::class)
+            ->useCustomMapper($customMapper);
+        $mapper = new AutoMapper($this->config);
+
+        $employee = new Employee(10, 'John', 'Doe', 1980);
+        $mapper->map($employee, EmployeeDto::class);
     }
 
     public function testItCanMapADifferentlyNamedPropertyWithACallback()
