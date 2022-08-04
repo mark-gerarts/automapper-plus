@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 
 class ArrayMappingTest extends TestCase
 {
-    public function testItPerformsASimpleMapppingFromArray()
+    public function testItPerformsASimpleMapppingFromArray(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(DataType::ARRAY, Destination::class);
@@ -28,7 +28,7 @@ class ArrayMappingTest extends TestCase
         $this->assertEquals('John Doe', $result->name);
     }
 
-    public function testItPerformsAFromPropertyOperation()
+    public function testItPerformsAFromPropertyOperation(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(DataType::ARRAY, Destination::class)
@@ -41,7 +41,7 @@ class ArrayMappingTest extends TestCase
         $this->assertEquals('John Doe', $result->name);
     }
 
-    public function testItPerformsAIgnoreOperation()
+    public function testItPerformsAIgnoreOperation(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(DataType::ARRAY, Destination::class)
@@ -54,7 +54,7 @@ class ArrayMappingTest extends TestCase
         $this->assertTrue(empty($result->name));
     }
 
-    public function testItPerformsAMapFromOperation()
+    public function testItPerformsAMapFromOperation(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(DataType::ARRAY, Destination::class)
@@ -71,7 +71,7 @@ class ArrayMappingTest extends TestCase
         $this->assertEquals('Doe John', $result->name);
     }
 
-    public function testItPerformsAMapToOperation()
+    public function testItPerformsAMapToOperation(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(DataType::ARRAY, ParentClass::class)
@@ -88,7 +88,7 @@ class ArrayMappingTest extends TestCase
         $this->assertEquals('John Doe', $result->child->name);
     }
 
-    public function testMapToHandlesAnArrayMapping()
+    public function testMapToHandlesAnArrayMapping(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(DataType::ARRAY, ParentClass::class)
@@ -103,7 +103,7 @@ class ArrayMappingTest extends TestCase
         $this->assertEquals('John Doe', $result->child->name);
     }
 
-    public function testMapToDefaultsToAssumingACollection()
+    public function testMapToDefaultsToAssumingACollection(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(DataType::ARRAY, ParentClass::class)
@@ -116,11 +116,11 @@ class ArrayMappingTest extends TestCase
         $source = ['child' => [$childDto]];
         $result = $mapper->map($source, ParentClass::class);
 
-        $this->assertInternalType('array', $result->child);
+        $this->assertIsArray($result->child);
         $this->assertEquals('John Doe', $result->child[0]->name);
     }
 
-    public function testMapFromArrayWorksWithPolymorphism()
+    public function testMapFromArrayWorksWithPolymorphism(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(DataType::ARRAY, SourceParent::class);

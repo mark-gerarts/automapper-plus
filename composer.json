@@ -22,12 +22,12 @@
         }
     },
     "require": {
-        "php": ">=7.1.0"
+        "php": ">=7.4.0"
     },
     "require-dev": {
         "symfony/var-dumper": "^3.3",
         "symfony/debug": "^3.3",
         "mark-gerarts/phpstan-automapper-plus": "^0.1.0",
-        "phpunit/phpunit": "^7.0"
+        "phpunit/phpunit": "^7.0|^8.0"
     }
 }

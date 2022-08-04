@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class InterfacesTest extends TestCase
 {
-    public function testItMapsFromAnInterface()
+    public function testItMapsFromAnInterface(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(SourceInterface::class, DestinationImplementation::class);
@@ -25,7 +25,7 @@ class InterfacesTest extends TestCase
         $this->assertEquals('a name', $result->name);
     }
 
-    public function testItDoesntAllowMappingToAnInterface()
+    public function testItDoesntAllowMappingToAnInterface(): void
     {
         $this->expectException(AutoMapperPlusException::class);
 
@@ -40,7 +40,7 @@ class InterfacesTest extends TestCase
         $this->assertEquals('a name', $result->name);
     }
 
-    public function testMappingToAnInterfaceIsAllowedForMapToObject()
+    public function testMappingToAnInterfaceIsAllowedForMapToObject(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(SourceImplementation::class, DestinationInterface::class);

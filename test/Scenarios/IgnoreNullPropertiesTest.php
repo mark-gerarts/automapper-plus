@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class IgnoreNullPropertiesTest extends TestCase
 {
-    public function testItMapsToNullIfSourceIsNull()
+    public function testItMapsToNullIfSourceIsNull(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(Source::class, Destination::class);
@@ -25,7 +25,7 @@ class IgnoreNullPropertiesTest extends TestCase
         $this->assertNull($destination->name);
     }
 
-    public function testItDoesntMapToNullIfOptionIsSet()
+    public function testItDoesntMapToNullIfOptionIsSet(): void
     {
         $config = new AutoMapperConfig();
         $config->getOptions()->ignoreNullProperties();
@@ -40,7 +40,7 @@ class IgnoreNullPropertiesTest extends TestCase
         $this->assertEquals('Hello, world', $destination->name);
     }
 
-    public function testMapFromIsntAffectedByIgnoreNullOption()
+    public function testMapFromIsntAffectedByIgnoreNullOption(): void
     {
         $config = new AutoMapperConfig();
         $config->getOptions()->ignoreNullProperties();

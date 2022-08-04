@@ -25,13 +25,13 @@ class DefaultMappingOperationTest extends TestCase
      */
     protected $operation;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->operation = new DefaultMappingOperation();
         $this->operation->setOptions(Options::default());
     }
 
-    public function testItMapsAProperty()
+    public function testItMapsAProperty(): void
     {
         $source = new Source();
         $source->name = 'Hello, world';
@@ -42,7 +42,7 @@ class DefaultMappingOperationTest extends TestCase
         $this->assertEquals('Hello, world', $destination->name);
     }
 
-    public function testItCanResolveNamingConventions()
+    public function testItCanResolveNamingConventions(): void
     {
         $options = Options::default();
         $options->setSourceMemberNamingConvention(new CamelCaseNamingConvention());
@@ -60,7 +60,7 @@ class DefaultMappingOperationTest extends TestCase
     /**
      * @group stdClass
      */
-    public function testItCanMapFromAStdClass()
+    public function testItCanMapFromAStdClass(): void
     {
         $source = new \stdClass();
         $source->name = 'stdclass property';
@@ -71,7 +71,7 @@ class DefaultMappingOperationTest extends TestCase
         $this->assertEquals('stdclass property', $destination->name);
     }
 
-    public function testItCanResolveNamingConventionsOnAStdClass()
+    public function testItCanResolveNamingConventionsOnAStdClass(): void
     {
         $options = Options::default();
         $options->setSourceMemberNamingConvention(new SnakeCaseNamingConvention());
@@ -86,7 +86,7 @@ class DefaultMappingOperationTest extends TestCase
         $this->assertEquals('stdclass snake', $destination->propertyName);
     }
 
-    public function testPossibleOverriddenPropertyAccessorIsUsed()
+    public function testPossibleOverriddenPropertyAccessorIsUsed(): void
     {
         $accessor = $this->getMockBuilder(PropertyAccessorInterface::class)->getMock();
         $accessor->expects($this->once())->method('hasProperty')->willReturn(true);

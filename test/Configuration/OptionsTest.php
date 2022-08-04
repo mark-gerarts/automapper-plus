@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  */
 class OptionsTest extends TestCase
 {
-    public function testItCanRegisterAnObjectCrate()
+    public function testItCanRegisterAnObjectCrate(): void
     {
         $options = new Options();
 
@@ -24,7 +24,7 @@ class OptionsTest extends TestCase
         $this->assertTrue($options->isObjectCrate(Source::class));
     }
 
-    public function testPropertyWriterCanBeOverridden()
+    public function testPropertyWriterCanBeOverridden(): void
     {
         $options = new Options();
         $accessor = $this->createMock(PropertyAccessorInterface::class);
@@ -36,7 +36,7 @@ class OptionsTest extends TestCase
         $this->assertEquals($writer, $options->getPropertyWriter());
     }
 
-    public function testPropertyReaderCanBeOverridden()
+    public function testPropertyReaderCanBeOverridden(): void
     {
         $options = new Options();
         $accessor = $this->createMock(PropertyAccessorInterface::class);
@@ -48,7 +48,7 @@ class OptionsTest extends TestCase
         $this->assertEquals($reader, $options->getPropertyReader());
     }
 
-    public function testPropertyWriterDefaultsToAccessor()
+    public function testPropertyWriterDefaultsToAccessor(): void
     {
         $options = new Options();
         $accessor = $this->createMock(PropertyAccessorInterface::class);
@@ -57,7 +57,7 @@ class OptionsTest extends TestCase
         $this->assertEquals($accessor, $options->getPropertyWriter());
     }
 
-    public function testPropertyReaderDefaultsToAccessor()
+    public function testPropertyReaderDefaultsToAccessor(): void
     {
         $options = new Options();
         $accessor = $this->createMock(PropertyAccessorInterface::class);

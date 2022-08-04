@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
  */
 class MapToAnyOfTest extends TestCase
 {
-    public function testItCanMapToAClass()
+    public function testItCanMapToAClass(): void
     {
         $mapToAnyOf = new MapToAnyOf([PolymorphicDtoA::class, PolymorphicDtoB::class]);
         $mapToAnyOf->setOptions(Options::default());
@@ -47,7 +47,7 @@ class MapToAnyOfTest extends TestCase
         $this->assertEquals('bar', $parentDestination->polymorphicChildren[1]->name);
     }
 
-    public function testItMapsToTheFirstMatchingMapping()
+    public function testItMapsToTheFirstMatchingMapping(): void
     {
         $mapToAnyOf = new MapToAnyOf([PolymorphicDtoA::class, PolymorphicDtoB::class]);
         $mapToAnyOf->setOptions(Options::default());
@@ -64,7 +64,7 @@ class MapToAnyOfTest extends TestCase
         $this->assertInstanceOf(PolymorphicDtoA::class, $parentDestination->polymorphicChildren);
     }
 
-    public function testItCanMapSingle()
+    public function testItCanMapSingle(): void
     {
         $mapToAnyOf = new MapToAnyOf([PolymorphicDtoA::class, PolymorphicDtoB::class]);
         $mapToAnyOf->setOptions(Options::default());
@@ -82,7 +82,7 @@ class MapToAnyOfTest extends TestCase
         $this->assertEquals('foo', $parentDestination->polymorphicChildren->name);
     }
 
-    public function testItCantMapToUnregistered()
+    public function testItCantMapToUnregistered(): void
     {
         $mapToAnyOf = new MapToAnyOf([PolymorphicDtoA::class, PolymorphicDtoB::class]);
         $mapToAnyOf->setOptions(Options::default());
@@ -101,7 +101,7 @@ class MapToAnyOfTest extends TestCase
     /**
      * Ensure the operation uses the assigned name resolver. See #17.
      */
-    public function testItUsesTheNameResolver()
+    public function testItUsesTheNameResolver(): void
     {
         $mapToAnyOf = new MapToAnyOf([PolymorphicDtoA::class, PolymorphicDtoB::class]);
         $options = Options::default();
@@ -131,7 +131,7 @@ class MapToAnyOfTest extends TestCase
         $this->assertEquals('bar', $parentDestination->anotherProperty[1]->name);
     }
 
-    public function testItIsContextAware()
+    public function testItIsContextAware(): void
     {
         $mapToAnyOf = new MapToAnyOf([PolymorphicDtoA::class, PolymorphicDtoB::class]);
 

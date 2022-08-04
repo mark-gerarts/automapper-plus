@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class MappingOperationsTest extends TestCase
 {
-    public function testSetToAlwaysSetsToTheSameValue()
+    public function testSetToAlwaysSetsToTheSameValue(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(Source::class, Destination::class)

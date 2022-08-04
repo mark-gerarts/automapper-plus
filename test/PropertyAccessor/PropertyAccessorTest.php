@@ -11,7 +11,7 @@ use AutoMapperPlus\Test\Models\Visibility\Visibility;
 
 class PropertyAccessorTest extends TestCase
 {
-    public function testItGetsAPublicProperty()
+    public function testItGetsAPublicProperty(): void
     {
         $accessor = new PropertyAccessor();
         $visibility = new Visibility();
@@ -22,7 +22,7 @@ class PropertyAccessorTest extends TestCase
     /**
      * @group stdClass
      */
-    public function testItGetsAPublicPropertyForAStdClass()
+    public function testItGetsAPublicPropertyForAStdClass(): void
     {
         $accessor = new PropertyAccessor();
         $obj = new \stdClass();
@@ -31,7 +31,7 @@ class PropertyAccessorTest extends TestCase
         $this->assertEquals('stdClassName', $accessor->getProperty($obj, 'name'));
     }
 
-    public function testItGetsAProtectedProperty()
+    public function testItGetsAProtectedProperty(): void
     {
         $accessor = new PropertyAccessor();
         $visibility = new Visibility();
@@ -39,7 +39,7 @@ class PropertyAccessorTest extends TestCase
         $this->assertTrue($accessor->getProperty($visibility, 'protectedProperty'));
     }
 
-    public function testItGetsAPrivateProperty()
+    public function testItGetsAPrivateProperty(): void
     {
         $accessor = new PropertyAccessor();
         $visibility = new Visibility();
@@ -47,7 +47,7 @@ class PropertyAccessorTest extends TestCase
         $this->assertTrue($accessor->getProperty($visibility, 'privateProperty'));
     }
 
-    public function testItSetsAPublicProperty()
+    public function testItSetsAPublicProperty(): void
     {
         $accessor = new PropertyAccessor();
         $visibility = new Visibility();
@@ -59,7 +59,7 @@ class PropertyAccessorTest extends TestCase
     /**
      * @group stdClass
      */
-    public function testItSetsAPublicPropertyForAStdClass()
+    public function testItSetsAPublicPropertyForAStdClass(): void
     {
         $accessor = new PropertyAccessor();
         $obj = new \stdClass();
@@ -69,7 +69,7 @@ class PropertyAccessorTest extends TestCase
         $this->assertEquals('overridden', $obj->name);
     }
 
-    public function testItSetsAProtectedProperty()
+    public function testItSetsAProtectedProperty(): void
     {
         $accessor = new PropertyAccessor();
         $visibility = new Visibility();
@@ -78,7 +78,7 @@ class PropertyAccessorTest extends TestCase
         $this->assertFalse($visibility->getProtectedProperty());
     }
 
-    public function testItSetsAPrivateProperty()
+    public function testItSetsAPrivateProperty(): void
     {
         $accessor = new PropertyAccessor();
         $visibility = new Visibility();
@@ -87,7 +87,7 @@ class PropertyAccessorTest extends TestCase
         $this->assertFalse($visibility->getPrivateProperty());
     }
 
-    public function testItCanCheckIfAPropertyExists()
+    public function testItCanCheckIfAPropertyExists(): void
     {
         $accessor = new PropertyAccessor();
         $visibility = new Visibility();
@@ -101,7 +101,7 @@ class PropertyAccessorTest extends TestCase
     /**
      * @group stdClass
      */
-    public function testItCanCheckIfAPropertyExistsForAStdClass()
+    public function testItCanCheckIfAPropertyExistsForAStdClass(): void
     {
         $accessor = new PropertyAccessor();
         $obj = new \stdClass();
@@ -114,7 +114,7 @@ class PropertyAccessorTest extends TestCase
     /**
      * Test if it can fetch properties defined on the parent class.
      */
-    public function testItHandlesInheritance()
+    public function testItHandlesInheritance(): void
     {
         $accessor = new PropertyAccessor();
         $source = new SourceChild('MyName');
@@ -123,7 +123,7 @@ class PropertyAccessorTest extends TestCase
         $this->assertEquals('MyName', $accessor->getProperty($source, 'name'));
     }
 
-    public function testItWritesToAParentsPrivateProperty()
+    public function testItWritesToAParentsPrivateProperty(): void
     {
         $accessor = new PropertyAccessor();
         $source = new InheritedVisibility();
@@ -133,7 +133,7 @@ class PropertyAccessorTest extends TestCase
         $this->assertEquals('new value', $source->getPrivateProperty());
     }
 
-    public function testItWritesToAParentsProtectedProperty()
+    public function testItWritesToAParentsProtectedProperty(): void
     {
         $accessor = new PropertyAccessor();
         $source = new InheritedVisibility();
@@ -143,7 +143,7 @@ class PropertyAccessorTest extends TestCase
         $this->assertEquals('new value', $source->getProtectedProperty());
     }
 
-    public function testItWritesToAParentsPublicProperty()
+    public function testItWritesToAParentsPublicProperty(): void
     {
         $accessor = new PropertyAccessor();
         $source = new InheritedVisibility();
@@ -156,7 +156,7 @@ class PropertyAccessorTest extends TestCase
     /**
      * @see https://github.com/mark-gerarts/automapper-plus/issues/33
      */
-    public function testItWritesCorrectlyWhenPropertiesShareASuffix()
+    public function testItWritesCorrectlyWhenPropertiesShareASuffix(): void
     {
         $accessor = new PropertyAccessor();
         $source = new User();
@@ -169,7 +169,7 @@ class PropertyAccessorTest extends TestCase
     /**
      * @requires PHP >= 7.4
      */
-    public function testItGetsTypedPropertyNames()
+    public function testItGetsTypedPropertyNames(): void
     {
         $accessor = new PropertyAccessor();
         $destination = new TypedDestination();

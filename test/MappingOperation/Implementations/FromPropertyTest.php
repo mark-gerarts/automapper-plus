@@ -14,7 +14,7 @@ use AutoMapperPlus\Test\Models\Visibility\Visibility;
  */
 class FromPropertyTest extends TestCase
 {
-    public function testItMapsAProperty()
+    public function testItMapsAProperty(): void
     {
         $operation = new FromProperty('privateProperty');
         $operation->setOptions(Options::default());

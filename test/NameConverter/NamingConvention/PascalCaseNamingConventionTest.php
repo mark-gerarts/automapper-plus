@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 class PascalCaseNamingConventionTest extends TestCase
 {
-    public function testItParsesAPascalCaseName()
+    public function testItParsesAPascalCaseName(): void
     {
         $converter = new PascalCaseNamingConvention();
         $name = 'PascalCaseName';
@@ -21,7 +21,7 @@ class PascalCaseNamingConventionTest extends TestCase
         $this->assertEquals($expected, $converter->toParts($name));
     }
 
-    public function testItConstructsACamelcaseName()
+    public function testItConstructsACamelcaseName(): void
     {
         $converter = new PascalCaseNamingConvention();
         $parts = ['pascal', 'case', 'name'];

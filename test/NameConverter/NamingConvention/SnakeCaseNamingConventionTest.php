@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 class SnakeCaseNamingConventionTest extends TestCase
 {
-    public function testItParsesASnakeCaseName()
+    public function testItParsesASnakeCaseName(): void
     {
         $converter = new SnakeCaseNamingConvention();
         $name = 'snake_case_name';
@@ -21,7 +21,7 @@ class SnakeCaseNamingConventionTest extends TestCase
         $this->assertEquals($expected, $converter->toParts($name));
     }
 
-    public function testItConstructsACamelcaseName()
+    public function testItConstructsACamelcaseName(): void
     {
         $converter = new SnakeCaseNamingConvention();
         $parts = ['snake', 'case', 'name'];

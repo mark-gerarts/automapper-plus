@@ -18,7 +18,7 @@ use AutoMapperPlus\Test\Models\SimpleProperties\Source;
  */
 class MapFromWithMapperTest extends TestCase
 {
-    public function testItMapsFromACallback()
+    public function testItMapsFromACallback(): void
     {
         // Arrange
         $mapFromWithMapper = new MapFromWithMapper(function ($source, AutoMapperInterface $mapper) {
@@ -39,7 +39,7 @@ class MapFromWithMapperTest extends TestCase
         $this->assertEquals(42, $destination->name);
     }
 
-    public function testItReceivesTheSourceObject()
+    public function testItReceivesTheSourceObject(): void
     {
         // Arrange
         $mapFromWithMapper = new MapFromWithMapper(function ($source, AutoMapperInterface $mapper) {
