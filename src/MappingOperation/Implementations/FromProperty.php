@@ -10,6 +10,8 @@ use AutoMapperPlus\MappingOperation\MapperAwareOperation;
 use AutoMapperPlus\MappingOperation\MappingOperationInterface;
 use AutoMapperPlus\MappingOperation\Reversible;
 use AutoMapperPlus\NameResolver\CallbackNameResolver;
+use AutoMapperPlus\MappingOperation\ContextAwareOperation;
+use AutoMapperPlus\MappingOperation\ContextAwareTrait;
 
 /**
  * Class FromProperty
@@ -19,10 +21,13 @@ use AutoMapperPlus\NameResolver\CallbackNameResolver;
 class FromProperty extends DefaultMappingOperation implements
     AlternativePropertyProvider,
     Reversible,
+    ContextAwareOperation,
     // We need to be mapper aware to be able to pass the mapper to a chained
     // operation.
     MapperAwareOperation
 {
+    use ContextAwareTrait;
+
     /**
      * @var MappingOperationInterface|null
      */
@@ -133,6 +138,10 @@ class FromProperty extends DefaultMappingOperation implements
             return $this->propertyName;
         }));
         $this->nextOperation->setOptions($options);
+
+        if ($this->nextOperation instanceof ContextAwareOperation) {
+            $this->nextOperation->setContext($this->context);
+        }
 
         // The chained operation will now use the property name assigned to
         // FromProperty, so we can go ahead and call it.
