@@ -33,9 +33,9 @@ class AutoMapper implements AutoMapperInterface
     /**
      * AutoMapper constructor.
      *
-     * @param AutoMapperConfigInterface $autoMapperConfig
+     * @param AutoMapperConfigInterface|null $autoMapperConfig
      */
-    public function __construct(AutoMapperConfigInterface $autoMapperConfig = null)
+    public function __construct(?AutoMapperConfigInterface $autoMapperConfig = null)
     {
         $this->autoMapperConfig = $autoMapperConfig ?: new AutoMapperConfig();
     }
