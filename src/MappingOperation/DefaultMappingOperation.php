@@ -4,6 +4,7 @@ namespace AutoMapperPlus\MappingOperation;
 
 use AutoMapperPlus\Configuration\Options;
 use AutoMapperPlus\NameResolver\NameResolverInterface;
+use AutoMapperPlus\PropertyAccessor\PropertyAccessorInterface;
 use AutoMapperPlus\PropertyAccessor\PropertyReaderInterface;
 use AutoMapperPlus\PropertyAccessor\PropertyWriterInterface;
 

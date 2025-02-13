@@ -15,6 +15,8 @@ jobs:
                     -   php: '8.0'
                         phpunit: '8.5'
                     -   php: '8.1'
+                        psalm: true
+                    -   php: '8.1'
                         phpunit: '8.5'
         steps:
             -   uses: actions/checkout@v2
@@ -38,6 +40,13 @@ jobs:
 
             -   name: Run test suite
                 uses: php-actions/phpunit@v3
+                if: ${{ matrix.phpunit != '' }}
                 with:
                     php_version: ${{ matrix.php }}
                     version: ${{ matrix.phpunit }}
+
+            -   name: Run Psalm analysis
+                run: vendor/bin/psalm
+                if: ${{ matrix.psalm == true }}
+                with:
+                    php_version: ${{ matrix.php }}

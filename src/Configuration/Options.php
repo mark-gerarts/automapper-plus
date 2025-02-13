@@ -71,7 +71,8 @@ class Options
     private $useSubstitution = true;
 
     /**
-     * @var string[]
+     * @var bool[]
+     * @psalm-var array<class-string,bool>
      */
     private $objectCrates = [];
 
@@ -280,7 +281,7 @@ class Options
     }
 
     /**
-     * @param string $className
+     * @param class-string $className
      */
     public function registerObjectCrate(string $className): void
     {
