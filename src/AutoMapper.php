@@ -91,7 +91,7 @@ class AutoMapper implements AutoMapperInterface
         if ($mapping->providesCustomMapper()) {
             $customMapper = $this->getCustomMapper($mapping);
 
-            return $customMapper->map($source, $destinationClass, $context);
+            return $customMapper->map($source, $targetClass, $context);
         }
 
         if ($mapping->hasCustomConstructor()) {
