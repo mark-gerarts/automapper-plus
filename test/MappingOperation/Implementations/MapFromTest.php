@@ -19,7 +19,7 @@ use AutoMapperPlus\Test\Models\SimpleProperties\Source;
  */
 class MapFromTest extends TestCase
 {
-    public function testItMapsFromACallback()
+    public function testItMapsFromACallback(): void
     {
         $operation = new MapFrom(function ($source) {
             return 42;
@@ -34,7 +34,7 @@ class MapFromTest extends TestCase
         $this->assertEquals(42, $destination->name);
     }
 
-    public function testItReceivesTheSourceObject()
+    public function testItReceivesTheSourceObject(): void
     {
         $operation = new MapFrom(function ($source) {
             return $source;
@@ -49,14 +49,14 @@ class MapFromTest extends TestCase
         $this->assertInstanceOf(Source::class, $destination->name);
     }
 
-    public function testItImplementsMapperAwareOperation()
+    public function testItImplementsMapperAwareOperation(): void
     {
         $operation = new MapFrom(function() {});
 
         $this->assertInstanceOf(MapperAwareOperation::class, $operation);
     }
 
-    public function testItPassesTheMapperAsSecondParameter()
+    public function testItPassesTheMapperAsSecondParameter(): void
     {
         $operation = new MapFrom(function ($source = null, $mapper = null) {
             $this->assertInstanceOf(AutoMapperInterface::class, $mapper);
@@ -70,7 +70,7 @@ class MapFromTest extends TestCase
         $operation->mapProperty('name', new Source(), new Destination());
     }
 
-    public function testMapFromIsContextAware()
+    public function testMapFromIsContextAware(): void
     {
         $operation = new MapFrom(function () {});
 

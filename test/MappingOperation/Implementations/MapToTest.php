@@ -21,14 +21,14 @@ use AutoMapperPlus\Test\Models\SimpleProperties\Source;
  */
 class MapToTest extends TestCase
 {
-    public function testItCanBeInstantiated()
+    public function testItCanBeInstantiated(): void
     {
         $mapTo = new MapTo(Destination::class);
 
         $this->assertEquals(Destination::class, $mapTo->getDestinationClass());
     }
 
-    public function testItCanMapToAClass()
+    public function testItCanMapToAClass(): void
     {
         $mapTo = new MapTo(Destination::class);
         $mapTo->setOptions(Options::default());
@@ -47,7 +47,7 @@ class MapToTest extends TestCase
         $this->assertEquals('SourceName', $parentDestination->child->name);
     }
 
-    public function testItCanMapMultiple()
+    public function testItCanMapMultiple(): void
     {
         $mapTo = new MapTo(Destination::class);
         $mapTo->setOptions(Options::default());
@@ -74,7 +74,7 @@ class MapToTest extends TestCase
     /**
      * Ensure the operation uses the assigned name resolver. See #17.
      */
-    public function testItUsesTheNameResolver()
+    public function testItUsesTheNameResolver(): void
     {
         $mapTo = new MapTo(Destination::class);
         $options = Options::default();
@@ -100,7 +100,7 @@ class MapToTest extends TestCase
         $this->assertEquals('SourceName', $parentDestination->anotherProperty->name);
     }
 
-    public function testItIsContextAware()
+    public function testItIsContextAware(): void
     {
         $mapTo = new MapTo(\stdClass::class);
 

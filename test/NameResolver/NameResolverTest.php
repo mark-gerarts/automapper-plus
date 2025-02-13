@@ -16,7 +16,7 @@ class NameResolverTest extends TestCase
      */
     private $resolver;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->resolver = new NameResolver();
     }
@@ -25,7 +25,7 @@ class NameResolverTest extends TestCase
      * Without any extra configuration, a name should be resolved to its
      * identity.
      */
-    public function testItResolvesANameToItsIdentity()
+    public function testItResolvesANameToItsIdentity(): void
     {
         $operation = new DefaultMappingOperation();
         $options = Options::default();
@@ -34,7 +34,7 @@ class NameResolverTest extends TestCase
         $this->assertEquals('name', $output);
     }
 
-    public function testItResolvesNamingConventions()
+    public function testItResolvesNamingConventions(): void
     {
         $operation = new DefaultMappingOperation();
         $options = Options::default();
@@ -49,7 +49,7 @@ class NameResolverTest extends TestCase
      * If the operation defines an alternate property, this should override the
      * defaults.
      */
-    public function testItResolvesWithAnAlternativePropertyNameOperation()
+    public function testItResolvesWithAnAlternativePropertyNameOperation(): void
     {
         $operation = new FromProperty('a_property');
         $options = Options::default();

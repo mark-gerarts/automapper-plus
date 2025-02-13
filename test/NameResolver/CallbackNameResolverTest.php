@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class CallbackNameResolverTest extends TestCase
 {
-    public function testItResolvesNamesWithACallback()
+    public function testItResolvesNamesWithACallback(): void
     {
         $resolver = new CallbackNameResolver(function (string $property) {
             return strtoupper($property);
@@ -22,7 +22,7 @@ class CallbackNameResolverTest extends TestCase
         $this->assertEquals('A_PROPERTY', $output);
     }
 
-    public function testAPropertyCanStillBeExplicitlyOverridden()
+    public function testAPropertyCanStillBeExplicitlyOverridden(): void
     {
         $resolver = new CallbackNameResolver(function (string $property) {
             return strtoupper($property);

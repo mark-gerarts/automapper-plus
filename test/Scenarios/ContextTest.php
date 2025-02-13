@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 
 class ContextTest extends TestCase
 {
-    public function testContextCanBePassedToMap()
+    public function testContextCanBePassedToMap(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(Source::class, Destination::class)
@@ -38,7 +38,7 @@ class ContextTest extends TestCase
         $this->assertEquals('context-value', $result->name);
     }
 
-    public function testContextCanBePassedToMapToObject()
+    public function testContextCanBePassedToMapToObject(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(Source::class, Destination::class)
@@ -60,7 +60,7 @@ class ContextTest extends TestCase
         $this->assertEquals('context-value', $result->name);
     }
 
-    public function testContextCanBePassedToMapMultiple()
+    public function testContextCanBePassedToMapMultiple(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(Source::class, Destination::class)
@@ -82,7 +82,7 @@ class ContextTest extends TestCase
         $this->assertEquals('context-value', $result[0]->name);
     }
 
-    public function testMapToUsesTheParentContext()
+    public function testMapToUsesTheParentContext(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(\stdClass::class, \stdClass::class)
@@ -103,7 +103,7 @@ class ContextTest extends TestCase
         $this->assertEquals('context-value', $result->source->name);
     }
 
-    public function testMapToMergesTheParentContext()
+    public function testMapToMergesTheParentContext(): void
     {
         $config = new AutoMapperConfig();
         $mapTo = new MapTo(
@@ -134,7 +134,7 @@ class ContextTest extends TestCase
         $this->assertEquals('map-to-value', $result->source->name);
     }
 
-    public function testDestinationClassIsPassed()
+    public function testDestinationClassIsPassed(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(Source::class, Destination::class)
@@ -167,7 +167,7 @@ class ContextTest extends TestCase
         );
     }
 
-    public function testMapToBuildsContextStacks()
+    public function testMapToBuildsContextStacks(): void
     {
         $parent = new ParentClass();
         $parent->child = new ChildClass();

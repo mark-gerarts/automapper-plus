@@ -25,7 +25,7 @@ use AutoMapperPlus\Test\Models\Visibility\Visibility;
  */
 class MappingTest extends TestCase
 {
-    public function testItCanAddAMappingCallback()
+    public function testItCanAddAMappingCallback(): void
     {
         $autoMapperConfig = new AutoMapperConfig();
         $mapping = new Mapping(
@@ -42,7 +42,7 @@ class MappingTest extends TestCase
         $this->assertEquals($expected, $mapping->getMappingOperationFor('name'));
     }
 
-    public function testItReturnsTheCorrectClassNames()
+    public function testItReturnsTheCorrectClassNames(): void
     {
         $mapping = new Mapping(
             Source::class,
@@ -54,7 +54,7 @@ class MappingTest extends TestCase
         $this->assertEquals(Destination::class, $mapping->getDestinationClassName());
     }
 
-    public function testItCanReverseMap()
+    public function testItCanReverseMap(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(Source::class, Destination::class)->reverseMap();
@@ -62,7 +62,7 @@ class MappingTest extends TestCase
         $this->assertTrue($config->hasMappingFor(Destination::class, Source::class));
     }
 
-    public function testTheOptionsCanBeOverriddenWithSetDefaults()
+    public function testTheOptionsCanBeOverriddenWithSetDefaults(): void
     {
         $config = new AutoMapperConfig();
         $initialOptions = $config->getOptions();
@@ -85,7 +85,7 @@ class MappingTest extends TestCase
         $this->assertEquals($initialOptions, $config->getOptions());
     }
 
-    public function testForMemberWithDifferentNames()
+    public function testForMemberWithDifferentNames(): void
     {
         $mapping = new Mapping(
             CamelCaseSource::class,
@@ -108,7 +108,7 @@ class MappingTest extends TestCase
         );
     }
 
-    public function testInvalidPropertyWithFromProperty()
+    public function testInvalidPropertyWithFromProperty(): void
     {
         $mapping = new Mapping(
             Source::class,
@@ -126,7 +126,7 @@ class MappingTest extends TestCase
         );
     }
 
-    public function testItSetsOptionsViaHelperMethods()
+    public function testItSetsOptionsViaHelperMethods(): void
     {
         $mapping = new Mapping(
             Source::class,
@@ -160,7 +160,7 @@ class MappingTest extends TestCase
         );
     }
 
-    public function testIfItCanRegisterACustomMapping()
+    public function testIfItCanRegisterACustomMapping(): void
     {
         $mapping = new Mapping(
             Source::class,
@@ -178,7 +178,7 @@ class MappingTest extends TestCase
         $this->assertEquals($mapper, $mapping->getCustomMapper());
     }
 
-    public function testItCanRegisterACallbackWithADifferentPropertyName()
+    public function testItCanRegisterACallbackWithADifferentPropertyName(): void
     {
         $mapping = new Mapping(
             SnakeCaseSource::class,
@@ -199,7 +199,7 @@ class MappingTest extends TestCase
         $this->assertFalse($exception);
     }
 
-    public function testItCanRegisterAStdClassMapping()
+    public function testItCanRegisterAStdClassMapping(): void
     {
         $mapping = new Mapping(
             \stdClass::class,
@@ -218,7 +218,7 @@ class MappingTest extends TestCase
         $this->assertEquals('John', $destination->name);
     }
 
-    public function testItCanCopyAMapping()
+    public function testItCanCopyAMapping(): void
     {
         $config = new AutoMapperConfig();
         // Determine a default option for both A and B.
@@ -282,7 +282,7 @@ class MappingTest extends TestCase
         );
     }
 
-    public function testItCanSetACustomConstructor()
+    public function testItCanSetACustomConstructor(): void
     {
         $mapping = new Mapping(
             Source::class,
@@ -298,7 +298,7 @@ class MappingTest extends TestCase
         $this->assertEquals($factory, $mapping->getCustomConstructor());
     }
 
-    public function testItCanListTheTargetProperties()
+    public function testItCanListTheTargetProperties(): void
     {
         $mapping = new Mapping(
             Source::class,
@@ -315,7 +315,7 @@ class MappingTest extends TestCase
         );
     }
 
-    public function testItCanListTheTargetPropertiesOfAnObjectCrate()
+    public function testItCanListTheTargetPropertiesOfAnObjectCrate(): void
     {
         $mapping = new Mapping(
             CamelCaseSource::class,

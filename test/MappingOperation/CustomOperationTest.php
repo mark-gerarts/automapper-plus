@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
  */
 class CustomOperationTest extends TestCase
 {
-    public function testACustomOperationCanBeUsed()
+    public function testACustomOperationCanBeUsed(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(Source::class, Destination::class)
@@ -33,7 +33,7 @@ class CustomOperationTest extends TestCase
         $this->assertEquals('BasicOperation', $result->name);
     }
 
-    public function testAReversibleOperationCanBeUsed()
+    public function testAReversibleOperationCanBeUsed(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(Source::class, Destination::class)

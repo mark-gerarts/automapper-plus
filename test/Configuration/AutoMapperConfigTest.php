@@ -22,7 +22,7 @@ use AutoMapperPlus\Test\Models\SimpleProperties\Source;
  */
 class AutoMapperConfigTest extends TestCase
 {
-    public function testItCanRegisterAMapping()
+    public function testItCanRegisterAMapping(): void
     {
         $config = new AutoMapperConfig();
         $mapping = $config->registerMapping(Source::class, Destination::class);
@@ -34,14 +34,14 @@ class AutoMapperConfigTest extends TestCase
         $this->assertEquals($mapping, $config->getMappingFor(Source::class, Destination::class));
     }
 
-    public function testGetMappingCanReturnNull()
+    public function testGetMappingCanReturnNull(): void
     {
         $config = new AutoMapperConfig();
 
         $this->assertNull($config->getMappingFor(Source::class, Destination::class));
     }
 
-    public function testOptionsCanBeSet()
+    public function testOptionsCanBeSet(): void
     {
         $config = new AutoMapperConfig(function (Options $options) {
             $options->setDefaultMappingOperation(Operation::ignore());
@@ -53,7 +53,7 @@ class AutoMapperConfigTest extends TestCase
         );
     }
 
-    public function testSubstitutionPrincipleSource()
+    public function testSubstitutionPrincipleSource(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(SourceParent::class, DestinationParent::class);
@@ -64,7 +64,7 @@ class AutoMapperConfigTest extends TestCase
         ));
     }
 
-    public function testSubstitutionPrincipleDestination()
+    public function testSubstitutionPrincipleDestination(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(SourceParent::class, DestinationParent::class);
@@ -75,7 +75,7 @@ class AutoMapperConfigTest extends TestCase
         ));
     }
 
-    public function testMappingsGetGeneratedOnTheFlyIfOptionSet()
+    public function testMappingsGetGeneratedOnTheFlyIfOptionSet(): void
     {
         $config = new AutoMapperConfig();
         $config->getOptions()->createUnregisteredMappings();
@@ -86,7 +86,7 @@ class AutoMapperConfigTest extends TestCase
         ));
     }
 
-    public function testInterfacesAreLessSpecificThanClassesInTheSource()
+    public function testInterfacesAreLessSpecificThanClassesInTheSource(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(
@@ -106,7 +106,7 @@ class AutoMapperConfigTest extends TestCase
         $this->assertEquals($concreteMapping, $result);
     }
 
-    public function testInterfacesAreLessSpecificThanClassesInTheDestination()
+    public function testInterfacesAreLessSpecificThanClassesInTheDestination(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(

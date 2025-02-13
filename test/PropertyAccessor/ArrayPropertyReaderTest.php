@@ -13,13 +13,13 @@ class ArrayPropertyReaderTest extends TestCase
     protected $reader;
     protected $array;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->reader = new ArrayPropertyReader();
         $this->array = ['property' => 'value'];
     }
 
-    public function testItDetectsIfAnArrayHasAProperty()
+    public function testItDetectsIfAnArrayHasAProperty(): void
     {
         $this->assertTrue($this->reader->hasProperty(
             $this->array,
@@ -31,7 +31,7 @@ class ArrayPropertyReaderTest extends TestCase
         ));
     }
 
-    public function testItCanGetAProperty()
+    public function testItCanGetAProperty(): void
     {
         $this->assertEquals(
             'value',
@@ -39,7 +39,7 @@ class ArrayPropertyReaderTest extends TestCase
         );
     }
 
-    public function testItCanGetPropertyNames()
+    public function testItCanGetPropertyNames(): void
     {
         $this->assertEquals(
             ['property'],

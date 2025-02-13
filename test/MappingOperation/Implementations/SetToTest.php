@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  */
 class SetToTest extends TestCase
 {
-    public function testItMapsAProperty()
+    public function testItMapsAProperty(): void
     {
         $operation = new SetTo('always the same value');
         $operation->setOptions(Options::default());
@@ -27,7 +27,7 @@ class SetToTest extends TestCase
         $this->assertEquals('always the same value', $destination->name);
     }
 
-    public function testItDoesntNeedTheSourceProperty()
+    public function testItDoesntNeedTheSourceProperty(): void
     {
         $operation = new SetTo('always the same value');
         $operation->setOptions(Options::default());

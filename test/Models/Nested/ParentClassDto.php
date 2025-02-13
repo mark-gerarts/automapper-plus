@@ -12,4 +12,9 @@ class ParentClassDto
     public $child;
 
     public $anotherProperty;
+
+    /**
+     * @var AbstractPolymorphicDto|AbstractPolymorphicDto[]
+     */
+    public $polymorphicChildren;
 }

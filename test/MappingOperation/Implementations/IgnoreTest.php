@@ -14,7 +14,7 @@ use AutoMapperPlus\Test\Models\SimpleProperties\Source;
  */
 class IgnoreTest extends TestCase
 {
-    public function testItIgnores()
+    public function testItIgnores(): void
     {
         $operation = new Ignore();
 

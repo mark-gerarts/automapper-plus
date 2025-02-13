@@ -18,7 +18,11 @@ abstract class CustomMapper implements MapperInterface
     {
         $destination = new $targetClass;
 
-        return $this->mapToObject($source, $destination);
+        // We use func_get_args instead of using a function parameter to
+        // maintain backwards compatibility. This will change in v2.0.
+        $context = func_get_args()[2] ?? [];
+
+        return $this->mapToObject($source, $destination, $context);
     }
 
     /**

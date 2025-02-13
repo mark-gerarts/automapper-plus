@@ -12,7 +12,7 @@ use AutoMapperPlus\PropertyAccessor\ObjectCratePropertyWriter;
  */
 class ObjectCratePropertyWriterTest extends TestCase
 {
-    public function testItSetsAPublicProperty()
+    public function testItSetsAPublicProperty(): void
     {
         $writer = new ObjectCratePropertyWriter();
         $destination = new \stdClass();

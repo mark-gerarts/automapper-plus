@@ -7,6 +7,7 @@ use AutoMapperPlus\MappingOperation\Implementations\Ignore;
 use AutoMapperPlus\MappingOperation\Implementations\MapFrom;
 use AutoMapperPlus\MappingOperation\Implementations\MapFromWithMapper;
 use AutoMapperPlus\MappingOperation\Implementations\MapTo;
+use AutoMapperPlus\MappingOperation\Implementations\MapToAnyOf;
 use AutoMapperPlus\MappingOperation\Implementations\SetTo;
 
 /**
@@ -122,6 +123,22 @@ class Operation
     public static function fromProperty(string $propertyName): FromProperty
     {
         return new FromProperty($propertyName);
+    }
+
+
+    /**
+     * Allows to map the property to the first match from a a list of classes.
+     * See "Polymorphic properties" in the readme.
+     *
+     * @param string[] $destinationClassList
+     * @param array $context
+     *   Arbitrary values that will be passed the the mapper as context. See
+     *   MapperInterface::map() as well.
+     * @return MapToAnyOf
+     */
+    public static function mapToAnyOf(array $destinationClassList, array $context = []): MapToAnyOf
+    {
+        return new MapToAnyOf($destinationClassList, $context);
     }
 
     /**

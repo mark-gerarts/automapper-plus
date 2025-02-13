@@ -4,46 +4,51 @@ namespace AutoMapperPlus;
 
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
+use AutoMapperPlus\CustomMapper\CustomMapper;
+use AutoMapperPlus\Exception\InvalidArgumentException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
-use AutoMapperPlus\Test\CustomMapper\EmployeeMapper;
 use AutoMapperPlus\MappingOperation\Operation;
 use AutoMapperPlus\NameConverter\NamingConvention\CamelCaseNamingConvention;
 use AutoMapperPlus\NameConverter\NamingConvention\SnakeCaseNamingConvention;
 use AutoMapperPlus\NameResolver\CallbackNameResolver;
+use AutoMapperPlus\Test\CustomMapper\EmployeeMapper;
 use AutoMapperPlus\Test\CustomMapper\EmployeeMapperWithMapperAware;
+use AutoMapperPlus\Test\Models\Employee\Employee;
+use AutoMapperPlus\Test\Models\Employee\EmployeeDto;
 use AutoMapperPlus\Test\Models\Inheritance\DestinationChild;
 use AutoMapperPlus\Test\Models\Inheritance\DestinationParent;
 use AutoMapperPlus\Test\Models\Inheritance\SourceChild;
 use AutoMapperPlus\Test\Models\Inheritance\SourceParent;
 use AutoMapperPlus\Test\Models\Issues\Issue33\User;
 use AutoMapperPlus\Test\Models\Issues\Issue33\UserDto;
-use AutoMapperPlus\Test\Models\Nested\Address;
-use AutoMapperPlus\Test\Models\Nested\AddressDto;
-use AutoMapperPlus\Test\Models\Nested\Person;
-use AutoMapperPlus\Test\Models\Nested\PersonDto;
-use AutoMapperPlus\Test\Models\SimpleProperties\HasPrivateProperties;
-use AutoMapperPlus\Test\Models\SimpleProperties\NoProperties;
-use PHPUnit\Framework\TestCase;
-use AutoMapperPlus\Test\Models\Employee\Employee;
-use AutoMapperPlus\Test\Models\Employee\EmployeeDto;
 use AutoMapperPlus\Test\Models\NamingConventions\CamelCaseSource;
 use AutoMapperPlus\Test\Models\NamingConventions\SnakeCaseSource;
+use AutoMapperPlus\Test\Models\Nested\Address;
+use AutoMapperPlus\Test\Models\Nested\AddressDto;
 use AutoMapperPlus\Test\Models\Nested\ChildClass;
 use AutoMapperPlus\Test\Models\Nested\ChildClassDto;
 use AutoMapperPlus\Test\Models\Nested\ParentClass;
 use AutoMapperPlus\Test\Models\Nested\ParentClassDto;
+use AutoMapperPlus\Test\Models\Nested\Person;
+use AutoMapperPlus\Test\Models\Nested\PersonDto;
+use AutoMapperPlus\Test\Models\Nested\PolymorphicChildA;
+use AutoMapperPlus\Test\Models\Nested\PolymorphicChildB;
+use AutoMapperPlus\Test\Models\Nested\PolymorphicDtoA;
+use AutoMapperPlus\Test\Models\Nested\PolymorphicDtoB;
 use AutoMapperPlus\Test\Models\Post\CreatePostViewModel;
 use AutoMapperPlus\Test\Models\Post\Post;
 use AutoMapperPlus\Test\Models\Prefix\PrefixedSource;
 use AutoMapperPlus\Test\Models\Prefix\UnPrefixedSource;
-use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
-use AutoMapperPlus\Test\Models\SimpleProperties\Source;
-use AutoMapperPlus\Test\Models\SpecialConstructor\Source as ConstructorSource;
-use AutoMapperPlus\Test\Models\SpecialConstructor\Destination as ConstructorDestination;
-use AutoMapperPlus\Test\Models\Visibility\Visibility;
-use AutoMapperPlus\Test\Models\SimilarPropertyNames\Source as SimilarSource;
 use AutoMapperPlus\Test\Models\SimilarPropertyNames\Destination as SimilarDestination;
-use AutoMapperPlus\Exception\InvalidArgumentException;
+use AutoMapperPlus\Test\Models\SimilarPropertyNames\Source as SimilarSource;
+use AutoMapperPlus\Test\Models\SimpleProperties\Destination;
+use AutoMapperPlus\Test\Models\SimpleProperties\HasPrivateProperties;
+use AutoMapperPlus\Test\Models\SimpleProperties\NoProperties;
+use AutoMapperPlus\Test\Models\SimpleProperties\Source;
+use AutoMapperPlus\Test\Models\SpecialConstructor\Destination as ConstructorDestination;
+use AutoMapperPlus\Test\Models\SpecialConstructor\Source as ConstructorSource;
+use AutoMapperPlus\Test\Models\Visibility\Visibility;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class AutoMapperTest
@@ -60,12 +65,12 @@ class AutoMapperTest extends TestCase
      */
     protected $config;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->config = new AutoMapperConfig();
     }
 
-    public function testItCanBeInstantiatedStatically()
+    public function testItCanBeInstantiatedStatically(): void
     {
         $mapper = AutoMapper::initialize(function (AutoMapperConfigInterface $config) {
             $config->registerMapping(Source::class, Destination::class);
@@ -75,7 +80,7 @@ class AutoMapperTest extends TestCase
         $this->assertInstanceOf(Destination::class, $destination);
     }
 
-    public function testItMapsAPublicProperty()
+    public function testItMapsAPublicProperty(): void
     {
         $this->config->registerMapping(Source::class, Destination::class);
         $mapper = new AutoMapper($this->config);
@@ -88,7 +93,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals($source->name, $destination->name);
     }
 
-    public function testItCanMapToAnExistingObject()
+    public function testItCanMapToAnExistingObject(): void
     {
         $this->config->registerMapping(Source::class, Destination::class);
         $mapper = new AutoMapper($this->config);
@@ -104,7 +109,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('another', $destination->anotherProperty);
     }
 
-    public function testMapToAnExistingObjectContext()
+    public function testMapToAnExistingObjectContext(): void
     {
         $source = new Source();
         $source->name = 'Hello';
@@ -125,7 +130,7 @@ class AutoMapperTest extends TestCase
         $mapper->mapToObject($source, $destination);
     }
 
-    public function testSourceDoesntGetOverridden()
+    public function testSourceDoesntGetOverridden(): void
     {
         $this->config->registerMapping(Source::class, Destination::class);
         $mapper = new AutoMapper($this->config);
@@ -137,7 +142,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('John', $source->name);
     }
 
-    public function testItCanMapWithACallback()
+    public function testItCanMapWithACallback(): void
     {
         $this->config->registerMapping(Source::class, Destination::class)
             ->forMember('name', function () {
@@ -150,7 +155,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('NewName', $destination->name);
     }
 
-    public function testTheConfigurationCanBeRetrieved()
+    public function testTheConfigurationCanBeRetrieved(): void
     {
         $config = new AutoMapperConfig();
         $mapper = new AutoMapper($config);
@@ -158,7 +163,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals($config, $mapper->getConfiguration());
     }
 
-    public function testItCanMapMultiple()
+    public function testItCanMapMultiple(): void
     {
         $this->config->registerMapping(Source::class, Destination::class);
         $mapper = new AutoMapper($this->config);
@@ -188,7 +193,7 @@ class AutoMapperTest extends TestCase
         );
     }
 
-    public function testItCanMapToAnObjectWithLessProperties()
+    public function testItCanMapToAnObjectWithLessProperties(): void
     {
         $this->config->registerMapping(
             CreatePostViewModel::class,
@@ -204,7 +209,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals($expected, $mapper->map($source, Post::class));
     }
 
-    public function testItCanSkipTheConstructor()
+    public function testItCanSkipTheConstructor(): void
     {
         $this->config->registerMapping(
             ConstructorSource::class,
@@ -219,7 +224,7 @@ class AutoMapperTest extends TestCase
         $this->assertFalse($result->constructorRan);
     }
 
-    public function testItCanMapNestedProperties()
+    public function testItCanMapNestedProperties(): void
     {
         $this->config->registerMapping(ChildClass::class, ChildClassDto::class);
         $this->config->registerMapping(ParentClass::class, ParentClassDto::class)
@@ -237,7 +242,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('ChildName', $result->child->name);
     }
 
-    public function testItCanResolveNamingConventions()
+    public function testItCanResolveNamingConventions(): void
     {
         $this->config->registerMapping(CamelCaseSource::class, SnakeCaseSource::class)
             ->withNamingConventions(
@@ -272,7 +277,7 @@ class AutoMapperTest extends TestCase
     /**
      * @group stdClass
      */
-    public function testItCanMapFromAStdClass()
+    public function testItCanMapFromAStdClass(): void
     {
         $this->config->registerMapping(\stdClass::class, Destination::class);
         $mapper = new AutoMapper($this->config);
@@ -288,7 +293,7 @@ class AutoMapperTest extends TestCase
     /**
      * Will test if we can map by providing the source property name.
      */
-    public function testItMapsFromAProperty()
+    public function testItMapsFromAProperty(): void
     {
         $this->config->registerMapping(Visibility::class, Destination::class)
             ->forMember('name', Operation::fromProperty('privateProperty'));
@@ -300,7 +305,7 @@ class AutoMapperTest extends TestCase
         $this->assertTrue($result->name);
     }
 
-    public function testItCanSetARestrictedProperties()
+    public function testItCanSetARestrictedProperties(): void
     {
         $this->config->registerMapping(\stdClass::class, Visibility::class);
         $mapper = new AutoMapper($this->config);
@@ -316,7 +321,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('private', $result->getPrivateProperty());
     }
 
-    public function testItCanReverseMapWithReversibles()
+    public function testItCanReverseMapWithReversibles(): void
     {
         $this->config->registerMapping(Source::class, Visibility::class)
             ->forMember('privateProperty', Operation::fromProperty('name'))
@@ -338,7 +343,7 @@ class AutoMapperTest extends TestCase
         $this->assertTrue($result->name);
     }
 
-    public function testItCanResolveNamesWithACallbackNameResolver()
+    public function testItCanResolveNamesWithACallbackNameResolver(): void
     {
         $resolver = new CallbackNameResolver(function ($target) {
             return 'prefix' . ucfirst($target);
@@ -356,7 +361,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('world!', $result->getPrivateProperty());
     }
 
-    public function testACustomMapperCanBeUsed()
+    public function testACustomMapperCanBeUsed(): void
     {
         $this->config->registerMapping(Employee::class, EmployeeDto::class)
             ->useCustomMapper(new EmployeeMapper());
@@ -368,7 +373,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('Mapped by EmployeeMapper', $result->notes);
     }
 
-    public function testACustomMapperWithMapperAwareCanBeUsed()
+    public function testACustomMapperWithMapperAwareCanBeUsed(): void
     {
         $this->config->registerMapping(Address::class, AddressDto::class)
             ->forMember('streetAndNumber', function($item){
@@ -394,7 +399,26 @@ class AutoMapperTest extends TestCase
         $this->assertEquals($expectedStreetAndNumber, $result->address->streetAndNumber);
     }
 
-    public function testItCanMapADifferentlyNamedPropertyWithACallback()
+    public function testACustomMapperReceivesTheContext(): void
+    {
+        $customMapper = new class extends CustomMapper {
+
+            public function mapToObject($source, $destination, array $context = [])
+            {
+                AutoMapperTest::assertNotEmpty($context);
+            }
+
+        };
+
+        $this->config->registerMapping(Employee::class, EmployeeDto::class)
+            ->useCustomMapper($customMapper);
+        $mapper = new AutoMapper($this->config);
+
+        $employee = new Employee(10, 'John', 'Doe', 1980);
+        $mapper->map($employee, EmployeeDto::class);
+    }
+
+    public function testItCanMapADifferentlyNamedPropertyWithACallback(): void
     {
         $this->config->registerMapping(
             SnakeCaseSource::class,
@@ -411,7 +435,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('Test', $result->anotherProperty);
     }
 
-    public function testItMapsInheritedProperty()
+    public function testItMapsInheritedProperty(): void
     {
         $this->config->registerMapping(
             SourceChild::class,
@@ -425,7 +449,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('Name', $result->name);
     }
 
-    public function testItMapsInheritedPublicProperty()
+    public function testItMapsInheritedPublicProperty(): void
     {
         $this->config->registerMapping(
             SourceChild::class,
@@ -440,7 +464,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('other', $result->anotherProperty);
     }
 
-    public function testACustomConstructorCallbackCanBeProvided()
+    public function testACustomConstructorCallbackCanBeProvided(): void
     {
         $this->config->registerMapping(Source::class, Destination::class)
             ->beConstructedUsing(function (Source $source, AutoMapperInterface $mapper, array $context): Destination {
@@ -463,7 +487,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('Initial Name', $result->name);
     }
 
-    public function testItCanMapToStdClassInTheMostBasicCase()
+    public function testItCanMapToStdClassInTheMostBasicCase(): void
     {
         $this->config->registerMapping(Source::class, \stdClass::class);
         $mapper = new AutoMapper($this->config);
@@ -475,7 +499,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('Some name', $result->name);
     }
 
-    public function testItCanMapToStdClassWhileConvertingNames()
+    public function testItCanMapToStdClassWhileConvertingNames(): void
     {
         $this->config->registerMapping(CamelCaseSource::class, \stdClass::class)
             ->withNamingConventions(
@@ -492,7 +516,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('Some Name', $result->property_name);
     }
 
-    public function testItCanMapToAnyObjectCrate()
+    public function testItCanMapToAnyObjectCrate(): void
     {
         $config =  new AutoMapperConfig();
         $config->getOptions()->registerObjectCrate(NoProperties::class);
@@ -506,7 +530,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('Some name', $result->name);
     }
 
-    public function testObjectCratesStillRespectMappingOperations()
+    public function testObjectCratesStillRespectMappingOperations(): void
     {
         $this->config->registerMapping(CamelCaseSource::class, \stdClass::class)
             ->forMember('propertyName', Operation::ignore())
@@ -525,7 +549,7 @@ class AutoMapperTest extends TestCase
         $this->assertFalse(isset($result->propertyName));
     }
 
-    public function testANullObjectReturnsNull()
+    public function testANullObjectReturnsNull(): void
     {
         $mapper = new AutoMapper();
 
@@ -534,7 +558,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals(null, $result);
     }
 
-    public function testInvalidWithMappingCallback_ThrowsException()
+    public function testInvalidWithMappingCallback_ThrowsException(): void
     {
         // Arrange
         $source = new CamelCaseSource();
@@ -552,7 +576,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals($result, $result);
     }
 
-    public function testInstanceWithMappingCallback_InstanceIsCorrect()
+    public function testInstanceWithMappingCallback_InstanceIsCorrect(): void
     {
         // Arrange
         $propertyStdClass = new \stdClass();
@@ -586,7 +610,7 @@ class AutoMapperTest extends TestCase
     /**
      * @todo: move this to fromPropertyTest.
      */
-    public function testFromPropertyCanBeChained()
+    public function testFromPropertyCanBeChained(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(Address::class, AddressDto::class)
@@ -609,7 +633,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals("Main Street 12", $result->address->streetAndNumber);
     }
 
-    public function testSubstitutionPrincipleSource()
+    public function testSubstitutionPrincipleSource(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(SourceParent::class, DestinationParent::class);
@@ -621,7 +645,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('Some name', $result->name);
     }
 
-    public function testSubstitutionPrincipleDestination()
+    public function testSubstitutionPrincipleDestination(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(SourceParent::class, DestinationChild::class);
@@ -636,7 +660,7 @@ class AutoMapperTest extends TestCase
     /**
      * https://github.com/mark-gerarts/automapper-plus/issues/25
      */
-    public function testItMapsPrivatePropertiesWithTheSameSuffix()
+    public function testItMapsPrivatePropertiesWithTheSameSuffix(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(SimilarSource::class, SimilarDestination::class);
@@ -652,7 +676,7 @@ class AutoMapperTest extends TestCase
     /**
      * @see https://github.com/mark-gerarts/automapper-plus/issues/33
      */
-    public function testItMapsPrivatePropertiesWithTheSameSuffixOnTheTarget()
+    public function testItMapsPrivatePropertiesWithTheSameSuffixOnTheTarget(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(UserDto::class, User::class);
@@ -673,7 +697,7 @@ class AutoMapperTest extends TestCase
     /**
      * https://github.com/mark-gerarts/automapper-plus/issues/25
      */
-    public function testitMapsPrivatePropertiesToStdClass()
+    public function testitMapsPrivatePropertiesToStdClass(): void
     {
         $config = new AutoMapperConfig();
         $config->registerMapping(HasPrivateProperties::class, \stdClass::class);
@@ -686,7 +710,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals($result->password, 'hunter2');
     }
 
-    public function testAnExceptionIsThrownForUnregisteredMappings()
+    public function testAnExceptionIsThrownForUnregisteredMappings(): void
     {
         $this->expectException(UnregisteredMappingException::class);
 
@@ -696,7 +720,7 @@ class AutoMapperTest extends TestCase
         $mapper->map($source, Destination::class);
     }
 
-    public function testMappingsCanBeGeneratedOnTheFlyIfOptionIsSet()
+    public function testMappingsCanBeGeneratedOnTheFlyIfOptionIsSet(): void
     {
         $config = new AutoMapperConfig();
         $config->getOptions()->createUnregisteredMappings();
@@ -708,7 +732,7 @@ class AutoMapperTest extends TestCase
         $this->assertEquals('a name', $result->name);
     }
 
-    public function testAnExceptionIsThrownForNoIterableSourceInMultpleMappings()
+    public function testAnExceptionIsThrownForNoIterableSourceInMultpleMappings(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -720,7 +744,7 @@ class AutoMapperTest extends TestCase
         $mapper->mapMultiple($sourceCollection, Destination::class);
     }
 
-    public function testItMapsANullObjectReturnedFromConstructorToNull()
+    public function testItMapsANullObjectReturnedFromConstructorToNull(): void
     {
         $this->config->registerMapping(DataType::ARRAY, Address::class)
             ->beConstructedUsing(function () { return null; });
@@ -738,5 +762,29 @@ class AutoMapperTest extends TestCase
         $result = $mapper->map($source, Person::class);
 
         $this->assertNull($result->adres);
+    }
+
+    public function testItCanMapToAnyOf(): void
+    {
+        $config = new AutoMapperConfig();
+        $config->registerMapping(PolymorphicChildA::class, PolymorphicDtoA::class);
+        $config->registerMapping(PolymorphicChildB::class, PolymorphicDtoB::class);
+        $config->registerMapping(ParentClass::class, ParentClassDto::class)
+               ->forMember(
+                   'polymorphicChildren',
+                   Operation::mapToAnyOf([PolymorphicDtoA::class, PolymorphicDtoB::class])
+               );
+        $mapper = new AutoMapper($config);
+
+        $source = new ParentClass();
+        $source->polymorphicChildren = [new PolymorphicChildA('foo'), new PolymorphicChildB('bar')];
+        $result = $mapper->map($source, ParentClassDto::class);
+
+        $this->assertIsArray($result->polymorphicChildren);
+        $this->assertInstanceOf(PolymorphicDtoA::class, $result->polymorphicChildren[0]);
+        $this->assertEquals('foo', $result->polymorphicChildren[0]->name);
+
+        $this->assertInstanceOf(PolymorphicDtoB::class, $result->polymorphicChildren[1]);
+        $this->assertEquals('bar', $result->polymorphicChildren[1]->name);
     }
 }
