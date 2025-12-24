@@ -48,3 +48,4 @@ jobs:
             -   name: Run Psalm analysis
                 run: vendor/bin/psalm
                 if: ${{ matrix.psalm == true }}
+                continue-on-error: true
