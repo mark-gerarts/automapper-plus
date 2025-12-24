@@ -29,6 +29,8 @@ class ArrayPropertyReader implements PropertyReaderInterface
      * @inheritdoc
      *
      * @param array $array
+     *
+     * @psalm-suppress ParamNameMismatch
      */
     public function getPropertyNames($array): array
     {

@@ -70,6 +70,11 @@ class MapToAnyOf extends DefaultMappingOperation implements
         );
     }
 
+    /**
+     * @psalm-suppress TooManyArguments
+     *   Psalm borks on the missing $context on the interface, which is there
+     *   because of backwards compatibility.
+     */
     private function mapSingle($item, $context)
     {
         $destinationClass = $this->getDestinationClass($item);

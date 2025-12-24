@@ -13,6 +13,10 @@ abstract class CustomMapper implements MapperInterface
 {
     /**
      * @inheritdoc
+     *
+     * @psalm-suppress TooManyArguments
+     *   Psalm borks on the missing $context on the interface, which is there
+     *   because of backwards compatibility.
      */
     public function map($source, string $targetClass)
     {
