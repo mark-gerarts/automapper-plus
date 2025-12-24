@@ -7,6 +7,7 @@ namespace AutoMapperPlus\Test\Models\SimpleProperties;
  *
  * @package AutoMapperPlus\Test\Models\SimpleProperties
  */
+#[\AllowDynamicProperties]
 class NoProperties
 {
     //
