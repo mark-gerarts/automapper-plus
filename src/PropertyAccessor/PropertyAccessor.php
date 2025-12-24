@@ -99,7 +99,7 @@ class PropertyAccessor implements PropertyAccessorInterface
             return;
         }
 
-        $property->setAccessible(true);
+        (\PHP_VERSION_ID < 80100) and $property->setAccessible(true);
         $property->setValue($object, $value);
     }
 
