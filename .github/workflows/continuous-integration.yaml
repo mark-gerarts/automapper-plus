@@ -48,5 +48,3 @@ jobs:
             -   name: Run Psalm analysis
                 run: vendor/bin/psalm
                 if: ${{ matrix.psalm == true }}
-                with:
-                    php_version: ${{ matrix.php }}
